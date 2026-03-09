@@ -65,7 +65,7 @@ services:
       dockerfile: Dockerfile
     container_name: zl-mcdt-backend
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 5000
       DATABASE_URL: postgresql://mcdt_user:mcdt_password_123@postgres:5432/zl_mcdt
       JWT_SECRET: your-secret-key-change-in-production
@@ -75,8 +75,6 @@ services:
       REDIS_URL: redis://redis:6379
       LOG_LEVEL: info
       CORS_ORIGIN: http://localhost:3000
-    ports:
-      - "5000:5000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,12 +82,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    volumes:
-      - ./backend/src:/app/src
-      - ./logs:/app/logs
     networks:
       - zl-mcdt-network
-    command: sh -c "npm run db:migrate && npm run dev"
 
   # Frontend (React)
   frontend:
@@ -100,16 +94,10 @@ services:
     environment:
       REACT_APP_API_URL: http://localhost:5000/api
       REACT_APP_LOG_LEVEL: info
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
-    volumes:
-      - ./frontend/src:/app/src
-      - /app/node_modules
     networks:
       - zl-mcdt-network
-    command: npm start
 
   # PostgreSQL Admin UI (pgAdmin)
   pgadmin:
