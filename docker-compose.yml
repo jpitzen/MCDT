@@ -68,6 +68,11 @@ services:
       NODE_ENV: production
       PORT: 5000
       DATABASE_URL: postgresql://mcdt_user:mcdt_password_123@postgres:5432/zl_mcdt
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: mcdt_user
+      DB_PASSWORD: mcdt_password_123
+      DB_NAME: zl_mcdt
       JWT_SECRET: your-secret-key-change-in-production
       AWS_REGION: ${AWS_REGION:-us-east-1}
       VAULT_ADDR: http://vault:8200
