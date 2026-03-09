@@ -187,7 +187,7 @@ const STORAGE_CLASSES = [
   { value: 'DEEP_ARCHIVE', label: 'Deep Archive', description: 'Long-term archive (12+ hrs)' },
 ];
 
-function S3BucketDialog({ open, onClose, onSave, editingBucket, clusterName, region }) {
+function S3BucketDialog({ open, onClose, onSave, editingBucket, clusterName, region, storageTerms }) {
   const [formData, setFormData] = useState(editingBucket || {
     name: '',
     purpose: '',
@@ -935,6 +935,7 @@ aws s3 ls s3://<bucket-name>`}
         editingBucket={editingBucket}
         clusterName={clusterName}
         region={region}
+        storageTerms={storageTerms}
       />
     </Box>
   );
