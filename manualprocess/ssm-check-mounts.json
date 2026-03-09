@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "net use",
+    "Test-Path V:\\",
+    "Test-Path E:\\var\\opt\\zlvault"
+  ]
+}

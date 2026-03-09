@@ -1,0 +1,21 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: use1-zlps-eks-01
+  region: us-east-1
+  version: "1.31"
+
+managedNodeGroups:
+  - name: ue1-zlps-ng-01
+    instanceType: m5.xlarge
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 2
+    volumeSize: 80
+    volumeType: gp3
+    privateNetworking: true
+    tags:
+      Environment: production
+      Application: zl-application
+      ManagedBy: eksctl

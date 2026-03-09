@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: default
+data:
+  DB_HOST: "usw-zlps-msexpsql-01.c5s06occm2dn.us-west-1.rds.amazonaws.com"
+  DB_PORT: "1433"
+  DB_ENGINE: "sqlserver-ex"
+  DB_NAME: "ZLDB"

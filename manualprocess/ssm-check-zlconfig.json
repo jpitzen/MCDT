@@ -1,0 +1,6 @@
+{
+  "commands": [
+    "Get-ChildItem 'E:\\ZipLip\\config' -Filter '*.cfg' -ErrorAction SilentlyContinue | Select-Object Name",
+    "if (Test-Path 'E:\\ZipLip\\config\\pmapp.cfg') { Select-String -Path 'E:\\ZipLip\\config\\pmapp.cfg' -Pattern 'vault|zlvault|var.opt|storage' -CaseSensitive:$false }"
+  ]
+}

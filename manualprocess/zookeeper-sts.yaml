@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app":"zlzookeeper"},"name":"zlzookeeper","namespace":"default"},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"zlzookeeper"}},"serviceName":"zk-hs","template":{"metadata":{"labels":{"app":"zlzookeeper"}},"spec":{"containers":[{"envFrom":[{"configMapRef":{"name":"zlapp-config"}}],"image":"docker.io/library/zlzookeeper:zlzookeeper11.1.0-b1140","imagePullPolicy":"IfNotPresent","name":"zlzookeeper","ports":[{"containerPort":2181,"name":"client"},{"containerPort":2888,"name":"peer"},{"containerPort":3888,"name":"election"}],"resources":{"limits":{"cpu":"500m","memory":"2Gi"},"requests":{"cpu":"200m","memory":"500Mi"}},"volumeMounts":[{"mountPath":"/var/ZipLip/DATA/ZooKeeper","name":"zlzkdata"},{"mountPath":"/opt/ZipLip/ZLZooKeeper/config/zk.cfg","name":"zk-config","subPath":"zk.cfg"},{"mountPath":"/opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg","name":"zk-config","subPath":"zkQuorum.cfg"}]}],"initContainers":[{"command":["sh","-c","echo $(hostname) \u003e /var/ZipLip/DATA/ZooKeeper/myid"],"image":"busybox","name":"setup-config","volumeMounts":[{"mountPath":"/var/ZipLip/DATA/ZooKeeper","name":"zlzkdata"}]}],"restartPolicy":"Always","serviceAccountName":"zlapp-sa","volumes":[{"configMap":{"name":"zk-config"},"name":"zk-config"}]}},"volumeClaimTemplates":[{"metadata":{"name":"zlzkdata"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"standard"}}]}}
+  creationTimestamp: "2025-12-18T17:02:26Z"
+  generation: 8
+  labels:
+    app: zlzookeeper
+  name: zlzookeeper
+  namespace: default
+  resourceVersion: "1608932"
+  uid: 13196a2f-b037-47cf-ac39-2a23effee7f4
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  serviceName: zk-hs
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2025-12-18T15:39:34-05:00"
+      labels:
+        app: zlzookeeper
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: zlapp-config
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper20251219
+        imagePullPolicy: IfNotPresent
+        name: zlzookeeper
+        ports:
+        - containerPort: 2181
+          name: client
+          protocol: TCP
+        - containerPort: 2888
+          name: peer
+          protocol: TCP
+        - containerPort: 3888
+          name: election
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2Gi
+          requests:
+            cpu: 200m
+            memory: 500Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/ZipLip/DATA/ZooKeeper
+          name: zlzkdata
+        - mountPath: /opt/ZipLip/ZLZooKeeper/config/zk.cfg
+          name: zk-config
+          subPath: zk.cfg
+        - mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+          name: zk-config
+          subPath: zkQuorum.cfg
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - echo $(hostname) > /var/ZipLip/DATA/ZooKeeper/myid
+        image: busybox
+        imagePullPolicy: Always
+        name: setup-config
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/ZipLip/DATA/ZooKeeper
+          name: zlzkdata
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: zlapp-sa
+      serviceAccountName: zlapp-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: zk-config
+        name: zk-config
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: zlzkdata
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: standard
+      volumeMode: Filesystem
+    status:
+      phase: Pending
+status:
+  availableReplicas: 0
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: zlzookeeper-d675b4bb4
+  observedGeneration: 8
+  replicas: 3
+  updateRevision: zlzookeeper-d675b4bb4
+  updatedReplicas: 3

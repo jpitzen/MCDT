@@ -1,0 +1,12 @@
+sqlcmd -S localhost	1433 -U zlpsdbadmin -P L7noGrgUFmkuvR6HJ*.VR_E -d ZLDB -Q "SELECT name	 filegroup_id	 is_default	 is_read_only	 is_autogrow_all_files FROM sys.filegroups ORDER BY name;"
+					
+sqlcmd -S localhost	1433 -U pfuser -P LJZ-wkVv@t_!d*PiM2tbx3TZ4h -d ZLDB  -Q "SELECT name	 data_space_id	 is_default	 is_read_only	 is_autogrow_all_files FROM sys.filegroups ORDER BY name;"
+					
+sqlcmd -S localhost	1433 -U zlpsdbadmin -P L7noGrgUFmkuvR6HJ*.VR_E -Q "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE';"				
+					
+sqlcmd -S localhost	1433 -U pfuser -P LJZ-wkVv@t_!d*PiM2tbx3TZ4h -d APPDB -i "E:\images\UpgradeMsSql-11.1.01090--TO--11.1.11140-20251106.sql" 				
+					
+sqlcmd -S localhost	1433 -U zlpsdbadmin -P L7noGrgUFmkuvR6HJ*.VR_E -i "E:\images\UpgradeMsSql-11.1.01090--TO--11.1.11140-20251106.sql"				
+					
+					
+sqlcmd -S localhost	1433 -U zlpsdbadmin -P L7noGrgUFmkuvR6HJ*.VR_E -Q "SELECT name FROM sys.databases ORDER BY name;"				

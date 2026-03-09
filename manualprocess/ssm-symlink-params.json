@@ -1,0 +1,9 @@
+{
+  "commands": [
+    "if (!(Test-Path 'E:\\var\\opt')) { New-Item -ItemType Directory -Path 'E:\\var\\opt' -Force }",
+    "if (Test-Path 'E:\\var\\opt\\zlvault') { cmd /c rmdir 'E:\\var\\opt\\zlvault' }",
+    "cmd /c mklink /D E:\\var\\opt\\zlvault V:\\",
+    "Get-ChildItem 'E:\\var\\opt\\zlvault' | Select-Object Name",
+    "Write-Host 'Symbolic link created: E:\\var\\opt\\zlvault -> V:\\'"
+  ]
+}

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 0</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item active" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 0: AWS Configuration</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 0</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 0: AWS Configuration</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">10</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                    <span class="step-dot" data-step="8"></span>
+                    <span class="step-dot" data-step="9"></span>
+                    <span class="step-dot" data-step="10"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Prerequisites for Phase 0</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 0</strong> configures AWS credentials, creates IAM users and policies, and sets up service accounts required for EKS cluster management and application deployment.</p>
+            </div>
+            
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Configure AWS CLI with administrative credentials</li>
+                    <li data-steps="2">Create dedicated IAM user for EKS operations</li>
+                    <li data-steps="3">Attach required AWS managed policies</li>
+                    <li data-steps="4,5,6">Create custom policies for CSI drivers and ALB controller</li>
+                    <li data-steps="7,8">Set up IAM Roles for Service Accounts (IRSA)</li>
+                    <li data-steps="9">Enable AWS Inspector for ECR vulnerability scanning</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard functionality  
+// Copy to clipboard functionality
+function copyToClipboard(button) {
+    const wrapper = button.closest('.pre-wrapper');
+    const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = codeBlock.textContent || codeBlock.innerText;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function() {
+            showCopied(button);
+        }).catch(function() {
+            fallbackCopy(text, button);
+        });
+    } else {
+        fallbackCopy(text, button);
+    }
+}
+
+function fallbackCopy(text, button) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(button);
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = 'FAILED';
+        setTimeout(() => {
+            button.textContent = 'COPY';
+        }, 2000);
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(button) {
+    button.textContent = 'COPIED';
+    button.style.background = '#28a745';
+
+    setTimeout(function() {
+        button.textContent = 'COPY';
+        button.style.background = '';
+    }, 2000);
+}
+
+// Shell tab switching
+function showShell(button, tabId) {
+    // Remove active class from all buttons and contents
+    const buttons = button.parentElement.querySelectorAll('.shell-tab-btn');
+    const contents = button.parentElement.parentElement.querySelectorAll('.shell-content');
+
+    buttons.forEach(btn => btn.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+
+    // Add active class to clicked button and corresponding content
+    button.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Toggle JSON/YAML/CONFIG content visibility
+function toggleJsonContent(fileId) {
+    const filename = fileId + '.json';
+    const contentDiv = document.getElementById(`json-content-${fileId}`);
+    const codeElement = document.getElementById(`json-code-${fileId}`);
+
+    if (contentDiv.style.display === 'none') {
+        // Load and display content
+        fetch(filename)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${filename}`);
+                }
+                return response.text();
+            })
+            .then(text => {
+                codeElement.textContent = text;
+                contentDiv.style.display = 'block';
+            })
+            .catch(error => {
+                codeElement.textContent = `Error loading ${filename}: ${error.message}`;
+                contentDiv.style.display = 'block';
+            });
+    } else {
+        // Hide content
+        contentDiv.style.display = 'none';
+    }
+}
+
+// Toggle YAML content visibility
+function toggleYamlContent(fileId) {
+    const filename = fileId + '.yaml';
+    const contentDiv = document.getElementById(`yaml-content-${fileId}`);
+    const codeElement = document.getElementById(`yaml-code-${fileId}`);
+
+    if (contentDiv.style.display === 'none') {
+        fetch(filename)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${filename}`);
+                }
+                return response.text();
+            })
+            .then(text => {
+                codeElement.textContent = text;
+                contentDiv.style.display = 'block';
+            })
+            .catch(error => {
+                codeElement.textContent = `Error loading ${filename}: ${error.message}`;
+                contentDiv.style.display = 'block';
+            });
+    } else {
+        contentDiv.style.display = 'none';
+    }
+}
+
+// Copy JSON content to clipboard
+function copyJsonContent(fileId) {
+    const codeElement = document.getElementById(`json-code-${fileId}`);
+    const text = codeElement.textContent || codeElement.innerText;
+    
+    navigator.clipboard.writeText(text).then(function() {
+        // Find the copy button and show feedback
+        const contentDiv = document.getElementById(`json-content-${fileId}`);
+        const copyBtn = contentDiv.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied!';
+        copyBtn.style.background = 'var(--success-color)';
+        
+        setTimeout(function() {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = '';
+        }, 2000);
+    });
+}
+
+// Copy YAML content to clipboard
+function copyYamlContent(fileId) {
+    const codeElement = document.getElementById(`yaml-code-${fileId}`);
+    const text = codeElement.textContent || codeElement.innerText;
+    
+    navigator.clipboard.writeText(text).then(function() {
+        const contentDiv = document.getElementById(`yaml-content-${fileId}`);
+        const copyBtn = contentDiv.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied!';
+        copyBtn.style.background = 'var(--success-color)';
+        
+        setTimeout(function() {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = '';
+        }, 2000);
+    });
+}
+
+// Legacy function for backward compatibility
+function showJsonContent(filename) {
+    const fileId = filename.replace('.json', '');
+    toggleJsonContent(fileId);
+}
+
+// Download JSON file
+function downloadJsonFile(filename) {
+    fetch(filename)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load ${filename}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            alert(`Error downloading ${filename}: ${error.message}`);
+        });
+}
+
+// Initialize tooltips and interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize pagination
+    initializePagination();
+    
+    // Add copy buttons to initial content
+    initializeCopyButtons();
+});
+
+// Add copy buttons to code blocks
+function initializeCopyButtons() {
+    console.log('Initializing copy buttons...');
+    const pres = document.querySelectorAll('pre');
+    console.log('Found', pres.length, 'pre elements');
+    
+    pres.forEach((pre, index) => {
+        // Skip if already wrapped
+        if (pre.parentElement.classList.contains('pre-wrapper')) {
+            console.log('Pre', index, 'already wrapped');
+            return;
+        }
+        if (pre.closest('.yaml-panel')) {
+            console.log('Pre', index, 'inside yaml-panel, skipping');
+            return;
+        }
+        // Skip if parent already has a copy button (static HTML)
+        if (pre.parentElement.querySelector('.copy-btn')) {
+            console.log('Pre', index, 'parent has static copy button, skipping');
+            return;
+        }
+        
+        console.log('Wrapping pre', index);
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'COPY';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+        
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+        
+        console.log('Added copy button to pre', index);
+    });
+}
+
+// Pagination variables
+let currentStep = 1;
+const totalSteps = 10;
+
+// Step data for Phase 0
+const stepData = {
+    1: {
+        title: 'Step 1: Configure AWS CLI',
+        content: `
+            <div class="step">
+                <h3>Step 1: Configure AWS CLI</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Configures AWS CLI with administrative credentials</li>
+                        <li>Sets default region and output format</li>
+                        <li>Verifies credentials and permissions</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>AWS account with administrative access</li>
+                        <li>AWS CLI installed on local machine</li>
+                    </ul>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step1-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step1-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step1-cmd')">CMD</button>
+                    </div>
+                    <div id="step1-ps" class="shell-content active">
+                        <pre><code># Configure AWS CLI
+aws configure
+
+# Set default region (us-east-1 for production)
+aws configure set default.region us-east-1
+
+# Verify credentials
+aws sts get-caller-identity</code></pre>
+                    </div>
+                    <div id="step1-bash" class="shell-content">
+                        <pre><code># Configure AWS CLI
+aws configure
+
+# Set default region (us-east-1 for production)
+aws configure set default.region us-east-1
+
+# Verify credentials
+aws sts get-caller-identity</code></pre>
+                    </div>
+                    <div id="step1-cmd" class="shell-content">
+                        <pre><code>REM Configure AWS CLI
+aws configure
+
+REM Set default region (us-east-1 for production)
+aws configure set default.region us-east-1
+
+REM Verify credentials
+aws sts get-caller-identity</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" id="prev-btn-bottom" disabled onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 1: Configure AWS CLI</div>
+                    <button class="nav-btn next-btn" id="next-btn-bottom" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    2: {
+        title: 'Step 2: Create IAM User',
+        content: `
+            <div class="step">
+                <h3>Step 2: Create IAM User</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates dedicated IAM user for EKS operations</li>
+                        <li>Generates access keys for programmatic access</li>
+                        <li>Sets up user with appropriate permissions</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>Administrative AWS credentials configured</li>
+                        <li>AWS Management Console access</li>
+                    </ul>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step2-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step2-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step2-cmd')">CMD</button>
+                    </div>
+                    <div id="step2-ps" class="shell-content active">
+                        <pre><code># Create IAM user
+aws iam create-user --user-name zleks-admin
+
+# Create access key
+aws iam create-access-key --user-name zleks-admin
+
+# Save the access key and secret key securely</code></pre>
+                    </div>
+                    <div id="step2-bash" class="shell-content">
+                        <pre><code># Create IAM user
+aws iam create-user --user-name zleks-admin
+
+# Create access key
+aws iam create-access-key --user-name zleks-admin
+
+# Save the access key and secret key securely</code></pre>
+                    </div>
+                    <div id="step2-cmd" class="shell-content">
+                        <pre><code>REM Create IAM user
+aws iam create-user --user-name zleks-admin
+
+REM Create access key
+aws iam create-access-key --user-name zleks-admin
+
+REM Save the access key and secret key securely</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 2: Create IAM User</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    3: {
+        title: 'Step 3: Attach AWS Managed Policies',
+        content: `
+            <div class="step">
+                <h3>Step 3: Attach AWS Managed Policies</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Attaches essential AWS managed policies</li>
+                        <li>Provides permissions for EKS, EC2, and IAM operations</li>
+                        <li>Enables CSI driver and load balancer management</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>IAM user 'zleks-admin' created</li>
+                        <li>Administrative credentials configured</li>
+                    </ul>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step3-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step3-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step3-cmd')">CMD</button>
+                    </div>
+                    <div id="step3-ps" class="shell-content active">
+                        <pre><code># Attach essential managed policies
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/IAMFullAccess</code></pre>
+                    </div>
+                    <div id="step3-bash" class="shell-content">
+                        <pre><code># Attach essential managed policies
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/IAMFullAccess</code></pre>
+                    </div>
+                    <div id="step3-cmd" class="shell-content">
+                        <pre><code>REM Attach essential managed policies
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::aws:policy/IAMFullAccess</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 3: Attach AWS Managed Policies</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    4: {
+        title: 'Step 4: Create Custom EKS Admin Policy',
+        content: `
+            <div class="step">
+                <h3>Step 4: Create Custom EKS Admin Policy</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates custom policy for EKS administrative operations</li>
+                        <li>Provides permissions for cluster management and monitoring</li>
+                        <li>Enables access to CloudWatch and other AWS services</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>IAM user 'zleks-admin' created</li>
+                        <li>Basic managed policies attached</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📄 Policy Document</h4>
+                    <p>The custom EKS admin policy document is stored in <code>zl-eks-admin-policy.json</code></p>
+                    <div class="file-controls">
+                        <button class="action-btn" onclick="toggleJsonContent('zl-eks-admin-policy')">📄 Show/Hide Policy JSON</button>
+                        <button class="action-btn" onclick="downloadJsonFile('zl-eks-admin-policy.json')">📥 Download</button>
+                    </div>
+                    <div id="json-content-zl-eks-admin-policy" class="json-content" style="display: none;">
+                        <div class="json-header">
+                            <span class="filename">zl-eks-admin-policy.json</span>
+                            <button class="copy-btn" onclick="copyJsonContent('zl-eks-admin-policy')">📋 Copy</button>
+                        </div>
+                        <pre><code id="json-code-zl-eks-admin-policy">// Loading JSON content...</code></pre>
+                    </div>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step4-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step4-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step4-cmd')">CMD</button>
+                    </div>
+                    <div id="step4-ps" class="shell-content active">
+                        <pre><code># Create custom EKS admin policy from JSON file
+aws iam create-policy --policy-name ZLEKSAdminPolicy --policy-document file://zl-eks-admin-policy.json
+
+# Attach custom policy to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEKSAdminPolicy</code></pre>
+                    </div>
+                    <div id="step4-bash" class="shell-content">
+                        <pre><code># Create custom EKS admin policy from JSON file
+aws iam create-policy --policy-name ZLEKSAdminPolicy --policy-document file://zl-eks-admin-policy.json
+
+# Attach custom policy to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEKSAdminPolicy</code></pre>
+                    </div>
+                    <div id="step4-cmd" class="shell-content">
+                        <pre><code>REM Create custom EKS admin policy from JSON file
+aws iam create-policy --policy-name ZLEKSAdminPolicy --policy-document file://zl-eks-admin-policy.json
+
+REM Attach custom policy to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEKSAdminPolicy</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 4: Create Custom EKS Admin Policy</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    5: {
+        title: 'Step 5: Create EBS CSI Driver Policy',
+        content: `
+            <div class="step">
+                <h3>Step 5: Create EBS CSI Driver Policy</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates policy for EBS CSI driver operations</li>
+                        <li>Enables dynamic provisioning of EBS volumes</li>
+                        <li>Allows Kubernetes to manage EBS resources</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>Custom EKS admin policy created</li>
+                        <li>IAM permissions for policy creation</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📄 Policy Document</h4>
+                    <p>The EBS CSI driver policy document is stored in <code>zl-ebs-csi-driver-policy.json</code></p>
+                    <div class="file-controls">
+                        <button class="action-btn" onclick="toggleJsonContent('zl-ebs-csi-driver-policy')">📄 Show/Hide Policy JSON</button>
+                        <button class="action-btn" onclick="downloadJsonFile('zl-ebs-csi-driver-policy.json')">📥 Download</button>
+                    </div>
+                    <div id="json-content-zl-ebs-csi-driver-policy" class="json-content" style="display: none;">
+                        <div class="json-header">
+                            <span class="filename">zl-ebs-csi-driver-policy.json</span>
+                            <button class="copy-btn" onclick="copyJsonContent('zl-ebs-csi-driver-policy')">📋 Copy</button>
+                        </div>
+                        <pre><code id="json-code-zl-ebs-csi-driver-policy">// Loading JSON content...</code></pre>
+                    </div>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step5-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step5-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step5-cmd')">CMD</button>
+                    </div>
+                    <div id="step5-ps" class="shell-content active">
+                        <pre><code># Create EBS CSI driver policy from JSON file
+aws iam create-policy --policy-name ZLEBSCSIDriverPolicy --policy-document file://zl-ebs-csi-driver-policy.json
+
+# Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEBSCSIDriverPolicy</code></pre>
+                    </div>
+                    <div id="step5-bash" class="shell-content">
+                        <pre><code># Create EBS CSI driver policy from JSON file
+aws iam create-policy --policy-name ZLEBSCSIDriverPolicy --policy-document file://zl-ebs-csi-driver-policy.json
+
+# Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEBSCSIDriverPolicy</code></pre>
+                    </div>
+                    <div id="step5-cmd" class="shell-content">
+                        <pre><code>REM Create EBS CSI driver policy from JSON file
+aws iam create-policy --policy-name ZLEBSCSIDriverPolicy --policy-document file://zl-ebs-csi-driver-policy.json
+
+REM Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLEBSCSIDriverPolicy</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 5: Create EBS CSI Driver Policy</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    6: {
+        title: 'Step 6: Create ALB Controller Policy',
+        content: `
+            <div class="step">
+                <h3>Step 6: Create ALB Controller Policy</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates policy for AWS Load Balancer Controller</li>
+                        <li>Enables ALB/NLB provisioning and management</li>
+                        <li>Allows Kubernetes ingress resources to create load balancers</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>EBS CSI driver policy created</li>
+                        <li>IAM permissions for policy management</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📄 Policy Document</h4>
+                    <p>The ALB controller policy document is stored in <code>zl-alb-controller-policy.json</code></p>
+                    <div class="file-controls">
+                        <button class="action-btn" onclick="toggleJsonContent('zl-alb-controller-policy')">📄 Show/Hide Policy JSON</button>
+                        <button class="action-btn" onclick="downloadJsonFile('zl-alb-controller-policy.json')">📥 Download</button>
+                    </div>
+                    <div id="json-content-zl-alb-controller-policy" class="json-content" style="display: none;">
+                        <div class="json-header">
+                            <span class="filename">zl-alb-controller-policy.json</span>
+                            <button class="copy-btn" onclick="copyJsonContent('zl-alb-controller-policy')">📋 Copy</button>
+                        </div>
+                        <pre><code id="json-code-zl-alb-controller-policy">// Loading JSON content...</code></pre>
+                    </div>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step6-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step6-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step6-cmd')">CMD</button>
+                    </div>
+                    <div id="step6-ps" class="shell-content active">
+                        <pre><code># Create ALB controller policy from JSON file
+aws iam create-policy --policy-name ZLALBControllerPolicy --policy-document file://zl-alb-controller-policy.json
+
+# Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLALBControllerPolicy</code></pre>
+                    </div>
+                    <div id="step6-bash" class="shell-content">
+                        <pre><code># Create ALB controller policy from JSON file
+aws iam create-policy --policy-name ZLALBControllerPolicy --policy-document file://zl-alb-controller-policy.json
+
+# Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLALBControllerPolicy</code></pre>
+                    </div>
+                    <div id="step6-cmd" class="shell-content">
+                        <pre><code>REM Create ALB controller policy from JSON file
+aws iam create-policy --policy-name ZLALBControllerPolicy --policy-document file://zl-alb-controller-policy.json
+
+REM Attach to user
+aws iam attach-user-policy --user-name zleks-admin --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/ZLALBControllerPolicy</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 6: Create ALB Controller Policy</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    7: {
+        title: 'Step 7: Configure IAM OIDC Provider',
+        content: `
+            <div class="step">
+                <h3>Step 7: Configure IAM OIDC Provider</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates IAM OIDC identity provider for EKS</li>
+                        <li>Enables IAM Roles for Service Accounts (IRSA)</li>
+                        <li>Allows Kubernetes service accounts to assume IAM roles</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>ALB controller policy created</li>
+                        <li>EKS cluster will be created in next phase</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <strong>💡 Note:</strong> The OIDC provider will be configured after the EKS cluster is created in Phase 1. This step is informational for now.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 7: Configure IAM OIDC Provider</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    8: {
+        title: 'Step 8: Create IAM Service Account Roles',
+        content: `
+            <div class="step">
+                <h3>Step 8: Create IAM Service Account Roles</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Creates IAM roles for Kubernetes service accounts</li>
+                        <li>Configures trust relationships with OIDC provider</li>
+                        <li>Enables fine-grained permissions for CSI drivers and controllers</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>EKS cluster created (Phase 1)</li>
+                        <li>IAM OIDC provider configured</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <strong>💡 Note:</strong> These roles will be created after the EKS cluster is set up in Phase 1. This step is informational for now.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 8: Create IAM Service Account Roles</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    9: {
+        title: 'Step 9: Enable AWS Inspector2',
+        content: `
+            <div class="step">
+                <h3>Step 9: Enable AWS Inspector2</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Enables AWS Inspector2 for ECR vulnerability scanning</li>
+                        <li>Configures automated security assessments</li>
+                        <li>Sets up findings and reporting</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>All IAM policies and roles configured</li>
+                        <li>ECR repositories will be created in Phase 2</li>
+                    </ul>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step9-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step9-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step9-cmd')">CMD</button>
+                    </div>
+                    <div id="step9-ps" class="shell-content active">
+                        <pre><code># Enable Inspector2 for ECR scanning
+aws inspector2 enable --resource-types ECR --account-ids YOUR_ACCOUNT_ID
+
+# Verify Inspector2 is enabled
+aws inspector2 list-account-permissions</code></pre>
+                    </div>
+                    <div id="step9-bash" class="shell-content">
+                        <pre><code># Enable Inspector2 for ECR scanning
+aws inspector2 enable --resource-types ECR --account-ids YOUR_ACCOUNT_ID
+
+# Verify Inspector2 is enabled
+aws inspector2 list-account-permissions</code></pre>
+                    </div>
+                    <div id="step9-cmd" class="shell-content">
+                        <pre><code>REM Enable Inspector2 for ECR scanning
+aws inspector2 enable --resource-types ECR --account-ids YOUR_ACCOUNT_ID
+
+REM Verify Inspector2 is enabled
+aws inspector2 list-account-permissions</code></pre>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 9: Enable AWS Inspector2</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    10: {
+        title: 'Phase 0 Completion Checklist',
+        content: `
+            <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                <h3>✅ Phase 0 Completion Checklist</h3>
+                <p><strong>Before proceeding to Phase 1, verify the following:</strong></p>
+
+                <div class="checklist">
+                    <label><input type="checkbox"> AWS CLI configured with administrative credentials</label><br>
+                    <label><input type="checkbox"> IAM user 'zleks-admin' created with access keys saved</label><br>
+                    <label><input type="checkbox"> All required AWS managed policies attached to zleks-admin user</label><br>
+                    <label><input type="checkbox"> Custom EKS Admin Policy created and attached</label><br>
+                    <label><input type="checkbox"> EBS CSI Driver Policy created</label><br>
+                    <label><input type="checkbox"> ALB Controller Policy created</label><br>
+                    <label><input type="checkbox"> IAM OIDC Provider configured for EKS cluster</label><br>
+                    <label><input type="checkbox"> IAM Roles for Service Accounts (IRSA) created</label><br>
+                    <label><input type="checkbox"> AWS Inspector2 enabled for ECR scanning</label><br>
+                </div>
+
+                <div class="info">
+                    <strong>💡 Ready for Phase 1:</strong> Once all items are checked, you can proceed to Phase 1 (EKS Cluster Creation).
+                    Remember to use the zleks-admin credentials for all subsequent AWS operations.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Phase 0 Completion Checklist</div>
+                    <button class="nav-btn next-btn" disabled style="background: var(--success-color);">
+                        Phase Complete ✓
+                    </button>
+                </div>
+            </div>
+        `
+    }
+};
+
+function initializePagination() {
+    // Load saved step from localStorage
+    const savedStep = localStorage.getItem('zl-phase0-current-step');
+    if (savedStep && savedStep >= 1 && savedStep <= totalSteps) {
+        currentStep = parseInt(savedStep);
+    }
+
+    // Show initial step
+    showStep(currentStep);
+
+    // Add event listeners
+    document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+    document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+
+    // Add step dot click listeners
+    document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        dot.addEventListener('click', () => showStep(index + 1));
+    });
+
+    // Handle URL hash for direct linking
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#step-')) {
+        const stepNum = parseInt(hash.replace('#step-', ''));
+        if (stepNum >= 1 && stepNum <= totalSteps) {
+            showStep(stepNum);
+        }
+    }
+}
+
+function showStep(stepNum) {
+    currentStep = stepNum;
+
+    // Update URL hash
+    window.location.hash = `step-${stepNum}`;
+
+    // Save to localStorage
+    localStorage.setItem('zl-phase0-current-step', stepNum);
+
+    // Update step content
+    const stepContainer = document.getElementById('step-container');
+    stepContainer.innerHTML = stepData[stepNum].content;
+
+    // Initialize copy buttons for new content
+    initializeCopyButtons();
+
+    // Update step title
+    document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+    // Update progress bar
+    const progressPercent = ((stepNum - 1) / 9) * 100;
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+    // Update step counter
+    document.getElementById('current-step').textContent = stepNum;
+
+    // Update step dots
+    document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        const step = index + 1;
+        if (step === stepNum) {
+            dot.classList.add('active');
+            dot.classList.remove('completed');
+        } else if (step < stepNum) {
+            dot.classList.remove('active');
+            dot.classList.add('completed');
+        } else {
+            dot.classList.remove('active');
+            dot.classList.remove('completed');
+        }
+    });
+
+    // Highlight current objectives
+    document.querySelectorAll('#objectives-list li').forEach(li => {
+        const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+        if (steps.includes(stepNum)) {
+            li.style.fontWeight = 'bold';
+            li.style.color = '#0066cc';
+            li.style.backgroundColor = '#e6f2ff';
+            li.style.padding = '4px 8px';
+            li.style.borderRadius = '4px';
+            li.style.transition = 'all 0.3s ease';
+        } else {
+            li.style.fontWeight = 'normal';
+            li.style.color = '';
+            li.style.backgroundColor = '';
+            li.style.padding = '';
+            li.style.borderRadius = '';
+        }
+    });
+
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    prevBtn.disabled = stepNum === 1;
+    nextBtn.disabled = stepNum === totalSteps;
+
+    if (stepNum === totalSteps) {
+        nextBtn.textContent = 'Phase Complete ✓';
+        nextBtn.style.background = 'var(--success-color)';
+    } else {
+        nextBtn.textContent = 'Next Step →';
+        nextBtn.style.background = 'var(--accent-color)';
+    }
+
+    // Scroll to top of content
+    document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function navigateStep(direction) {
+    const newStep = currentStep + direction;
+    if (newStep >= 1 && newStep <= totalSteps) {
+        showStep(newStep);
+    }
+}
+</script>
+
+</body>
+</html>
+
+
+
+

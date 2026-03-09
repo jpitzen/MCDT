@@ -1,0 +1,327 @@
+Cloud K8s deployment Platform.
+
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+Only fix items that are broken.
+
+
+=================
+Resolved
+=================
+
+Iteration 1 - November 19, 2025 21:10:00 - 21:22:00
+✓ Created missing React entry point files (index.html, index.jsx, manifest.json)
+✓ Created stub components for missing pages (CredentialsManager, DeploymentWizard, etc.)
+✓ Built React production bundle (frontend/build/)
+✓ Updated backend server to serve static files with express.static()
+✓ Added catch-all route for client-side routing (skips /api/* paths)
+✓ Updated Dockerfile to include frontend/build directory
+✓ Fixed path resolution: changed ../../frontend/build to ../frontend/build
+✓ Deployed zlaws-backend:v7 to Kubernetes (2/2 pods running)
+✓ Verified frontend files exist at /app/frontend/build/ in containers
+✓ Frontend now renders successfully at root path (/)
+
+See: logs\changelog-Frontend-issues-202511191538-iter01-20251119211000.log
+
+
+==================
+Issue Description
+==================
+
+v12 frontend error
+
+==================
+Browser Error
+==================
+
+mh.get is not a function
+
+Browser Console
+==================
+
+20:25:28.351 content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+20:25:28.798 Dashboard.jsx:70 Failed to fetch dashboard data: TypeError: mh.get is not a function
+    at u (Dashboard.jsx:56:43)
+    at Dashboard.jsx:48:5
+    at rs (react-dom.production.min.js:243:332)
+    at Sc (react-dom.production.min.js:285:111)
+    at sc (react-dom.production.min.js:272:185)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:282:470
+    at wc (react-dom.production.min.js:280:398)
+    at oc (react-dom.production.min.js:269:269)
+    at S (scheduler.production.min.js:13:203)
+u @ Dashboard.jsx:70
+(anonymous) @ Dashboard.jsx:48
+rs @ react-dom.production.min.js:243
+Sc @ react-dom.production.min.js:285
+sc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anonymous) @ react-dom.production.min.js:282
+wc @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+S @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+20:25:36.492 CredentialsManager.jsx:62 Failed to fetch credentials: TypeError: mh.get is not a function
+    at g (CredentialsManager.jsx:58:34)
+    at CredentialsManager.jsx:51:5
+    at rs (react-dom.production.min.js:243:332)
+    at Sc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at wc (react-dom.production.min.js:280:398)
+    at sc (react-dom.production.min.js:272:439)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273
+g @ CredentialsManager.jsx:62
+(anonymous) @ CredentialsManager.jsx:51
+rs @ react-dom.production.min.js:243
+Sc @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:282
+wc @ react-dom.production.min.js:280
+sc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anonymous) @ react-dom.production.min.js:266
+20:26:10.970 Dashboard.jsx:70 Failed to fetch dashboard data: TypeError: mh.get is not a function
+    at u (Dashboard.jsx:56:43)
+    at Dashboard.jsx:48:5
+    at rs (react-dom.production.min.js:243:332)
+    at Sc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at wc (react-dom.production.min.js:280:398)
+    at sc (react-dom.production.min.js:272:439)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273
+u @ Dashboard.jsx:70
+(anonymous) @ Dashboard.jsx:48
+rs @ react-dom.production.min.js:243
+Sc @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:282
+wc @ react-dom.production.min.js:280
+sc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anonymous) @ react-dom.production.min.js:266
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+fetch("http://localhost:8080/", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlKHLAQiFoM0BCPSYzwE="
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlKHLAQiFoM0BCPSYzwE="
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/static/js/main.a082ab00.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/static/css/main.26faccad.css", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlKHLAQiFoM0BCPSYzwE=",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/injection-topics.js", {
+  "referrer": "",
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css", {
+  "referrer": "",
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "if-modified-since": "Thu, 20 Nov 2025 01:19:10 GMT",
+    "if-none-match": "W/\"3af-19a9ed80ab0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "if-modified-since": "Thu, 20 Nov 2025 01:19:10 GMT",
+    "if-none-match": "W/\"3af-19a9ed80ab0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:8080/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "if-modified-since": "Thu, 20 Nov 2025 01:19:10 GMT",
+    "if-none-match": "W/\"3af-19a9ed80ab0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+});

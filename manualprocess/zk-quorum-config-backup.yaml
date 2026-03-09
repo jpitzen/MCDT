@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  zkQuorum.cfg: |-
+    // id,machine,clientPort,peerPort,electionPort,dataDir,[hostname]
+    zkQuorum.1=1~~zk-cs~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1_2888~~zk-cs.default.svc.cluster.local
+    zkQuorum.2=2~~zk-cs~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2_2888~~zk-cs.default.svc.cluster.local
+    zkQuorum.3=3~~zk-cs~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk3_2888~~zk-cs.default.svc.cluster.local
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-12-17T17:14:10Z"
+  name: zk-quorum-config
+  namespace: default
+  resourceVersion: "478305"
+  uid: 993c6090-7ec4-445a-87f8-aa9f4cc3f746

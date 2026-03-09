@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pmapp-config
+data:
+  pmapp.cfg: |
+    // ZipLip Application Main Configuration
+    // ZooKeeper Configuration
+    zk.servers=zlzookeeper-0.zk-hs.default.svc.cluster.local:2181,zlzookeeper-1.zk-hs.default.svc.cluster.local:2181,zlzookeeper-2.zk-hs.default.svc.cluster.local:2181
+    // zk.auth=_zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~u/ilWNU+Rf47UjzKUlDrxnYhA+Wa9+OMMHhPVSIkieIoptrR4Vkf9dqsDt8letWgvL4GrI6IXG1B5A5m2H/TJQ==
+
+    // Application Settings
+    app.name=ZipLip
+    app.version=11.1.0-b1140
+
+    // Database Configuration (will be overridden by environment variables)
+    db.host=zldb-service
+    db.port=1433
+    db.name=ziplip
+
+    // Tika Service Configuration
+    tika.host=zltika
+    tika.port=9972
+
+    // Logging Configuration
+    log.level=INFO
+    log.dir=/opt/ZipLip/logs
+
+    // Include additional configuration files
+    #include /opt/ZipLip/config/pmappIncludes.cfg
+    #include /opt/ZipLip/config/pmappURL.cfg
+
+  pmappIncludes.cfg: |
+    // Additional ZipLip Configuration Includes
+    // Session Management
+    session.timeout=3600000
+    session.cookie.name=JSESSIONID
+
+    // Security Settings
+    security.enabled=true
+    security.ssl.enabled=false
+
+    // Cache Configuration
+    cache.enabled=true
+    cache.size=1000
+
+    // Thread Pool Configuration
+    thread.pool.core=5
+    thread.pool.max=20
+
+  pmappURL.cfg: |
+    // ZipLip URL Configuration
+    // Default application URLs
+    app.base.url=http://zlui-service:8080
+    api.base.url=http://zlserver-service:9972
+
+    // Authentication endpoints
+    auth.login.url=/ps/PmApp/login
+    auth.logout.url=/ps/PmApp/logout
+
+    // Default landing page
+    default.page=/app/home.jsp

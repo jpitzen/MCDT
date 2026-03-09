@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config  
+  namespace: default
+data:
+  ZOO_SERVERS: zlzookeeper-0 zlzookeeper-1 zlzookeeper-2
+  DEFAULT_URL: ps/PmApp/zlp_dummy?mgc=1\&NextPage=/app/home.jsp\&domain=yourdomain.com\&la=en\&authMethod=ZipLipDB\&resId=trac_login

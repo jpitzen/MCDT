@@ -1,0 +1,110 @@
+Current Terraform Template:
+
+{
+  "region": "us-east-2",
+  "vmCount": 1,
+  "vpcCIDR": "10.0.0.0/16",
+  "dbEngine": "sqlserver-ex",
+  "dbMultiAZ": false,
+  "dbVersion": "15.00.4236.7.v1",
+  "enableRDS": true,
+  "nodeCount": 1,
+  "dbPassword": "XBVGHf_A7jEdCatVA-xhM8x",
+  "dbUsername": "zldbadmin",
+  "diskSizeGB": 50,
+  "createNewVPC": true,
+  "enableAlerts": false,
+  "maxNodeCount": 5,
+  "minNodeCount": 1,
+  "enableLogging": true,
+  "existingVPCId": "",
+  "publicSubnets": [
+    "10.0.1.0/24",
+    "10.0.2.0/24"
+  ],
+  "privateSubnets": [
+    "10.0.10.0/24",
+    "10.0.11.0/24"
+  ],
+  "vmInstanceType": "m5.xlarge",
+  "dbInstanceClass": "db.t3.micro",
+  "fileStorageSize": 100,
+  "blockStorageSize": 100,
+  "blockStorageType": "gp3",
+  "enableMonitoring": true,
+  "enableNATGateway": true,
+  "nodeInstanceType": "t3.small",
+  "enableAutoscaling": true,
+  "enableFileStorage": true,
+  "kubernetesVersion": "1.32",
+  "vmOperatingSystem": "Windows Server 2022 Datacenter",
+  "dbAllocatedStorage": 20,
+  "enableBlockStorage": true,
+  "enableLoadBalancer": true,
+  "enableAdditionalVMs": true,
+  "enableObjectStorage": true,
+  "objectStorageBucket": "test-deploy-02",
+  "dbBackupRetentionDays": 7
+}
+
+
+Proper Terraform Template:
+
+The proper format of a Terraform file (.tf) is the HashiCorp Configuration Language (HCL), a declarative language designed for human-readable configuration. It uses a block-based structure with attributes and arguments defined within curly braces. Files must be UTF-8 encoded, and while a JSON variant exists (.tf.json for machine-generated configs), the standard .tf extension uses native HCL syntax. Common elements include:
+
+- **Blocks**: These are containers for configuration objects, defined as `type "label1" "label2" { ... }`. Labels are optional depending on the block type (e.g., providers have one label, resources have two).
+- **Arguments/Attributes**: Key-value pairs inside blocks, like `key = value`, where values can be primitives (strings, numbers, booleans), collections (lists, maps, sets), or expressions.
+- **Expressions**: Used for values, supporting operators, functions, conditionals (e.g., `condition ? true_val : false_val`), and references to other resources or variables.
+- **Comments**: Single-line with `#` or `//`, multi-line with `/* ... */`.
+- **Identifiers**: Block types, labels, and attribute names must start with a letter or underscore, followed by letters, digits, underscores, or hyphens.
+
+Example of a basic .tf file:
+
+```
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = var.instance_type
+
+  tags = {
+    Name = "ExampleInstance"
+  }
+}
+
+output "instance_id" {
+  value = aws_instance.example.id
+}
+```
+
+Terraform automatically loads all .tf files in a directory (and submodules), so configurations are often split across files like main.tf, variables.tf, outputs.tf, and providers.tf for organization. Use the `terraform fmt` command to enforce canonical formatting, such as consistent indentation (2 spaces), spacing around operators, and sorting of attributes.
+
+Reasoning: Terraform .tf files follow a structured, declarative syntax to define infrastructure, making them easy to read and version control. This format ensures consistency across projects, with built-in tools like `terraform fmt` handling style enforcement. The details are derived from official documentation and established best practices, prioritizing primary sources from HashiCorp.
+
+Top ten primary sources based on relevance:
+1. Syntax - Configuration Language | Terraform - HashiCorp Developer
+2. terraform fmt command reference - HashiCorp Developer
+3. Syntax Overview - Configuration Language | Terraform - HashiCorp Developer
+4. Style Guide - Configuration Language | Terraform - HashiCorp Developer
+5. Files and configuration structure - Terraform - HashiCorp Developer
+6. Overview - Configuration Language | Terraform - HashiCorp Developer
+7. Best practices for general style and structure | Terraform - Google Cloud Docs
+8. Terraform Style Guide - Gruntwork Docs
+9. Terraform | PyCharm Documentation - JetBrains
+10. Creating a Terraform Configuration File - Oracle Cloud Infrastructure Docs

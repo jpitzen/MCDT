@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 10</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 10: Cluster Autoscaling</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 10</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 10: Cluster Autoscaling</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">5</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button type="button" class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Cluster Autoscaling Overview</div>
+                <button type="button" class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 10</strong> installs and configures Cluster Autoscaler to automatically adjust the number of nodes based on pod resource requests.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Create IAM policy for Cluster Autoscaler</li>
+                    <li data-steps="2">Configure IAM service account with autoscaling permissions</li>
+                    <li data-steps="3">Tag Auto Scaling Groups for autoscaler discovery</li>
+                    <li data-steps="4">Deploy and verify Cluster Autoscaler</li>
+                    <li data-steps="5">Test and monitor autoscaling functionality</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+
+    <script>
+        // Step navigation system
+        let currentStep = 1;
+        const totalSteps = 5;
+        
+        const stepData = {
+            1: {
+                title: "Step 54: Create Cluster Autoscaler IAM Policy",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 54: Create Cluster Autoscaler IAM Policy</h3>
+                        <p>Create an IAM policy that allows the Cluster Autoscaler to manage Auto Scaling Groups.</p>
+                        
+                        <h4>Create the IAM Policy</h4>
+                        <pre><code>aws iam create-policy \\
+    --policy-name AmazonEKSClusterAutoscalerPolicy \\
+    --policy-document file://policies/ClusterAutoscalerPolicy.json \\
+    --region us-east-1</code></pre>
+                        
+                        <h4>Policy Document (ClusterAutoscalerPolicy.json)</h4>
+                        <button class="yaml-viewer-btn" onclick="toggleYaml(this)">View Policy JSON</button>
+                        <div class="yaml-panel">
+                            <div class="yaml-panel-header">
+                                <span>ClusterAutoscalerPolicy.json</span>
+                                <button class="copy-btn" onclick="copyYamlContent(this)">📋 Copy</button>
+                            </div>
+                            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:DescribeScalingActivities",
+        "autoscaling:DescribeTags",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DescribeLaunchTemplateVersions"
+      ],
+      "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup",
+        "ec2:DescribeImages",
+        "ec2:GetInstanceTypesFromInstanceRequirements",
+        "eks:DescribeNodegroup"
+      ],
+      "Resource": ["*"]
+    }
+  ]
+}</code></pre>
+                        </div>
+                        
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Verify policy was created
+aws iam get-policy --policy-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AmazonEKSClusterAutoscalerPolicy --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)" disabled>
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 54: Create IAM Policy for Cluster Autoscaler</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            2: {
+                title: "Step 55: Create Service Account for Autoscaler",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 55: Create Service Account for Autoscaler</h3>
+                        <p>Create an IAM service account that links the IAM policy to the Kubernetes service account used by Cluster Autoscaler.</p>
+                        
+                        <h4>Create IAM Service Account</h4>
+                        <pre><code>eksctl create iamserviceaccount \\
+    --cluster use1-zlps-eks-01 \\
+    --region us-east-1 \\
+    --namespace kube-system \\
+    --name cluster-autoscaler \\
+    --attach-policy-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AmazonEKSClusterAutoscalerPolicy \\
+    --approve \\
+    --override-existing-serviceaccounts</code></pre>
+                        
+                        <div class="info-box">
+                            <strong>📌 Important:</strong> Replace <code>&lt;YOUR_ACCOUNT_ID&gt;</code> with your actual AWS account ID.
+                        </div>
+                        
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Verify service account was created
+kubectl get serviceaccount cluster-autoscaler -n kube-system
+
+# Check the service account annotation
+kubectl describe serviceaccount cluster-autoscaler -n kube-system</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 55: Create Service Account for Autoscaler</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            3: {
+                title: "Step 56: Tag Auto Scaling Group for Discovery",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 56: Tag Auto Scaling Group for Discovery</h3>
+                        <p>Add tags to your Auto Scaling Group so Cluster Autoscaler can discover and manage it.</p>
+                        
+                        <h4>Get Your ASG Name</h4>
+                        <pre><code>aws autoscaling describe-auto-scaling-groups \\
+    --region us-east-1 \\
+    --query "AutoScalingGroups[?contains(Tags[?Key=='eks:cluster-name'].Value, 'use1-zlps-eks-01')].AutoScalingGroupName" \\
+    --output text</code></pre>
+                        
+                        <h4>Tag the Auto Scaling Group</h4>
+                        <div class="shell-tabs">
+                            <div class="shell-tab-buttons">
+                                <button class="shell-tab-btn active" onclick="showShell(this, 'step56-ps')">PowerShell</button>
+                                <button class="shell-tab-btn" onclick="showShell(this, 'step56-bash')">Bash</button>
+                            </div>
+                            <div id="step56-ps" class="shell-content active">
+                                <pre><code>aws autoscaling create-or-update-tags --region us-east-1 --tags \\\`
+  Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=<YOUR_ASG_NAME>,ResourceType=auto-scaling-group \\\`
+  Key=k8s.io/cluster-autoscaler/use1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=<YOUR_ASG_NAME>,ResourceType=auto-scaling-group</code></pre>
+                            </div>
+                            <div id="step56-bash" class="shell-content">
+                                <pre><code>aws autoscaling create-or-update-tags --region us-east-1 --tags \\
+  Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=<YOUR_ASG_NAME>,ResourceType=auto-scaling-group \\
+  Key=k8s.io/cluster-autoscaler/use1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=<YOUR_ASG_NAME>,ResourceType=auto-scaling-group</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Verify tags were applied
+aws autoscaling describe-auto-scaling-groups \\
+    --auto-scaling-group-names <YOUR_ASG_NAME> \\
+    --region us-east-1 \\
+    --query "AutoScalingGroups[0].Tags[?contains(Key, 'cluster-autoscaler')]"</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 56: Tag Auto Scaling Group for Discovery</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            4: {
+                title: "Step 57: Deploy Cluster Autoscaler",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 57: Deploy Cluster Autoscaler</h3>
+                        <p>Deploy the Cluster Autoscaler to your EKS cluster and configure it to manage node scaling.</p>
+                        
+                        <h4>Apply Cluster Autoscaler Deployment</h4>
+                        <pre><code>kubectl apply -f yaml/cluster-autoscaler.yaml</code></pre>
+                        
+                        <h4>Cluster Autoscaler YAML</h4>
+                        <button class="yaml-viewer-btn" onclick="toggleYaml(this)">View YAML</button>
+                        <div class="yaml-panel">
+                            <div class="yaml-panel-header">
+                                <span>cluster-autoscaler.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent(this)">📋 Copy</button>
+                            </div>
+                            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-autoscaler
+  namespace: kube-system
+  labels:
+    app: cluster-autoscaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-autoscaler
+  template:
+    metadata:
+      labels:
+        app: cluster-autoscaler
+    spec:
+      serviceAccountName: cluster-autoscaler
+      containers:
+      - image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.28.2
+        name: cluster-autoscaler
+        resources:
+          limits:
+            cpu: 100m
+            memory: 600Mi
+          requests:
+            cpu: 100m
+            memory: 600Mi
+        command:
+          - ./cluster-autoscaler
+          - --v=4
+          - --stderrthreshold=info
+          - --cloud-provider=aws
+          - --skip-nodes-with-local-storage=false
+          - --expander=least-waste
+          - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/use1-zlps-eks-01
+          - --balance-similar-node-groups
+          - --skip-nodes-with-system-pods=false
+        volumeMounts:
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs/ca-certificates.crt
+            readOnly: true
+        imagePullPolicy: Always
+      volumes:
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs/ca-bundle.crt</code></pre>
+                        </div>
+                        
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Check deployment status
+kubectl get deployment cluster-autoscaler -n kube-system
+
+# View autoscaler logs
+kubectl logs -n kube-system deployment/cluster-autoscaler --tail=50
+
+# Watch for autoscaling events
+kubectl get events -n kube-system --sort-by='.lastTimestamp' | grep cluster-autoscaler</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 57: Deploy Cluster Autoscaler</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            5: {
+                title: "Step 58: Phase 10 Completion Checklist",
+                content: `
+                    <div class="step-section" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 10 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 11, verify the following:</strong></p>
+                        
+                        <div class="checklist">
+                            <label><input type="checkbox"> IAM policy <code>AmazonEKSClusterAutoscalerPolicy</code> created</label><br>
+                            <label><input type="checkbox"> IAM service account <code>cluster-autoscaler</code> created in kube-system namespace</label><br>
+                            <label><input type="checkbox"> Auto Scaling Group tagged for autoscaler discovery</label><br>
+                            <label><input type="checkbox"> Cluster Autoscaler deployment running in kube-system</label><br>
+                            <label><input type="checkbox"> Autoscaler logs show successful discovery of node groups</label><br>
+                            <label><input type="checkbox"> Test deployment successfully triggered node scaling</label><br>
+                            <label><input type="checkbox"> ASG shows correct min/max/desired capacity</label><br>
+                        </div>
+                        
+                        <h4>Test Autoscaling</h4>
+                        <p>Deploy a test workload to trigger node scaling:</p>
+                        <pre><code># Create a deployment that requires more resources
+kubectl create deployment autoscaler-test \\
+    --image=nginx \\
+    --replicas=10
+
+# Request significant resources per pod
+kubectl set resources deployment autoscaler-test \\
+    --requests=cpu=1000m,memory=1Gi
+
+# Watch nodes being added
+kubectl get nodes -w
+
+# Clean up test deployment
+kubectl delete deployment autoscaler-test</code></pre>
+                        
+                        <h4>Monitor Autoscaling Events</h4>
+                        <pre><code># View autoscaler logs continuously
+kubectl logs -n kube-system deployment/cluster-autoscaler -f
+
+# Check ASG status
+aws autoscaling describe-auto-scaling-groups \\
+    --auto-scaling-group-names <YOUR_ASG_NAME> \\
+    --region us-east-1 \\
+    --query "AutoScalingGroups[0].[MinSize,MaxSize,DesiredCapacity,Instances[*].InstanceId]"</code></pre>
+                        
+                        <div class="info">
+                            <strong>💡 Ready for Phase 11:</strong> Once all items are checked, you can proceed to Phase 11 (Post-Deployment).
+                        </div>
+
+                        <!-- Bottom Pagination Controls -->
+                        <div class="pagination-controls bottom-controls">
+                            <button type="button" class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                                ← Previous Step
+                            </button>
+                            <div class="step-title">Phase 10 Completion Checklist</div>
+                            <button type="button" class="nav-btn next-btn" disabled style="background: var(--success-color);">
+                                Phase Complete ✓
+                            </button>
+                        </div>
+                        
+                        <div class="success-box" style="margin-top: 20px;">
+                            <h4>🎉 Phase 10 Complete!</h4>
+                            <p>Your EKS cluster now has automatic node scaling based on pod resource requirements.</p>
+                            <p><strong>Next:</strong> Proceed to <a href="ZL_DG_PHASE_11.html">Phase 11: Post-Deployment</a></p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+        
+        // Show specific step
+        function showStep(stepNum) {
+            currentStep = stepNum;
+            
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < currentStep) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.disabled = currentStep === totalSteps;
+
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = '';
+            }
+
+            // Update step info
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('step-title').textContent = stepData[currentStep].title;
+
+            // Update progress bar
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Load step content
+            document.getElementById('step-container').innerHTML = stepData[currentStep].content;
+
+            // Save progress
+            localStorage.setItem('zl-phase10-current-step', currentStep);
+            window.location.hash = `step-${currentStep}`;
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Re-initialize copy buttons for the new content
+            initializeCopyButtons();
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+        
+        // Initialize copy buttons dynamically
+        function initializeCopyButtons() {
+            document.querySelectorAll('#step-container pre').forEach(pre => {
+                if (pre.parentElement.classList.contains('pre-wrapper')) return;
+                if (pre.closest('.yaml-panel')) return;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                wrapper.style.position = 'relative';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+        
+        // Copy to clipboard with fallback
+        function copyToClipboard(btn) {
+            const wrapper = btn.closest('.pre-wrapper');
+            const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+            const text = code.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopied(btn);
+                }).catch(() => {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+        
+        // Fallback copy method for older browsers or non-HTTPS
+        function fallbackCopy(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                btn.textContent = 'Failed';
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        // Show copied state
+        function showCopied(btn) {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+        
+        // YAML panel functions
+        function copyYamlContent(btn) {
+            const panel = btn.closest('.yaml-panel');
+            const code = panel.querySelector('pre code');
+            const text = code.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+        
+        function toggleYaml(btn) {
+            const panel = btn.nextElementSibling;
+            if (panel && panel.classList.contains('yaml-panel')) {
+                panel.classList.toggle('show');
+                btn.classList.toggle('active');
+                btn.textContent = panel.classList.contains('show') ? 'Hide YAML' : 'View YAML';
+            }
+        }
+        
+        // Shell tabs
+        function showShell(btn, contentId) {
+            const parent = btn.closest('.shell-tabs');
+            parent.querySelectorAll('.shell-tab-btn').forEach(b => b.classList.remove('active'));
+            parent.querySelectorAll('.shell-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(contentId).classList.add('active');
+        }
+        
+        // Page Navigation
+        function showPage(pageId) {
+            window.location.href = pageId + '.html';
+        }
+        
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up navigation buttons
+            document.getElementById('prev-btn').addEventListener('click', (e) => { e.preventDefault(); navigateStep(-1); });
+            document.getElementById('next-btn').addEventListener('click', (e) => { e.preventDefault(); navigateStep(1); });
+            
+            // Event listeners for step dots
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    showStep(parseInt(this.dataset.step));
+                });
+            });
+            
+            // Check for saved progress or URL hash
+            const hash = window.location.hash.match(/step-(\d+)/);
+            const savedStep = localStorage.getItem('zl-phase10-current-step');
+            const initialStep = hash ? parseInt(hash[1]) : (savedStep ? parseInt(savedStep) : 1);
+            
+            showStep(initialStep);
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+

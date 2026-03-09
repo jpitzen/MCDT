@@ -1,0 +1,35 @@
+# ZLVault Shared Storage - ReadWriteMany
+# For minikube: Uses hostPath (works because single-node)
+# For AWS EKS: Replace with EFS StorageClass
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zlvault-pv
+  labels:
+    type: local
+    app: zlvault
+spec:
+  storageClassName: manual-rwx
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/data/zlvault"
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zlvault-rwx-pvc
+spec:
+  storageClassName: manual-rwx
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      app: zlvault

@@ -1,0 +1,89 @@
+EFS Storage Deployment Commands
+================================
+
+PREREQUISITE: Create EFS Access Points First
+=============================================
+
+1. Create access point for zltikatemp:
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zltikatemp-ap --region us-west-1
+
+2. Create access point for zluilogs:
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zluilogs-ap --region us-west-1
+
+3. Create access point for zlvault:
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlvault-ap --region us-west-1
+
+4. Verify access points were created:
+aws efs describe-access-points --file-system-id fs-0a4ec87cd91178047 --region us-west-1
+
+** IMPORTANT: Note the AccessPointId for each access point from the output **
+
+5. Update the PV YAML files with the AccessPointId values:
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zltikatemp.yaml - Replace <ACCESS_POINT_ID_ZLTIKATEMP>
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zluilogs.yaml - Replace <ACCESS_POINT_ID_ZLUILOGS>
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zlvault.yaml - Replace <ACCESS_POINT_ID_ZLVAULT>
+
+
+KUBERNETES DEPLOYMENT COMMANDS
+================================
+
+Deploy in this order:
+
+1. Create EFS StorageClass:
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-sc.yaml
+
+2. Create PersistentVolumes:
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pv-zltikatemp.yaml
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pv-zluilogs.yaml
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pv-zlvault.yaml
+
+3. Create PersistentVolumeClaims:
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pvc-zltikatemp.yaml
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pvc-zluilogs.yaml
+kubectl apply -f C:\Projects\aws-zl\yaml\efs-pvc-zlvault.yaml
+
+
+VERIFICATION COMMANDS
+=====================
+
+1. Verify StorageClass:
+kubectl get storageclass efs-sc
+
+2. Verify PersistentVolumes:
+kubectl get pv | findstr efs
+
+3. Verify PersistentVolumeClaims:
+kubectl get pvc -n default | findstr efs
+
+4. Check PVC status (should be "Bound"):
+kubectl get pvc -n default
+
+5. Describe a PVC for details:
+kubectl describe pvc zltikatemp-efs -n default
+
+
+SECURITY GROUP CONFIGURATION
+==============================
+
+Verify NFS access (port 2049) is allowed from EKS nodes to EFS:
+
+1. Get EFS mount target security groups:
+aws efs describe-mount-targets --file-system-id fs-0a4ec87cd91178047 --region us-west-1 --query "MountTargets[].{MountTargetId:MountTargetId,SecurityGroups:SecurityGroups}" --output table
+
+2. Get EKS node security group:
+aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=usw1-zlps-eks-01" --region us-west-1 --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text
+
+3. Check if EFS security group allows NFS from node security group:
+aws ec2 describe-security-groups --group-ids <EFS_SECURITY_GROUP_ID> --region us-west-1 --query "SecurityGroups[].IpPermissions[?FromPort==`2049`]" --output json
+
+4. If needed, add inbound rule to EFS security group:
+aws ec2 authorize-security-group-ingress --group-id <EFS_SECURITY_GROUP_ID> --protocol tcp --port 2049 --source-group <NODE_SECURITY_GROUP_ID> --region us-west-1
+
+
+NOTES
+=====
+- EFS supports ReadWriteMany (RWX) access mode
+- Multiple pods can mount the same EFS volume simultaneously
+- Access points provide isolated directories within the EFS file system
+- Each access point runs with UID/GID 1000 for consistent permissions
+- PersistentVolumeReclaimPolicy is set to "Retain" to preserve data

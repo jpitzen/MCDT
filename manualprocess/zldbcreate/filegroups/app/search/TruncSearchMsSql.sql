@@ -1,0 +1,20 @@
+TRUNCATE TABLE pfuser01.TextItemRetry
+TRUNCATE TABLE pfuser01.BigDBParam
+TRUNCATE TABLE pfuser01.BigDBSpace
+TRUNCATE TABLE pfuser01.BigDBStore
+TRUNCATE TABLE pfuser01.SearchEngineLoad
+TRUNCATE TABLE pfuser01.IndexDocRetry
+TRUNCATE TABLE pfuser01.SearchPartition
+TRUNCATE TABLE pfuser01.SegmentMergeJob
+TRUNCATE TABLE pfuser01.SegmentMergeDetails
+TRUNCATE TABLE pfuser01.InstanceSnapshotSegments
+TRUNCATE TABLE pfuser01.InstanceSnapshot
+TRUNCATE TABLE pfuser01.InstanceMergeDetails
+TRUNCATE TABLE pfuser01.InstanceDataFiles
+TRUNCATE TABLE pfuser01.IndexDocDelete
+TRUNCATE TABLE pfuser01.SearchStoreInstance
+TRUNCATE TABLE pfuser01.SearchStore
+TRUNCATE TABLE pfuser01.FederationSecurity
+TRUNCATE TABLE pfuser01.EntitySearchStore
+TRUNCATE TABLE pfuser01.RemoteSearchHost
+

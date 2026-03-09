@@ -1,0 +1,24 @@
+{
+  "commands": [
+    "Write-Host '=== ZLMapiConnector Directory Structure ==='",
+    "Get-ChildItem -Path 'E:\\ZipLip\\ZLMapiConnector' -ErrorAction SilentlyContinue",
+    "",
+    "Write-Host '=== Checking bin directory ==='",
+    "Get-ChildItem -Path 'E:\\ZipLip\\ZLMapiConnector\\bin' -ErrorAction SilentlyContinue",
+    "",
+    "Write-Host '=== Checking conf directory ==='",
+    "Get-ChildItem -Path 'E:\\ZipLip\\ZLMapiConnector\\conf' -ErrorAction SilentlyContinue",
+    "",
+    "Write-Host '=== Looking for all config files ==='",
+    "Get-ChildItem -Path 'E:\\ZipLip\\ZLMapiConnector' -Recurse -Include '*.conf','*.properties','*.xml','*.cfg' -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }",
+    "",
+    "Write-Host '=== Checking for wrapper.conf or zlmapisvc config ==='",
+    "if (Test-Path 'E:\\ZipLip\\ZLMapiConnector\\conf\\wrapper.conf') { Write-Host '--- wrapper.conf JVM settings ---'; Get-Content 'E:\\ZipLip\\ZLMapiConnector\\conf\\wrapper.conf' | Select-String -Pattern 'wrapper.java|Xmx|Xms|XX:|java.command|additional' }",
+    "",
+    "Write-Host '=== Checking Registry for service config ==='",
+    "Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\zlmapisvc' -ErrorAction SilentlyContinue | Format-List",
+    "",
+    "Write-Host '=== Check zlmapisvc.exe config via Procrun ==='",
+    "& 'E:\\ZipLip\\ZLMapiConnector\\bin\\zlmapisvc.exe' //ES//zlmapisvc 2>&1"
+  ]
+}

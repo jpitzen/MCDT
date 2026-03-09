@@ -1,0 +1,659 @@
+Cloud K8s deployment Platform.
+
+=============================
+
+Instructions
+
+=============================
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+DB access must be through the pod.
+
+The Frontend and Backend dev servers are running in external powershell windows.
+
+Advise on when I should restart the dev servers.
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+5. I restarted both frontend and backend.
+
+Only fix items that are broken.
+
+==================
+Issue Description
+==================
+
+The draft failed to load.
+
+==================
+Browser Error
+==================
+
+Failed to load draft
+
+==================
+Deployment Monitor Output
+==================
+
+
+==================
+Browser Console
+==================
+
+content-scripts.js:1 CONTENT_SHELL: Page is excluded. Skipping shell protection.
+content-scripts.js:1 TSS: excluded result:  true
+content-scripts.js:1 SCHJK: Search Hijacking notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+content-scripts.js:1 Content Script Bridge: Unknown message type,  MSG_CHECK_DOMAIN_ALLOW_LIST_RESPONSE
+injection-tss-mv3.js:1 injection-tss TSS: hosted page injected
+injection-tss-mv3.js:1 injection-tss MBTSS: Nonce:  nonce
+react refresh:37 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+scheduler.development.js:517 [Violation] 'message' handler took 150ms
+content-scripts.js:1 DFP: Breach notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackOk
+injection-tss-mv3.js:1 TSS: Counted history being pushed
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  {}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+WizardContext.jsx:904 canProceedToNextPhase check: {currentPhase: 1, selectedCredential: false, clusterConfig: {…}, useExistingCluster: false, existingClusterName: '', …}
+
+
+
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+fetch("http://localhost:3000/deployment-drafts", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/static/js/bundle.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "Fki2PCpyFdEgiHZKL7fTVw==",
+    "sec-websocket-version": "13",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0ODA5MDcxLCJleHAiOjE3NjQ4OTU0NzF9.8cl5A6gK8xJ1Ek2vVH8yKWfAJPFS6bLIwOlt2570TpU",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0ODA5MDcxLCJleHAiOjE3NjQ4OTU0NzF9.8cl5A6gK8xJ1Ek2vVH8yKWfAJPFS6bLIwOlt2570TpU",
+    "if-none-match": "W/\"11e36-fDik5rVw0zbG2L++i1oXMu1+qXg\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/unified-wizard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/prerequisites", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0ODA5MDcxLCJleHAiOjE3NjQ4OTU0NzF9.8cl5A6gK8xJ1Ek2vVH8yKWfAJPFS6bLIwOlt2570TpU",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/unified-wizard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/prerequisites", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0ODA5MDcxLCJleHAiOjE3NjQ4OTU0NzF9.8cl5A6gK8xJ1Ek2vVH8yKWfAJPFS6bLIwOlt2570TpU",
+    "if-none-match": "W/\"821-F4wo06J/poYdaW4JBJm1GLPsEyk\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/unified-wizard"
+  },
+  "body": null,
+  "method": "GET"
+});
+
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:26840) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:26840) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled successfully!
+
+You can now view k8s-deployer-frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.21:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+(node:26840) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-12-03 20:55:38 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-12-03 20:55:39 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-12-03 20:55:39 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-12-03 20:55:39 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-12-03 20:55:39 [info]: DeploymentTemplateService initialized with builtin templates
+(node:31700) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+(Use `node --trace-warnings ...` to show where the warning was created)
+Executing (default): SELECT 1+1 AS result
+2025-12-03 20:55:39 [info]: Database connection authenticated
+2025-12-03 20:55:39 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-12-03 20:55:39 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+2025-12-03 20:55:54 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/main.fdc3500500e61302a764.hot-update.json"
+}
+2025-12-03 20:55:54 [info]: GET /main.fdc3500500e61302a764.hot-update.json {
+  "method": "GET",
+  "path": "/main.fdc3500500e61302a764.hot-update.json",
+  "statusCode": 404,
+  "duration": "15ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:55:54 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:55:55 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "43ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:55:56 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:55:56 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "11ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:55:56 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:55:58 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "16ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:55:58 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:55:58 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 20:55:58 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "24ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:05 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:11 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "11ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:56:11 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:11 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 20:56:11 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "11ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:56:13 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 200,
+  "duration": "8042ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 20:56:16 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 200,
+  "duration": "2793ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:19 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "14ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:56:19 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:19 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "9ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 20:56:19 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:28 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 20:56:30 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 200,
+  "duration": "2248ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 20:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 20:56:32 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 200,
+  "duration": "2154ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}

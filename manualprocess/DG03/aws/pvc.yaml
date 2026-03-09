@@ -1,0 +1,261 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"zlserverlogs-efs","namespace":"default"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"efs-sc","volumeName":"efs-pv-zlserverlogs"}}
+      pv.kubernetes.io/bind-completed: "yes"
+    creationTimestamp: "2025-12-17T17:37:51Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: zlserverlogs-efs
+    namespace: default
+    resourceVersion: "475126"
+    uid: b957247d-dc21-4b7e-879c-60f422fc83c0
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: efs-sc
+    volumeMode: Filesystem
+    volumeName: efs-pv-zlserverlogs
+  status:
+    accessModes:
+    - ReadWriteMany
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"zlservertemp-efs","namespace":"default"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"efs-sc"}}
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: efs.csi.aws.com
+      volume.kubernetes.io/storage-provisioner: efs.csi.aws.com
+    creationTimestamp: "2025-12-17T17:41:54Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: zlservertemp-efs
+    namespace: default
+    resourceVersion: "475995"
+    uid: 1f9599cc-7286-456e-a8e5-d12f85d43aba
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: efs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-1f9599cc-7286-456e-a8e5-d12f85d43aba
+  status:
+    accessModes:
+    - ReadWriteMany
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"zltikatemp-efs","namespace":"default"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"efs-sc"}}
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: efs.csi.aws.com
+      volume.kubernetes.io/storage-provisioner: efs.csi.aws.com
+    creationTimestamp: "2025-12-17T17:33:54Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: zltikatemp-efs
+    namespace: default
+    resourceVersion: "474129"
+    uid: 46db175b-436d-4b28-9dfd-bd6f3e5e3530
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: efs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-46db175b-436d-4b28-9dfd-bd6f3e5e3530
+  status:
+    accessModes:
+    - ReadWriteMany
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"zluilogs-efs","namespace":"default"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"efs-sc"}}
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: efs.csi.aws.com
+      volume.kubernetes.io/storage-provisioner: efs.csi.aws.com
+    creationTimestamp: "2025-12-17T17:37:49Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: zluilogs-efs
+    namespace: default
+    resourceVersion: "475045"
+    uid: b0174307-6839-4aa2-956b-db03090556d7
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: efs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-b0174307-6839-4aa2-956b-db03090556d7
+  status:
+    accessModes:
+    - ReadWriteMany
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"zlvault-efs","namespace":"default"},"spec":{"accessModes":["ReadWriteMany"],"resources":{"requests":{"storage":"10Gi"}},"storageClassName":"efs-sc"}}
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: efs.csi.aws.com
+      volume.kubernetes.io/storage-provisioner: efs.csi.aws.com
+    creationTimestamp: "2025-12-17T17:37:37Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    name: zlvault-efs
+    namespace: default
+    resourceVersion: "474993"
+    uid: 70aa1bf1-cdcd-457f-a6b8-35a69ae24117
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: efs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-70aa1bf1-cdcd-457f-a6b8-35a69ae24117
+  status:
+    accessModes:
+    - ReadWriteMany
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+      volume.kubernetes.io/selected-node: ip-192-168-48-88.ec2.internal
+      volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    creationTimestamp: "2025-12-22T18:03:08Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: zlzookeeper
+    name: zlzkdata-zlzookeeper-0
+    namespace: default
+    resourceVersion: "2107450"
+    uid: af84d317-215c-40ec-8e54-2930f23562c2
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: ebs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-af84d317-215c-40ec-8e54-2930f23562c2
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+      volume.kubernetes.io/selected-node: ip-192-168-6-31.ec2.internal
+      volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    creationTimestamp: "2025-12-22T18:03:08Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: zlzookeeper
+    name: zlzkdata-zlzookeeper-1
+    namespace: default
+    resourceVersion: "2107453"
+    uid: 0224a5cf-76b7-4515-9784-a17c52017050
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: ebs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-0224a5cf-76b7-4515-9784-a17c52017050
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+      volume.kubernetes.io/selected-node: ip-192-168-6-31.ec2.internal
+      volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    creationTimestamp: "2025-12-22T18:03:08Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: zlzookeeper
+    name: zlzkdata-zlzookeeper-2
+    namespace: default
+    resourceVersion: "2107434"
+    uid: 3b41eee2-e53b-4206-8f6a-fd9d793f921f
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: ebs-sc
+    volumeMode: Filesystem
+    volumeName: pvc-3b41eee2-e53b-4206-8f6a-fd9d793f921f
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+kind: List
+metadata:
+  resourceVersion: ""

@@ -1,0 +1,30 @@
+DROP TABLE pfuser.TextItemRetry
+DROP TABLE pfuser.BigDBParam
+DROP TABLE pfuser.BigDBSpace
+DROP SEQUENCE pfuser.BigDBSpace_seq
+DROP TABLE pfuser.BigDBStore
+DROP SEQUENCE pfuser.BigDBStore_seq
+DROP SEQUENCE pfuser.SearchEngineLoad_seq
+DROP TABLE pfuser.SearchEngineLoad
+DROP TABLE pfuser.IndexDocRetry
+DROP TABLE pfuser.SearchPartition
+DROP SEQUENCE pfuser.SegmentMergeJob_seq
+DROP TABLE pfuser.SegmentMergeJob
+DROP TABLE pfuser.SegmentMergeDetails
+DROP TABLE pfuser.InstanceSnapshotSegments
+DROP SEQUENCE pfuser.InstanceSnapShot_seq
+DROP TABLE pfuser.InstanceSnapshot
+DROP TABLE pfuser.InstanceMergeDetails
+DROP SEQUENCE pfuser.InstanceDataFiles_seq
+DROP TABLE pfuser.InstanceDataFiles
+DROP TABLE pfuser.IndexDocDelete
+DROP SEQUENCE pfuser.SearchInstance_sequence
+DROP TABLE pfuser.SearchStoreInstance
+-- OPTIONAL
+DROP SEQUENCE pfuser.SearchStore_sequence
+DROP TABLE pfuser.SearchStore
+-- OPTIONAL
+DROP SEQUENCE pfuser.FederationSecurity_sequence
+DROP TABLE pfuser.FederationSecurity
+DROP TABLE pfuser.EntitySearchStore
+DROP TABLE pfuser.RemoteSearchHost

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix C: IAM Policies</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix C: IAM Policies Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides complete IAM policy documents used for ZL application deployment on AWS EKS.</p>
+
+                <div class="phase-objectives">
+                    <h3>📋 Policy Categories</h3>
+                    <ul>
+                        <li>EKS cluster and node policies</li>
+                        <li>CSI driver policies (EBS, EFS, S3)</li>
+                        <li>Load balancer controller policies</li>
+                        <li>ECR and container registry policies</li>
+                        <li>CloudWatch and monitoring policies</li>
+                        <li>Custom policies for specific services</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <h2>☸️ EKS Cluster Policies</h2>
+
+                <div class="policy-section">
+                    <h3>EKS Cluster Administrator Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "eks:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "eks.amazonaws.com"
+                }
+            }
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <div class="policy-section">
+                    <h3>EKS Worker Node Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceTypes",
+                "ec2:DescribeRouteTables",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumesModifications",
+                "ec2:DescribeVpcs",
+                "eks:DescribeCluster",
+                "eks:ListClusters",
+                "iam:GetInstanceProfile",
+                "iam:ListInstanceProfiles"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>💾 CSI Driver Policies</h2>
+
+                <div class="policy-section">
+                    <h3>EBS CSI Driver Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateSnapshot",
+                "ec2:AttachVolume",
+                "ec2:DetachVolume",
+                "ec2:ModifyVolume",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInstances",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeTags",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumesModifications"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateTags"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:snapshot/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "ec2:CreateAction": [
+                        "CreateVolume",
+                        "CreateSnapshot"
+                    ]
+                }
+            }
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <div class="policy-section">
+                    <h3>EFS CSI Driver Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "elasticfilesystem:DescribeAccessPoints",
+                "elasticfilesystem:DescribeFileSystems",
+                "elasticfilesystem:DescribeMountTargets",
+                "elasticfilesystem:CreateAccessPoint",
+                "elasticfilesystem:DeleteAccessPoint"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeAvailabilityZones"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <div class="policy-section">
+                    <h3>S3 CSI Driver Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::zl-app-bucket/*",
+                "arn:aws:s3:::zl-app-bucket"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>⚖️ Load Balancer Controller Policy</h2>
+
+                <div class="policy-section">
+                    <h3>ALB Controller Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateServiceLinkedRole"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeCoipPools",
+                "ec2:DescribeInstances",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeNatGateways",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeVpcPeeringConnections",
+                "ec2:DescribeVpcs",
+                "ec2:GetCoipPoolUsage",
+                "ec2:GetSecurityGroupsForVpc"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "elasticloadbalancing:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:DeleteTags",
+                "ec2:DeleteSecurityGroup",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:ModifyNetworkInterfaceAttribute",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateTags",
+                "ec2:DeleteTags"
+            ],
+            "Resource": "arn:aws:ec2:*:*:security-group/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "acm:DescribeCertificate",
+                "acm:ListCertificates",
+                "acm:GetCertificate"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "wafv2:GetWebACL",
+                "wafv2:GetWebACLForResource",
+                "wafv2:AssociateWebACL",
+                "wafv2:DisassociateWebACL"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "shield:GetSubscriptionState",
+                "shield:DescribeProtection",
+                "shield:CreateProtection",
+                "shield:DeleteProtection"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "waf:AssociateWebACL",
+                "waf:DisassociateWebACL",
+                "waf:GetWebACL"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>🐳 ECR Policies</h2>
+
+                <div class="policy-section">
+                    <h3>ECR Full Access Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetRepositoryPolicy",
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:BatchGetImage",
+                "ecr:GetLifecycleConfiguration",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetLifecyclePolicyPreview",
+                "ecr:ListTagsForResource",
+                "ecr:DescribeImageScanFindings",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:PutImage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>📊 Monitoring & Logging Policies</h2>
+
+                <div class="policy-section">
+                    <h3>CloudWatch Full Access Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:*",
+                "logs:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <div class="policy-section">
+                    <h3>Cluster Autoscaler Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeTags",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup",
+                "ec2:DescribeLaunchTemplateVersions"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>🔍 Inspector Policies</h2>
+
+                <div class="policy-section">
+                    <h3>AWS Inspector Full Access Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "inspector2:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:DescribeImageScanFindings"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>🔑 Trust Policies for IRSA</h2>
+
+                <div class="policy-section">
+                    <h3>OIDC Trust Policy Template</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::ACCOUNT-ID:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID:aud": "sts.amazonaws.com",
+                    "oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID:sub": "system:serviceaccount:NAMESPACE:SERVICE-ACCOUNT-NAME"
+                }
+            }
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <div class="policy-section">
+                    <h3>ALB Controller Trust Policy</h3>
+                    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::ACCOUNT-ID:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID:aud": "sts.amazonaws.com",
+                    "oidc.eks.us-east-1.amazonaws.com/id/OIDC-PROVIDER-ID:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+                }
+            }
+        }
+    ]
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "commands": [
+    "Invoke-Sqlcmd -ServerInstance 'use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com' -Database 'ZLDB' -Username 'pfuser' -Password 'LJZ-wkVv@t_!d*PiM2tbx3TZ4h' -TrustServerCertificate -Query 'SELECT dvID, dvName, dvLocalPath FROM DiskVolume' | Format-Table -AutoSize"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "commands": [
+    "Write-Host '=== Drive V: (zlvault) ==='",
+    "Get-Item V:\\ | Select-Object FullName, PSIsContainer",
+    "Get-ChildItem V:\\ | Select-Object Name, Mode",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Symbolic Link E:\\var\\opt\\zlvault ==='",
+    "Get-Item 'E:\\var\\opt\\zlvault' | Select-Object FullName, LinkType, Target",
+    "Get-ChildItem 'E:\\var\\opt\\zlvault' | Select-Object Name, Mode",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Full Path Resolution ==='",
+    "(Get-Item 'E:\\var\\opt\\zlvault').Target",
+    "[System.IO.Path]::GetFullPath('E:\\var\\opt\\zlvault')"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "commands": [
+    "Write-Host '=== Testing DNS Resolution ==='",
+    "Resolve-DnsName 'use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com' -ErrorAction SilentlyContinue | Format-List",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Testing TCP Port 1433 Connectivity ==='",
+    "$tcp = New-Object System.Net.Sockets.TcpClient",
+    "try {",
+    "    $tcp.Connect('use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com', 1433)",
+    "    if ($tcp.Connected) { Write-Host 'SUCCESS: Port 1433 is reachable' }",
+    "    $tcp.Close()",
+    "} catch {",
+    "    Write-Host \"FAILED: Cannot connect to port 1433 - $($_.Exception.Message)\"",
+    "}",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Network Configuration ==='",
+    "Get-NetIPAddress | Where-Object {$_.AddressFamily -eq 'IPv4' -and $_.IPAddress -notlike '127.*'} | Select-Object IPAddress, InterfaceAlias",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Route to RDS ==='",
+    "Test-NetConnection -ComputerName 'use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com' -Port 1433 -WarningAction SilentlyContinue"
+  ]
+}

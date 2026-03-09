@@ -1,0 +1,61 @@
+# ZL Tika Deployment - us-east-1
+# Last Updated: December 22, 2025
+# Image: zltika11.1.0-b1140
+# IMPORTANT: Tika container requires sleep infinity to keep listener running
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zltika
+  labels:
+    app: zltika
+    name: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zltika
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140
+          imagePullPolicy: IfNotPresent
+          # CRITICAL: Run Tika in background with sleep infinity to keep container alive
+          # The Tika listener starts after 4 seconds via ScheduleChildAppOperation
+          command:
+            - /bin/sh
+            - -c
+            - cd /opt/ZipLip/ZLTikaConvertor/bin && ./zltikadiag.sh ZLTika /tmp/ZLTika & sleep infinity
+          ports:
+            - name: tika
+              containerPort: 9972
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            tcpSocket:
+              port: 9972
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 9972
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3

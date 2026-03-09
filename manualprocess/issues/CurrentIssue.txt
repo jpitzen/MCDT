@@ -1,0 +1,179 @@
+Compare Deployment Guide\vscan\InspectorScan_20251216122929.json to the Deployment Guide\vscan\RawScanResults_20251216101306.json files.  It appears that they did not find the same items.
+
+Here's the browser network output:
+
+fetch("http://localhost/", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/ZLModelVerify.JPG", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/scans.json?t=1765906103717", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/scans.json?t=1765906103717", {
+  "headers": {
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/ecr-images.json?t=1765906120544", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/RawScanResults_20251216101306.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/InspectorScan_20251216112810.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/scans.json?t=1765906281445", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost/vscan/InspectorScan_20251216122929.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost/"
+  },
+  "body": null,
+  "method": "GET"
+});

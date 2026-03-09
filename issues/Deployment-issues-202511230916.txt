@@ -1,0 +1,1707 @@
+Cloud K8s deployment Platform.
+
+=============================
+
+Instructions
+
+=============================
+
+
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+DB access must be through the pod.
+
+The Frontend and Backend dev servers are running in external powershell windows.
+
+Advise on when I should restart the dev servers.
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+
+Only fix items that are broken.
+
+
+=================
+Resolved
+=================
+
+Iteration 2 - November 21, 2025 17:30:00
+✓ Fixed backend status.js: Changed status enum from uppercase (IN_PROGRESS) to lowercase (running)
+✓ Fixed backend clusters.js: Changed field references from 'outputs' to 'results'
+✓ Added 4 missing database tables: deployment_logs, teams, team_members, shared_resources
+✓ Deployed zlaws-backend:v21 with all fixes (2/2 replicas running)
+✓ Database now has 9 tables (was 5, added 4)
+✓ Dashboard API now returns 200 with empty statistics instead of 500 error
+✓ Clusters API now returns 200 with empty array instead of 500 error
+
+See: logs\changelog-Frontend-issues-202511201547-iter02-20251121173000.log
+
+Iteration 1 - November 19, 2025 21:10:00 - 21:22:00
+✓ Created missing React entry point files (index.html, index.jsx, manifest.json)
+✓ Created stub components for missing pages (CredentialsManager, DeploymentWizard, etc.)
+✓ Built React production bundle (frontend/build/)
+✓ Updated backend server to serve static files with express.static()
+✓ Added catch-all route for client-side routing (skips /api/* paths)
+✓ Updated Dockerfile to include frontend/build directory
+✓ Fixed path resolution: changed ../../frontend/build to ../frontend/build
+✓ Deployed zlaws-backend:v7 to Kubernetes (2/2 pods running)
+✓ Verified frontend files exist at /app/frontend/build/ in containers
+✓ Frontend now renders successfully at root path (/)
+
+See: logs\changelog-Frontend-issues-202511191538-iter01-20251119211000.log
+
+
+==================
+Issue Description
+==================
+
+Status: Deployment completed partitially.  Only created the K8s cluster.  
+
+Did not create, Windows EC2 Instance, Database deployment or the ECR
+
+Progress bar doesn't function properly.  Current Phase: "Initialized" did not change.
+
+Deployment progress bar did not increment.
+
+==================
+Browser Error
+==================
+
+
+==================
+Browser Console
+==================
+
+15:07:44.920 content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+15:07:45.867 react refresh:37 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+15:07:46.398 deprecations.ts:9 ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:26
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:07:46.411 deprecations.ts:9 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:37
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:07:46.927 favicon.ico:1  GET http://localhost:3000/favicon.ico 404 (Not Found)
+15:08:36.303 useDeploymentSocket.js:70 Connection attempt 1/10
+15:08:36.316 useDeploymentSocket.js:301 Disconnecting WebSocket
+15:08:36.318 useDeploymentSocket.js:316 WebSocket connection to 'ws://localhost:5000/socket.io/?deploymentId=af701bb1-0336-4d65-8646-07c997d888b3&EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
+doClose @ websocket.js:81
+close @ transport.js:55
+_onClose @ socket.js:512
+close @ socket.js:448
+close @ socket.js:477
+onclose @ manager.js:305
+_close @ manager.js:283
+_destroy @ manager.js:251
+destroy @ socket.js:632
+disconnect @ socket.js:655
+(anonymous) @ useDeploymentSocket.js:316
+(anonymous) @ useDeploymentSocket.js:379
+safelyCallDestroy @ react-dom.development.js:22971
+commitHookEffectListUnmount @ react-dom.development.js:23139
+invokePassiveEffectUnmountInDEV @ react-dom.development.js:25246
+invokeEffectsInDev @ react-dom.development.js:27390
+commitDoubleInvokeEffectsInDEV @ react-dom.development.js:27363
+flushPassiveEffectsImpl @ react-dom.development.js:27095
+flushPassiveEffects @ react-dom.development.js:27023
+(anonymous) @ react-dom.development.js:26808
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:08:36.319 useDeploymentSocket.js:70 Connection attempt 1/10
+15:08:36.426 useDeploymentSocket.js:92 WebSocket connected: FUokByrILZ-HqW4FAAAC
+15:08:36.474 useDeploymentSocket.js:101 Successfully subscribed to deployment: af701bb1-0336-4d65-8646-07c997d888b3
+15:08:36.554 DeploymentStatusViewer.jsx:80 Loaded deployment status: {success: true, status: {…}}
+15:09:16.393 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:16.389Z', data: {…}}
+15:09:16.510 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'progress-update', timestamp: '2025-11-24T20:09:16.391Z', data: {…}}
+15:09:16.525 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.526 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.705 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:16.692Z', data: {…}}
+15:09:16.722 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.723 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.864 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:16.859Z', data: {…}}
+15:09:16.884 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.885 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.972 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:09:16.969Z', data: {…}}
+15:09:16.992 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:16.992 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:17.038 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:16.971Z', data: {…}}
+15:09:17.040 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:09:16.979Z', data: {…}}
+15:09:17.056 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:17.056 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:17.082 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:16.980Z', data: {…}}
+15:09:17.106 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:17.106 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.224 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:29.221Z', data: {…}}
+15:09:29.241 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.242 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.312 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'progress-update', timestamp: '2025-11-24T20:09:29.222Z', data: {…}}
+15:09:29.323 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:29.302Z', data: {…}}
+15:09:29.345 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.346 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.396 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:09:29.313Z', data: {…}}
+15:09:29.404 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:29.314Z', data: {…}}
+15:09:29.428 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:29.429 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.492 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:41.490Z', data: {…}}
+15:09:41.510 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.511 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.572 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'progress-update', timestamp: '2025-11-24T20:09:41.491Z', data: {…}}
+15:09:41.581 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:41.578Z', data: {…}}
+15:09:41.603 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.603 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.706 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:09:41.704Z', data: {…}}
+15:09:41.758 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:41.705Z', data: {…}}
+15:09:41.784 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.785 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.878 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:09:41.711Z', data: {…}}
+15:09:41.879 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:09:41.711Z', data: {…}}
+15:09:41.905 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:09:41.906 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:21:21.390 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:21:21.346Z', data: {…}}
+15:21:21.485 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:21:21.487 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:21:21.841 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'progress-update', timestamp: '2025-11-24T20:21:21.347Z', data: {…}}
+15:21:21.859 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:21:21.398Z', data: {…}}
+15:21:21.860 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'phase-update', timestamp: '2025-11-24T20:21:21.433Z', data: {…}}
+15:21:21.860 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:21:21.433Z', data: {…}}
+15:21:21.861 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'af701bb1-0336-4d65-8646-07c997d888b3', eventType: 'log', timestamp: '2025-11-24T20:21:21.483Z', data: {…}}
+15:21:21.878 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+15:21:21.878 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+
+
+
+
+
+
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+fetch("http://localhost:3000/login", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/static/js/bundle.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "o5Oo+nVTBRwvQ+ZG/7/0bQ==",
+    "sec-websocket-version": "13",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/auth/login", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDEyNzkzLCJleHAiOjE3NjQwOTkxOTN9.-fieX7AO-9pKWbXJ3ezaeafDgE0x4PTJVwurbMkaO7s",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": "{\"email\":\"jpitzen@zlti.com\",\"password\":\"YfJ!D_oCFzWn4dep6uptk_@gdL\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/dashboard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"18e4-vyR6926OMIJRiQKZmNeSKkCQ11I\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/dashboard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"12d1-68SlEqmFbwGJx8WAuqzupHncqd8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/1684e897-be5c-4213-868b-89a6bd3feb3a/reset", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"12d1-68SlEqmFbwGJx8WAuqzupHncqd8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/9aee50a1-230a-443c-9831-4c2fd93958b3/reset", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"120e-BuM8CmQ6o0HZwaqNVOA9u0X9p20\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/1684e897-be5c-4213-868b-89a6bd3feb3a/approve", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": "{\"comment\":\"approved\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"114b-5ZeATr5hDyUYEtIu952GjknxWYI\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/1684e897-be5c-4213-868b-89a6bd3feb3a/deploy", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployments/af701bb1-0336-4d65-8646-07c997d888b3/start", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployments/af701bb1-0336-4d65-8646-07c997d888b3", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-status/af701bb1-0336-4d65-8646-07c997d888b3"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployments/af701bb1-0336-4d65-8646-07c997d888b3", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDE0ODY4LCJleHAiOjE3NjQxMDEyNjh9.p4xFDL2aJqM4RDoCnwNJsYXNVBtmW3UWMJrN79pkwqw",
+    "if-none-match": "W/\"5b5-KjsWtWd24Z+PCOp9Z0Y7urGr48Y\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-status/af701bb1-0336-4d65-8646-07c997d888b3"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:5000/socket.io/?deploymentId=af701bb1-0336-4d65-8646-07c997d888b3&EIO=4&transport=websocket", {
+  "body": null,
+  "method": ""
+}); ;
+fetch("ws://localhost:5000/socket.io/?deploymentId=af701bb1-0336-4d65-8646-07c997d888b3&EIO=4&transport=websocket", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "5gPpi7s+V2FrOSAxg98ZIw==",
+    "sec-websocket-version": "13"
+  },
+  "body": null,
+  "method": "GET"
+});
+
+
+
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:106608) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:106608) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled successfully!
+
+You can now view k8s-deployer-frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.21:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+(node:106608) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+
+
+
+
+
+
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-11-24 15:06:41 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-24 15:06:41 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-24 15:06:41 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-24 15:06:41 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-24 15:06:41 [info]: DeploymentTemplateService initialized with builtin templates
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:637:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at parseOptions (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:750:16)
+    at rateLimit (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:831:18)
+    at Object.<anonymous> (C:\Projects\ZLAWS\automated-eks-deployer\backend\src\middleware\rateLimiter.js:54:27)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:637:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at parseOptions (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:750:16)
+    at rateLimit (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:831:18)
+    at Object.<anonymous> (C:\Projects\ZLAWS\automated-eks-deployer\backend\src\middleware\rateLimiter.js:79:27)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+(node:95568) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95568) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-24 15:06:41 [info]: Database connection authenticated
+2025-11-24 15:06:41 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-24 15:06:41 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+2025-11-24 15:07:46 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/favicon.ico"
+}
+2025-11-24 15:07:46 [info]: GET /favicon.ico {
+  "method": "GET",
+  "path": "/favicon.ico",
+  "statusCode": 404,
+  "duration": "83ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:46 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT "id", "email", "first_name" AS "firstName", "last_name" AS "lastName", "password_hash" AS "passwordHash", "role", "is_active" AS "isActive", "last_login" AS "lastLogin", "mfa_enabled" AS "mfaEnabled", "mfa_secret" AS "mfaSecret", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "users" AS "User" WHERE "User"."email" = 'jpitzen@zlti.com';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:48 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+Executing (default): UPDATE "users" SET "last_login"=$1,"updated_at"=$2 WHERE "id" = $3
+2025-11-24 15:07:48 [info]: User logged in: jpitzen@zlti.com {
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:48 [info]: POST /login {
+  "method": "POST",
+  "path": "/login",
+  "statusCode": 200,
+  "duration": "373ms"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:49 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "184ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:49 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "60ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:52 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "104ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:52 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:52 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "48ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:52 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '1684e897-be5c-4213-868b-89a6bd3feb3a' AND "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"deployment_id"=$2,"approved_by"=$3,"approved_at"=$4,"approval_comment"=$5,"updated_at"=$6 WHERE "id" = $7
+2025-11-24 15:07:55 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:07:55 [info]: Deployment draft reset {
+  "draftId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "draftName": "ZLPS-Autodeploy-01"
+}
+2025-11-24 15:07:55 [info]: POST /1684e897-be5c-4213-868b-89a6bd3feb3a/reset {
+  "method": "POST",
+  "path": "/1684e897-be5c-4213-868b-89a6bd3feb3a/reset",
+  "statusCode": 200,
+  "duration": "86ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:07:57 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "56ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:07:57 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '9aee50a1-230a-443c-9831-4c2fd93958b3' AND "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"deployment_id"=$2,"approved_by"=$3,"approved_at"=$4,"approval_comment"=$5,"updated_at"=$6 WHERE "id" = $7
+2025-11-24 15:08:01 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "9aee50a1-230a-443c-9831-4c2fd93958b3",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:01 [info]: Deployment draft reset {
+  "draftId": "9aee50a1-230a-443c-9831-4c2fd93958b3",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "draftName": "Test Edit Workflow Draft"
+}
+2025-11-24 15:08:01 [info]: POST /9aee50a1-230a-443c-9831-4c2fd93958b3/reset {
+  "method": "POST",
+  "path": "/9aee50a1-230a-443c-9831-4c2fd93958b3/reset",
+  "statusCode": 200,
+  "duration": "91ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:08:03 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "62ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:08:03 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '1684e897-be5c-4213-868b-89a6bd3feb3a';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"approved_by"=$2,"approved_at"=$3,"approval_comment"=$4,"updated_at"=$5 WHERE "id" = $6
+2025-11-24 15:08:16 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:16 [info]: Deployment draft approved {
+  "draftId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "approvedBy": "jpitzen@zlti.com",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:08:16 [info]: POST /1684e897-be5c-4213-868b-89a6bd3feb3a/approve {
+  "method": "POST",
+  "path": "/1684e897-be5c-4213-868b-89a6bd3feb3a/approve",
+  "statusCode": 200,
+  "duration": "478ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:08:17 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:17 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "128ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" WHERE "DeploymentDraft"."id" = '1684e897-be5c-4213-868b-89a6bd3feb3a';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "deployments" ("id","credential_id","user_id","cloud_provider","cluster_name","status","progress","current_phase","configuration","parameters","results","estimated_duration","terraform_state","terraform_outputs","deployment_phase","deployment_logs","tags","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19) RETURNING "id","credential_id","user_id","cloud_provider","cluster_name","cluster_arn","status","progress","current_phase","configuration","parameters","results","error_message","error_stack","started_at","paused_at","completed_at","estimated_duration","rolled_back_at","rolled_back_reason","terraform_working_dir","terraform_state","terraform_outputs","deployment_phase","terraform_version","deployment_logs","tags","created_at","updated_at";
+2025-11-24 15:08:34 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:34 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 0: Deployment created {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 0,
+  "clusterName": "zlps-autodeploy-test-01"
+}
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"deployment_id"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-11-24 15:08:34 [info]: Deployment created from draft {
+  "draftId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "clusterName": "zlps-autodeploy-test-01"
+}
+2025-11-24 15:08:34 [info]: POST /1684e897-be5c-4213-868b-89a6bd3feb3a/deploy {
+  "method": "POST",
+  "path": "/1684e897-be5c-4213-868b-89a6bd3feb3a/deploy",
+  "statusCode": 201,
+  "duration": "232ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:08:35 [info]: [Terraform] Initializing for deployment af701bb1-0336-4d65-8646-07c997d888b3
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"status"=$3,"started_at"=$4,"updated_at"=$5 WHERE "id" = $6
+Executing (default): UPDATE "deployments" SET "status"=$1,"started_at"=$2,"current_phase"=$3,"updated_at"=$4 WHERE "id" = $5
+2025-11-24 15:08:35 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:35 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Deployment started {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1
+}
+2025-11-24 15:08:35 [info]: Terraform execution initiated for deployment {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "cloudProvider": "aws",
+  "clusterName": "zlps-autodeploy-test-01"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:08:35 [info]: POST /af701bb1-0336-4d65-8646-07c997d888b3/start {
+  "method": "POST",
+  "path": "/af701bb1-0336-4d65-8646-07c997d888b3/start",
+  "statusCode": 200,
+  "duration": "879ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:08:35 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 0: Phase updated to terraform-init {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 0,
+  "progress": 15,
+  "metadata": {}
+}
+2025-11-24 15:08:35 [info]: [TerraformExecutor] Initializing Terraform for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "cloudProvider": "aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3"
+}
+2025-11-24 15:08:35 [info]: [TerraformExecutor] Copied environment files to deployment root {
+  "cloudProvider": "aws",
+  "srcEnvDir": "C:\\Projects\\ZLAWS\\automated-eks-deployer\\terraform\\environments\\aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."cloud_region" AS "credential.cloudRegion", "user"."id" AS "user.id", "user"."email" AS "user.email" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:08:36 [info]: GET /af701bb1-0336-4d65-8646-07c997d888b3 {
+  "method": "GET",
+  "path": "/af701bb1-0336-4d65-8646-07c997d888b3",
+  "statusCode": 200,
+  "duration": "69ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:08:36 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:36 [warn]: [WebSocket] Connection without auth token {
+  "clientId": "FUokByrILZ-HqW4FAAAC"
+}
+2025-11-24 15:08:36 [info]: [WebSocket] Client connected {
+  "clientId": "FUokByrILZ-HqW4FAAAC"
+}
+2025-11-24 15:08:36 [info]: [WebSocket] Client subscribed to deployment {
+  "clientId": "FUokByrILZ-HqW4FAAAC",
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "totalSubscribers": 1
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."cloud_region" AS "credential.cloudRegion", "user"."id" AS "user.id", "user"."email" AS "user.email" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3' AND "Deployment"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-24 15:08:36 [info]: GET /af701bb1-0336-4d65-8646-07c997d888b3 {
+  "method": "GET",
+  "path": "/af701bb1-0336-4d65-8646-07c997d888b3",
+  "statusCode": 200,
+  "duration": "36ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-24 15:08:36 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-24 15:08:38 [error]: Orchestrator execution failed for af701bb1-0336-4d65-8646-07c997d888b3 Command failed: bash "C:\Projects\ZLAWS\automated-eks-deployer\backend\scripts\deploy-orchestrator.sh"
+/bin/bash: C:\Projects\ZLAWS\automated-eks-deployer\backend\scripts\deploy-orchestrator.sh: No such file or directory
+ {
+  "code": 127,
+  "killed": false,
+  "signal": null,
+  "cmd": "bash \"C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh\"",
+  "stdout": "",
+  "stderr": "/bin/bash: C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh: No such file or directory\n",
+  "stack": "Error: Command failed: bash \"C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh\"\n/bin/bash: C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh: No such file or directory\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at ChildProcess.exithandler (node:child_process:414:12)\n    at ChildProcess.emit (node:events:518:28)\n    at ChildProcess.emit (node:domain:489:12)\n    at maybeClose (node:internal/child_process:1101:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:304:5)"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "status"=$1,"error_message"=$2,"error_stack"=$3,"updated_at"=$4 WHERE "id" = $5
+2025-11-24 15:08:38 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Deployment failed {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "error": "Command failed: bash \"C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh\"\n/bin/bash: C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\scripts\\deploy-orchestrator.sh: No such file or directory\n"
+}
+2025-11-24 15:09:16 [info]: [TerraformExecutor] Terraform initialized successfully {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "exitCode": 0
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "terraform_working_dir"=$1,"updated_at"=$2 WHERE "id" = $3
+2025-11-24 15:09:16 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Terraform working dir set {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "workingDir": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:09:16 [info]: [Terraform] Generating variables for deployment af701bb1-0336-4d65-8646-07c997d888b3
+2025-11-24 15:09:16 [warn]: Failed to retrieve credentials from vault {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "vaultType": "aws-secrets",
+  "error": "AWS Secrets Manager not initialized"
+}
+2025-11-24 15:09:16 [info]: Terraform variables generated for deployment {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "cloudProvider": "aws",
+  "variableCount": 27
+}
+2025-11-24 15:09:16 [info]: [TerraformExecutor] Writing terraform.tfvars for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "variablesCount": 27
+}
+2025-11-24 15:09:16 [info]: [TerraformExecutor] terraform.tfvars written successfully {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "path": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3\\terraform.tfvars.json"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:09:16 [info]: [Terraform] Validating configuration for deployment af701bb1-0336-4d65-8646-07c997d888b3
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-11-24 15:09:16 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Phase updated to terraform-plan {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "progress": 30,
+  "metadata": {}
+}
+2025-11-24 15:09:16 [info]: [TerraformExecutor] Validating Terraform for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3"
+}
+2025-11-24 15:09:29 [info]: [TerraformExecutor] Terraform validation passed {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:09:29 [info]: [Terraform] Planning for deployment af701bb1-0336-4d65-8646-07c997d888b3
+2025-11-24 15:09:29 [info]: [TerraformExecutor] Planning Terraform for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "plan": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3\\terraform.plan"
+}
+2025-11-24 15:09:41 [info]: [TerraformExecutor] Terraform plan completed {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "planFile": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3\\terraform.plan"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:09:41 [info]: [Terraform] Applying for deployment af701bb1-0336-4d65-8646-07c997d888b3
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-11-24 15:09:41 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Phase updated to terraform-apply {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "progress": 60,
+  "metadata": {}
+}
+2025-11-24 15:09:41 [info]: [TerraformExecutor] Applying Terraform for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "plan": "\\tmp\\zlaws_deployments\\af701bb1-0336-4d65-8646-07c997d888b3\\terraform.plan"
+}
+2025-11-24 15:21:17 [info]: [TerraformExecutor] Terraform apply completed {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3"
+}
+2025-11-24 15:21:17 [info]: [TerraformExecutor] Capturing Terraform outputs for deployment af701bb1-0336-4d65-8646-07c997d888b3 {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3"
+}
+2025-11-24 15:21:21 [info]: [TerraformExecutor] Outputs captured successfully {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "outputKeys": [
+    "cluster_arn",
+    "cluster_ca_certificate",
+    "cluster_endpoint",
+    "cluster_id",
+    "cluster_name",
+    "cluster_security_group_id",
+    "cluster_version",
+    "node_group_id",
+    "subnets",
+    "vpc_id"
+  ]
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+2025-11-24 15:21:21 [info]: [Terraform] Cluster ready for deployment af701bb1-0336-4d65-8646-07c997d888b3
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-11-24 15:21:21 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Phase updated to cluster-ready {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "progress": 75,
+  "metadata": {}
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = 'af701bb1-0336-4d65-8646-07c997d888b3';
+Executing (default): UPDATE "deployments" SET "status"=$1,"deployment_phase"=$2,"terraform_outputs"=$3,"results"=$4,"completed_at"=$5,"progress"=$6,"updated_at"=$7 WHERE "id" = $8
+2025-11-24 15:21:21 [info]: DEPLOYMENT[af701bb1-0336-4d65-8646-07c997d888b3] Phase 1: Deployment completed {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "phase": 1,
+  "outputs": {
+    "cluster_arn": "arn:aws:eks:us-east-2:995553364920:cluster/cluster-af701bb1-0336-4d65-8646-07c997d888b3",
+    "cluster_ca_certificate": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJSk43Y3ZwQ1pwRnN3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRFeE1qUXlNREV3TkRGYUZ3MHpOVEV4TWpJeU1ERTFOREZhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURSbHJGUHhreS9TUlRoblBkdzkzcjhQc2JtK0diQnI1U1RWUzJwUkpyTDhYMmJITnZlTWhzZ0ZoVWEKeFZxakJHRkw0NE1xbTFoREYycnFzNVR4T2MxRHUvZ0RmaDJuODZ6QWo1QWMvbWxBWWtVb2tQNTBSSUd4WUIyNwpnUkkwMHRQdjFBQjByQnkzckRmVGJmcG8zQjZrejh6NkVtaTZSRzBrWlBpZ3NocWY5MmxKNjNocXNjbWJCQTRJCjQvVnZFVnBKc004RnkxdHZwYUZ1UmJiV2xhSnljbHc0OC9rUXgzR1M2RUNZZG1LQVRKbU04S01hWmMvcGcxdlMKNlo3S0R1bnVsR25aUGIrY2ExMUxObjFRK0hQZUFCWXdxZ0ErbXhucmZqcGcrbzkxbnZyY3NKMlk5bDhYRXRJSwppZ2YvbmVhTmV0dFlvOHZ3bzFhUU04ckl6aWpQQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJScWJtak05aWNRSlRuWHRBc2VWeGpQQTNRQWxUQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTArZm1pa2ZVZQpiZTdMQTh4N25HSktHeW03YVFxVE41SnZYMytnbVpFaTJjYzcyaGd1dTkwL2VoMU9NRExiSUhwOFdlZmxwRU4xCjVjaklsM295QWlPVHY3L0xEN3V4OFlpdzJBYzBCekY0VGdNNXloV0M4dUNxcFZTY1Q5RzhZeVJPdVdYYlE5MWwKd3lvUGV6QkVETWwwdlVxZWpXYVRINGloZTF2bHBTOFYvWWNBcE5PdUZ3cDBBcDdMUktXcVBSbXN5MTREbmxCVApydlAzQU45cUxNR0ZpS1hoYlBYS1ZwVkEyc0cwZTB3aEVSeDc0UlVpQ1d2cE9oSk9mQ05BVkErckJ1MGJ2SFJoCnBKNkNyclFrd1dYcWxUTHY3Ty80NFltbm5vSnV6d1NVQmd2SDVyS2k4OHdheEUyVmMvUGM0VlFEQjVFY1htaTUKR2ROc3h2MmxocG9jCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+    "cluster_endpoint": "https://45190B5ADDA86A863E6887C6269763EF.gr7.us-east-2.eks.amazonaws.com",
+    "cluster_id": "cluster-af701bb1-0336-4d65-8646-07c997d888b3",
+    "cluster_name": "cluster-af701bb1-0336-4d65-8646-07c997d888b3",
+    "cluster_security_group_id": "sg-07d3dd92931c8d045",
+    "cluster_version": "1.29",
+    "node_group_id": "cluster-af701bb1-0336-4d65-8646-07c997d888b3:cluster-af701bb1-0336-4d65-8646-07c997d888b3-node-group",
+    "subnets": [
+      "subnet-0c9c3572b15ec55a7",
+      "subnet-0aa9e6601d572273b",
+      "subnet-032e8f582d34c87aa"
+    ],
+    "vpc_id": "vpc-072b15216b8784b1a"
+  }
+}
+2025-11-24 15:21:21 [info]: [Terraform] Deployment completed successfully {
+  "deploymentId": "af701bb1-0336-4d65-8646-07c997d888b3",
+  "cloudProvider": "aws",
+  "clusterName": "zlps-autodeploy-test-01",
+  "outputs": [
+    "cluster_arn",
+    "cluster_ca_certificate",
+    "cluster_endpoint",
+    "cluster_id",
+    "cluster_name",
+    "cluster_security_group_id",
+    "cluster_version",
+    "node_group_id",
+    "subnets",
+    "vpc_id"
+  ]
+}

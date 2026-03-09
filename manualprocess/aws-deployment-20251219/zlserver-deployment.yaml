@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlserver
+  name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zlservertemp
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+            - mountPath: /opt/ZipLip/config/pmapp.cfg
+              name: pmapp-config
+              subPath: pmapp.cfg
+      volumes:
+        - name: zlservertemp
+          persistentVolumeClaim:
+            claimName: zlservertemp-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: pmapp-config
+          configMap:
+            name: pmapp-config

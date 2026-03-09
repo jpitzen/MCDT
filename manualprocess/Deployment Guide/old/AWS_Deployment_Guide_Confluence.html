@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Confluence Version</title>
+    <style>
+        /* Confluence-Optimized CSS - No JavaScript Required */
+        :root {
+            --primary-color: #232f3e;
+            --accent-color: #C00000;
+            --bg-color: #f4f5f7;
+            --code-bg: #f4f5f7;
+            --border-color: #dfe1e6;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #172b4d;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        
+        h1 { color: var(--primary-color); border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        h2 { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; margin-top: 30px; }
+        h3 { color: var(--accent-color); margin-top: 20px; }
+        h4 { color: #42526e; margin-top: 15px; }
+        
+        /* Header Panel */
+        .header-panel {
+            background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .header-panel h1 { color: white; border-bottom-color: var(--accent-color); margin: 0 0 15px 0; }
+        .header-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.95em; }
+        .header-meta span { background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 4px; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border-color); }
+        th { background-color: var(--primary-color); color: white; }
+        tr:nth-child(even) { background-color: #f9fafb; }
+        
+        /* Code Blocks */
+        code { background-color: #f4f5f7; padding: 2px 6px; border-radius: 3px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 0.9em; color: #c7254e; }
+        pre { background-color: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+        pre code { background: none; color: inherit; padding: 0; }
+        
+        /* Step Cards */
+        .step { background: #fff; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-color); border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .step h3 { margin-top: 0; color: var(--primary-color); }
+        .step-section { margin: 12px 0; padding: 12px; background: #f9fafb; border-radius: 4px; }
+        .step-section h4 { margin-top: 0; color: var(--accent-color); }
+        
+        /* Phase Sections */
+        .phase { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; margin: 25px 0; }
+        .phase h2 { margin-top: 0; }
+        
+        /* Info/Warning/Success Panels */
+        .warning { background: #fffae6; border-left: 4px solid #ffab00; padding: 12px 16px; border-radius: 4px; margin: 12px 0; }
+        .info { background: #e6fcff; border-left: 4px solid #00b8d9; padding: 12px 16px; border-radius: 4px; margin: 12px 0; }
+        .success { background: #e3fcef; border-left: 4px solid #36b37e; padding: 12px 16px; border-radius: 4px; margin: 12px 0; }
+        .danger { background: #ffebe6; border-left: 4px solid #ff5630; padding: 12px 16px; border-radius: 4px; margin: 12px 0; }
+        
+        /* Confluence Expand Macro Styling (using HTML5 details/summary) */
+        details { margin: 12px 0; border: 1px solid #dfe1e6; border-radius: 6px; overflow: hidden; }
+        details summary { 
+            background: var(--accent-color); 
+            color: white; 
+            padding: 10px 15px; 
+            cursor: pointer; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        details summary:hover { background: #a00000; }
+        details summary::before { content: "📄 "; }
+        details[open] summary { background: #800000; }
+        details[open] summary::before { content: "📂 "; }
+        details .expand-content { padding: 0; background: #1e1e1e; }
+        details .expand-content pre { margin: 0; border-radius: 0; }
+        details .expand-header { background: var(--accent-color); color: white; padding: 8px 15px; font-family: monospace; font-size: 0.9em; }
+        
+        /* Shell Command Sections */
+        .shell-section { margin: 15px 0; }
+        .shell-label { display: inline-block; background: #495057; color: white; padding: 4px 12px; border-radius: 4px 4px 0 0; font-size: 0.85em; font-weight: 500; }
+        .shell-label.powershell { background: #012456; }
+        .shell-label.bash { background: #2e3436; }
+        .shell-label.cmd { background: #1e1e1e; }
+        
+        /* Badges */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
+        .badge-required { background: #ff5630; color: white; }
+        .badge-optional { background: #00b8d9; color: white; }
+        .badge-recommended { background: #36b37e; color: white; }
+        
+        /* Diagram/ASCII Art */
+        .diagram { background: #fff; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: monospace; white-space: pre; overflow-x: auto; line-height: 1.3; }
+        
+        /* TOC */
+        .toc { background: #fff; border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .toc ul { list-style-type: none; padding-left: 0; }
+        .toc ul ul { padding-left: 20px; }
+        .toc a { color: var(--accent-color); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        
+        /* Appendix */
+        .appendix { background: #f9fafb; border: 1px solid var(--border-color); border-radius: 6px; padding: 20px; margin: 20px 0; }
+        
+        /* Footer */
+        .footer { background: var(--primary-color); color: white; padding: 15px; border-radius: 6px; margin-top: 30px; text-align: center; }
+        
+        /* Icons */
+        .check-icon::before { content: "✅ "; }
+        .cross-icon::before { content: "❌ "; }
+        
+        hr { border: none; border-top: 2px solid var(--border-color); margin: 30px 0; }
+        
+        /* Print styles */
+        @media print {
+            details { border: 1px solid #ccc; }
+            details summary { background: #666; }
+            .header-panel { background: #232f3e; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- CONFLUENCE VERSION - No JavaScript Required   -->
+<!-- Uses HTML5 details/summary for expand/collapse -->
+<!-- ============================================== -->
+
+<!-- Header Section -->
+<div class="header-panel">
+    <h1>ZL Application AWS EKS Deployment Guide</h1>
+    <div class="header-meta">
+        <span><strong>Version:</strong> 1.1 (Confluence)</span>
+        <span><strong>Last Updated:</strong> December 14, 2025</span>
+    </div>
+</div>
+
+<!-- Executive Summary -->
+<section id="executive-summary">
+    <h2>Executive Summary</h2>
+    
+    <h3>About This Document</h3>
+    <p>This document provides a comprehensive guide for deploying the ZL Application on Amazon Elastic Kubernetes Service (EKS). It captures all steps taken during the initial deployment, including AWS resource provisioning, Kubernetes configuration, storage setup, and application deployment.</p>
+    
+    <h3>Purpose</h3>
+    <ul>
+        <li>Serve as a reference for the deployed ZL application infrastructure</li>
+        <li>Enable reproducibility for future deployments or disaster recovery</li>
+        <li>Document architectural decisions and configurations</li>
+        <li>Provide troubleshooting guidance for common issues</li>
+    </ul>
+    
+    <h3>Deployment Overview</h3>
+    <p>The ZL Application is deployed as a containerized microservices architecture:</p>
+    
+    <div class="diagram">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         AWS Cloud (us-west-1)                           │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │                    VPC: vpc-07644cdd0224da4f3                     │  │
+│  │                                                                    │  │
+│  │  ┌─────────────────────┐    ┌─────────────────────┐               │  │
+│  │  │   Public Subnet 1   │    │   Public Subnet 2   │               │  │
+│  │  │   (us-west-1a)      │    │   (us-west-1b)      │               │  │
+│  │  │                     │    │                     │               │  │
+│  │  │  ┌───────────────┐  │    │                     │               │  │
+│  │  │  │  NAT Gateway  │  │    │                     │               │  │
+│  │  │  └───────────────┘  │    │                     │               │  │
+│  │  └─────────────────────┘    └─────────────────────┘               │  │
+│  │                                                                    │  │
+│  │  ┌─────────────────────┐    ┌─────────────────────┐               │  │
+│  │  │  Private Subnet 1   │    │  Private Subnet 2   │               │  │
+│  │  │   (us-west-1a)      │    │   (us-west-1b)      │               │  │
+│  │  │                     │    │                     │               │  │
+│  │  │  ┌───────────────┐  │    │  ┌───────────────┐  │               │  │
+│  │  │  │  EKS Node 1   │  │    │  │  EKS Node 2   │  │               │  │
+│  │  │  │  (m5.xlarge)  │  │    │  │  (m5.xlarge)  │  │               │  │
+│  │  │  └───────────────┘  │    │  └───────────────┘  │               │  │
+│  │  └─────────────────────┘    └─────────────────────┘               │  │
+│  │                                                                    │  │
+│  │  ┌──────────────────────────────────────────────────────────────┐ │  │
+│  │  │                     EKS Cluster                               │ │  │
+│  │  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌───────────────────────┐  │ │  │
+│  │  │  │  zlui  │ │zlserver│ │ zltika │ │ zlzookeeper (x3)      │  │ │  │
+│  │  │  │  Pod   │ │  Pod   │ │  Pod   │ │ StatefulSet           │  │ │  │
+│  │  │  └────────┘ └────────┘ └────────┘ └───────────────────────┘  │ │  │
+│  │  └──────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                    │  │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │  │
+│  │  │    EFS      │  │     RDS     │  │     ECR     │               │  │
+│  │  │  (Storage)  │  │ (SQL Server)│  │  (Images)   │               │  │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘               │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │              Application Load Balancer (ALB)                       │ │
+│  │              k8s-default-zluiingr-xxxxx.us-west-1.elb.amazonaws.com│ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+                              End Users
+    </div>
+</section>
+
+<hr>
+
+<!-- Table of Contents -->
+<section class="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+        <li><a href="#executive-summary">Executive Summary</a></li>
+        <li><a href="#environment-overview">Environment Overview</a></li>
+        <li><a href="#phase1">Phase 1: EKS Cluster Creation</a> (Steps 1-5)</li>
+        <li><a href="#phase2">Phase 2: IAM and OIDC Configuration</a> (Steps 6-11)</li>
+        <li><a href="#phase3">Phase 3: EBS CSI Driver Installation</a> (Steps 12-17)</li>
+        <li><a href="#phase4">Phase 4: EFS CSI Driver Installation</a> (Steps 18-27)</li>
+        <li><a href="#phase5">Phase 5: ECR Repository Setup</a> (Steps 28-31)</li>
+        <li><a href="#phase6">Phase 6: Application Deployment Preparation</a> (Steps 32-36)</li>
+        <li><a href="#phase7">Phase 7: ZooKeeper Deployment</a> (Steps 33-35)</li>
+        <li><a href="#phase8">Phase 8: Application Services Deployment</a> (Steps 37-44)</li>
+        <li><a href="#phase9">Phase 9: Load Balancer Configuration</a> (Steps 45-46)</li>
+        <li><a href="#phase10">Phase 10: DNS and SSL Configuration</a> (Steps 47-50)</li>
+        <li><a href="#phase11">Phase 11: Verification and Testing</a> (Steps 51-54)</li>
+        <li><a href="#appendix-a">Appendix A: Complete YAML Manifests</a></li>
+        <li><a href="#appendix-b">Appendix B: EFS Access Points</a></li>
+        <li><a href="#appendix-c">Appendix C: ConfigMaps and Secrets</a></li>
+        <li><a href="#appendix-d">Appendix D: Services and Networking</a></li>
+        <li><a href="#appendix-e">Appendix E: Secure Deployment</a></li>
+        <li><a href="#revision-history">Revision History</a></li>
+    </ul>
+</section>
+
+<hr>
+
+<!-- Environment Overview -->
+<section id="environment-overview">
+    <h2>Environment Overview</h2>
+    
+    <h3>AWS Resources</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <th>Name/ID</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>EKS Cluster</td>
+                <td>usw1-zlps-eks-01</td>
+                <td>Kubernetes 1.34, us-west-1</td>
+            </tr>
+            <tr>
+                <td>Node Group</td>
+                <td>uw1-zlps-ng-01</td>
+                <td>2x m5.xlarge (4 vCPU, 16GB each)</td>
+            </tr>
+            <tr>
+                <td>VPC</td>
+                <td>vpc-07644cdd0224da4f3</td>
+                <td>eksctl-usw1-zlps-eks-01-cluster/VPC</td>
+            </tr>
+            <tr>
+                <td>ECR Repository</td>
+                <td>uw1-zlps-ecr-01</td>
+                <td>Container image registry</td>
+            </tr>
+            <tr>
+                <td>EFS</td>
+                <td>fs-0a4ec87cd91178047</td>
+                <td>usw1-zlps-efs-01 (shared storage)</td>
+            </tr>
+            <tr>
+                <td>RDS</td>
+                <td>usw1-zlps-msexpsql-01-eks</td>
+                <td>SQL Server Express, db.t3.small</td>
+            </tr>
+            <tr>
+                <td>S3 Bucket</td>
+                <td>usw1-zlps-s3-01</td>
+                <td>Application assets</td>
+            </tr>
+            <tr>
+                <td>ALB</td>
+                <td>k8s-default-zluiingr-*</td>
+                <td>Application Load Balancer</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>Network Configuration</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Subnet</th>
+                <th>Type</th>
+                <th>AZ</th>
+                <th>CIDR</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>subnet-0a84e1f3e1bb15fcc</td>
+                <td>Public</td>
+                <td>us-west-1a</td>
+                <td>192.168.0.0/19</td>
+            </tr>
+            <tr>
+                <td>subnet-04a3da77e51d6f2cd</td>
+                <td>Public</td>
+                <td>us-west-1b</td>
+                <td>192.168.32.0/19</td>
+            </tr>
+            <tr>
+                <td>subnet-01c24772a882a3a1b</td>
+                <td>Private</td>
+                <td>us-west-1a</td>
+                <td>192.168.64.0/19</td>
+            </tr>
+            <tr>
+                <td>subnet-06eb80d784d985109</td>
+                <td>Private</td>
+                <td>us-west-1b</td>
+                <td>192.168.96.0/19</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>Container Images</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Tag</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>zlserver</td>
+                <td>zlserver-11.0.1-b123</td>
+                <td>Backend server &amp; UI</td>
+            </tr>
+            <tr>
+                <td>zltika</td>
+                <td>zltika-11.0.1-b123</td>
+                <td>Document conversion</td>
+            </tr>
+            <tr>
+                <td>zlzookeeper</td>
+                <td>zlzookeeper-11.0.1-b123</td>
+                <td>Coordination service</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 1: EKS Cluster Creation                  -->
+<!-- ============================================== -->
+<section id="phase1" class="phase">
+    <h2>PHASE 1: EKS Cluster Creation</h2>
+    
+    <!-- Step 1 -->
+    <div class="step" id="step1">
+        <h3>STEP 1: Create EKS Cluster</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a managed Amazon EKS (Elastic Kubernetes Service) cluster with an associated node group for running containerized workloads.</p>
+        </div>
+        
+        <div class="step-section">
+            <h4>⚙️ What It Does</h4>
+            <ul>
+                <li>Provisions a fully managed Kubernetes control plane in AWS</li>
+                <li>Creates a managed node group with EC2 instances as worker nodes</li>
+                <li>Sets up networking, IAM roles, and security groups automatically</li>
+                <li>Configures kubectl context for cluster access</li>
+            </ul>
+        </div>
+        
+        <div class="step-section">
+            <h4>❓ Why It's Needed</h4>
+            <p>EKS provides the foundation for running the ZL Application. Without a Kubernetes cluster, there is no platform to deploy containers, manage scaling, or orchestrate the application services.</p>
+        </div>
+        
+        <div class="step-section">
+            <h4>📌 Prerequisite Tasks</h4>
+            <ul>
+                <li>AWS CLI configured with appropriate credentials</li>
+                <li>eksctl installed on local machine</li>
+                <li>IAM user/role with permissions to create EKS clusters</li>
+                <li>Sufficient AWS service quotas for EC2 instances</li>
+            </ul>
+        </div>
+        
+        <div class="step-section">
+            <h4>🔗 Dependent Tasks</h4>
+            <ul>
+                <li>Step 2: Associate OIDC Provider (requires cluster to exist)</li>
+                <li>Step 3: Get Cluster OIDC Issuer</li>
+                <li>Step 4: Get Cluster VPC Information</li>
+                <li>All subsequent phases depend on cluster availability</li>
+            </ul>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        
+        <!-- PowerShell -->
+        <div class="shell-section">
+            <span class="shell-label powershell">PowerShell</span>
+            <pre><code>eksctl create cluster `
+  --name usw1-zlps-eks-01 `
+  --version 1.34 `
+  --region us-west-1 `
+  --nodegroup-name uw1-zlps-ng-01 `
+  --node-type m5.xlarge `
+  --nodes 2 `
+  --nodes-min 1 `
+  --nodes-max 2 `
+  --managed</code></pre>
+        </div>
+        
+        <!-- Bash -->
+        <div class="shell-section">
+            <span class="shell-label bash">Bash / Linux / macOS</span>
+            <pre><code>eksctl create cluster \
+  --name usw1-zlps-eks-01 \
+  --version 1.34 \
+  --region us-west-1 \
+  --nodegroup-name uw1-zlps-ng-01 \
+  --node-type m5.xlarge \
+  --nodes 2 \
+  --nodes-min 1 \
+  --nodes-max 2 \
+  --managed</code></pre>
+        </div>
+        
+        <!-- Windows CMD -->
+        <div class="shell-section">
+            <span class="shell-label cmd">Windows CMD</span>
+            <pre><code>eksctl create cluster --name usw1-zlps-eks-01 --version 1.34 --region us-west-1 --nodegroup-name uw1-zlps-ng-01 --node-type m5.xlarge --nodes 2 --nodes-min 1 --nodes-max 2 --managed</code></pre>
+        </div>
+        
+        <h4>Parameter Details</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>--name</code></td>
+                    <td>usw1-zlps-eks-01</td>
+                    <td>Unique cluster name following naming convention</td>
+                </tr>
+                <tr>
+                    <td><code>--version</code></td>
+                    <td>1.34</td>
+                    <td>Kubernetes version</td>
+                </tr>
+                <tr>
+                    <td><code>--region</code></td>
+                    <td>us-west-1</td>
+                    <td>AWS region for deployment</td>
+                </tr>
+                <tr>
+                    <td><code>--nodegroup-name</code></td>
+                    <td>uw1-zlps-ng-01</td>
+                    <td>Worker node group identifier</td>
+                </tr>
+                <tr>
+                    <td><code>--node-type</code></td>
+                    <td>m5.xlarge</td>
+                    <td>EC2 instance type (4 vCPU, 16GB RAM)</td>
+                </tr>
+                <tr>
+                    <td><code>--nodes</code></td>
+                    <td>2</td>
+                    <td>Initial number of worker nodes</td>
+                </tr>
+                <tr>
+                    <td><code>--nodes-min</code></td>
+                    <td>1</td>
+                    <td>Minimum nodes for autoscaling</td>
+                </tr>
+                <tr>
+                    <td><code>--nodes-max</code></td>
+                    <td>2</td>
+                    <td>Maximum nodes for autoscaling</td>
+                </tr>
+                <tr>
+                    <td><code>--managed</code></td>
+                    <td>-</td>
+                    <td>Use AWS-managed node group</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Step 2 -->
+    <div class="step" id="step2">
+        <h3>STEP 2: Associate OIDC Provider</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Associates an OpenID Connect (OIDC) identity provider with the EKS cluster, enabling IAM roles for service accounts (IRSA).</p>
+        </div>
+        
+        <div class="step-section">
+            <h4>❓ Why It's Needed</h4>
+            <p>IRSA allows Kubernetes pods to assume IAM roles without storing AWS credentials. This is essential for:</p>
+            <ul>
+                <li>EBS CSI Driver to manage volumes</li>
+                <li>EFS CSI Driver to mount file systems</li>
+                <li>Application pods to access AWS services securely</li>
+            </ul>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>eksctl utils associate-iam-oidc-provider --cluster usw1-zlps-eks-01 --approve --region us-west-1</code></pre>
+    </div>
+    
+    <!-- Step 3 -->
+    <div class="step" id="step3">
+        <h3>STEP 3: Get OIDC Provider URL</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Retrieves the OIDC issuer URL for the cluster, which is needed when creating IAM roles for service accounts.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.identity.oidc.issuer" --output text --region us-west-1</code></pre>
+        
+        <p><strong>Expected Output Format:</strong></p>
+        <pre><code>https://oidc.eks.us-west-1.amazonaws.com/id/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</code></pre>
+    </div>
+    
+    <!-- Step 4 -->
+    <div class="step" id="step4">
+        <h3>STEP 4: Get VPC and Subnet Information</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Retrieves VPC and subnet IDs created by eksctl, needed for configuring EFS mount targets and security groups.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        
+        <p><strong>Get VPC ID:</strong></p>
+        <pre><code>aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.resourcesVpcConfig.vpcId" --output text --region us-west-1</code></pre>
+        
+        <p><strong>Get Subnet IDs:</strong></p>
+        <pre><code>aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.resourcesVpcConfig.subnetIds" --output text --region us-west-1</code></pre>
+        
+        <p><strong>Get VPC CIDR:</strong></p>
+        <pre><code>aws ec2 describe-vpcs --vpc-ids vpc-07644cdd0224da4f3 --query "Vpcs[0].CidrBlock" --output text --region us-west-1</code></pre>
+    </div>
+    
+    <!-- Step 5 -->
+    <div class="step" id="step5">
+        <h3>STEP 5: Update kubeconfig</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Updates the local kubeconfig file to allow kubectl to communicate with the EKS cluster.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws eks update-kubeconfig --name usw1-zlps-eks-01 --region us-west-1</code></pre>
+        
+        <p><strong>Verify Connection:</strong></p>
+        <pre><code>kubectl get nodes</code></pre>
+        
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>NAME                                          STATUS   ROLES    AGE   VERSION
+ip-192-168-xx-xx.us-west-1.compute.internal   Ready    &lt;none&gt;   5m    v1.34.x
+ip-192-168-xx-xx.us-west-1.compute.internal   Ready    &lt;none&gt;   5m    v1.34.x</code></pre>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 2: ECR Setup and Image Management        -->
+<!-- ============================================== -->
+<section id="phase2" class="phase">
+    <h2>PHASE 2: ECR Setup and Image Management</h2>
+    
+    <h3>Overview</h3>
+    <p>Amazon Elastic Container Registry (ECR) is AWS's private Docker image registry. This phase sets up the container registry where your application images are stored and creates the necessary credentials for EKS to pull these images.</p>
+    
+    <h3>Images Stored In This Repository</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Image Tag</th>
+                <th>Size</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>zlserver-11.0.1-b123</code></td>
+                <td>~800MB</td>
+                <td>ZL Server/UI application</td>
+            </tr>
+            <tr>
+                <td><code>zltika-11.0.1-b123</code></td>
+                <td>~600MB</td>
+                <td>Document conversion (Apache Tika)</td>
+            </tr>
+            <tr>
+                <td><code>zlzookeeper-11.0.1-b123</code></td>
+                <td>~400MB</td>
+                <td>ZooKeeper coordination service</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- Step 6 -->
+    <div class="step" id="step6">
+        <h3>STEP 6: Create ECR Repository</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a private Amazon Elastic Container Registry repository to store Docker images for the ZL Application.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws ecr create-repository --repository-name uw1-zlps-ecr-01 --region us-west-1 --image-scanning-configuration scanOnPush=true</code></pre>
+    </div>
+    
+    <!-- Step 7 -->
+    <div class="step" id="step7">
+        <h3>STEP 7: Authenticate Docker to ECR</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Logs Docker into ECR so you can push container images to the private repository.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        
+        <!-- PowerShell -->
+        <div class="shell-section">
+            <span class="shell-label powershell">PowerShell / Bash</span>
+            <pre><code>aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 995553364920.dkr.ecr.us-west-1.amazonaws.com</code></pre>
+        </div>
+    </div>
+    
+    <!-- Step 8 -->
+    <div class="step" id="step8">
+        <h3>STEP 8: Tag and Push Images to ECR</h3>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code># Tag local images for ECR
+docker tag zlserver:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+docker tag zltika:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+docker tag zlzookeeper:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+
+# Push images to ECR
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123</code></pre>
+    </div>
+    
+    <!-- Step 9-11 -->
+    <div class="step" id="step9">
+        <h3>STEP 9-11: Create ECR Pull Secrets</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates Kubernetes Secrets containing ECR credentials. Secrets are needed in each namespace that pulls images.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        
+        <div class="shell-section">
+            <span class="shell-label powershell">PowerShell</span>
+            <pre><code># kube-system namespace (for CSI drivers)
+kubectl create secret docker-registry docker-secret `
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 `
+  --docker-username=AWS `
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" `
+  --namespace kube-system
+
+# default namespace (for application pods)
+kubectl create secret docker-registry docker-secret `
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 `
+  --docker-username=AWS `
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" `
+  --namespace default</code></pre>
+        </div>
+        
+        <div class="shell-section">
+            <span class="shell-label bash">Bash / Linux / macOS</span>
+            <pre><code># kube-system namespace (for CSI drivers)
+kubectl create secret docker-registry docker-secret \
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" \
+  --namespace kube-system
+
+# default namespace (for application pods)
+kubectl create secret docker-registry docker-secret \
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" \
+  --namespace default</code></pre>
+        </div>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 3: EBS CSI Driver Installation           -->
+<!-- ============================================== -->
+<section id="phase3" class="phase">
+    <h2>PHASE 3: EBS CSI Driver Installation</h2>
+    
+    <h3>Overview</h3>
+    <p>The Amazon EBS CSI (Container Storage Interface) Driver enables Kubernetes to manage EBS volumes for persistent storage. This is essential for stateful applications like ZooKeeper that require data persistence across pod restarts.</p>
+    
+    <!-- Step 12 -->
+    <div class="step" id="step12">
+        <h3>STEP 12: Create EBS CSI Driver IAM Policy</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates an IAM policy that grants the EBS CSI Driver permissions to manage EBS volumes on behalf of Kubernetes.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws iam create-policy --policy-name AmazonEBSCSIDriverPolicy --policy-document file://policies/Amazon_EBS_CSI_Driver_Policy.json</code></pre>
+        
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>Policy ARN: arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy</code></pre>
+        
+        <!-- Confluence Expand for JSON -->
+        <details>
+            <summary>View JSON - Amazon_EBS_CSI_Driver_Policy.json</summary>
+            <div class="expand-content">
+                <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSnapshot",
+        "ec2:AttachVolume",
+        "ec2:DetachVolume",
+        "ec2:ModifyVolume",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstances",
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeTags",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeVolumeAttribute",
+        "ec2:DescribeVolumeStatus",
+        "ec2:CreateVolume",
+        "ec2:DeleteVolume",
+        "ec2:DeleteSnapshot",
+        "ec2:CreateTags"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 13 -->
+    <div class="step" id="step13">
+        <h3>STEP 13: Create IAM Service Account for EBS CSI Driver</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a Kubernetes service account linked to an IAM role, allowing the EBS CSI Driver to assume AWS permissions.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster usw1-zlps-eks-01 --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole</code></pre>
+    </div>
+    
+    <!-- Step 14-15 -->
+    <div class="step" id="step14">
+        <h3>STEP 14-15: Install EBS CSI Driver as EKS Add-on <span class="badge badge-recommended">Recommended</span></h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Installs the EBS CSI Driver as a managed EKS add-on, which AWS maintains and updates automatically.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole --region us-west-1</code></pre>
+        
+        <p><strong>Verify Installation:</strong></p>
+        <pre><code>kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-ebs-csi-driver</code></pre>
+    </div>
+    
+    <!-- Step 16-17 -->
+    <div class="step" id="step16">
+        <h3>STEP 16-17: Create EBS StorageClass</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a StorageClass that defines how EBS volumes are provisioned dynamically when PersistentVolumeClaims are created.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>kubectl apply -f yaml/ebs-sc.yaml</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - ebs-sc.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  fsType: ext4
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true</code></pre>
+            </div>
+        </details>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 4: EFS CSI Driver Installation           -->
+<!-- ============================================== -->
+<section id="phase4" class="phase">
+    <h2>PHASE 4: EFS CSI Driver Installation</h2>
+    
+    <h3>Overview</h3>
+    <p>The Amazon EFS CSI Driver enables Kubernetes pods to mount Amazon EFS file systems. EFS provides shared, scalable file storage that multiple pods can access simultaneously (ReadWriteMany).</p>
+    
+    <h3>Why EFS Is Needed</h3>
+    <ul>
+        <li><strong>Shared Storage:</strong> Multiple pods can read/write to the same files</li>
+        <li><strong>Vault Storage:</strong> Application needs shared access to /var/ZipLip/Vault</li>
+        <li><strong>Log Aggregation:</strong> Centralized log storage across pods</li>
+        <li><strong>Temp Files:</strong> Shared temporary file processing area</li>
+    </ul>
+    
+    <!-- Step 18 -->
+    <div class="step" id="step18">
+        <h3>STEP 18: Create EFS CSI Driver IAM Policy</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates an IAM policy granting the EFS CSI Driver permissions to manage EFS file systems and access points.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>All Shells:</strong></p>
+        <pre><code>aws iam create-policy --policy-name AmazonEFSCSIDriverPolicy --policy-document file://policies/EFS-IAM-policy.json</code></pre>
+        
+        <!-- Confluence Expand for JSON -->
+        <details>
+            <summary>View JSON - EFS-IAM-policy.json</summary>
+            <div class="expand-content">
+                <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DescribeAccessPoints",
+        "elasticfilesystem:DescribeFileSystems",
+        "elasticfilesystem:DescribeMountTargets",
+        "ec2:DescribeAvailabilityZones"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:CreateAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "elasticfilesystem:DeleteAccessPoint",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    }
+  ]
+}</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 19-20 -->
+    <div class="step" id="step19">
+        <h3>STEP 19-20: Create IAM Service Account and Install EFS CSI Driver</h3>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Create Service Account:</strong></p>
+        <pre><code>eksctl create iamserviceaccount --name efs-csi-controller-sa --namespace kube-system --cluster usw1-zlps-eks-01 --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEFSCSIDriverPolicy --approve --role-name AmazonEKS_EFS_CSI_DriverRole</code></pre>
+        
+        <p><strong>Install Driver as Add-on:</strong></p>
+        <pre><code>aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-efs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EFS_CSI_DriverRole --region us-west-1</code></pre>
+    </div>
+    
+    <!-- Step 21-24 -->
+    <div class="step" id="step21">
+        <h3>STEP 21-24: Create EFS File System</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates an EFS file system with mount targets in the EKS VPC subnets.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Create EFS File System:</strong></p>
+        <pre><code>aws efs create-file-system --creation-token usw1-zlps-efs-01 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=usw1-zlps-efs-01 --region us-west-1</code></pre>
+        
+        <p><strong>Create Security Group for EFS:</strong></p>
+        <pre><code>aws ec2 create-security-group --group-name usw1-zlps-efs-sg --description "EFS security group for EKS" --vpc-id vpc-07644cdd0224da4f3 --region us-west-1
+
+aws ec2 authorize-security-group-ingress --group-id sg-xxxxxxxxx --protocol tcp --port 2049 --source-group sg-eks-node-group --region us-west-1</code></pre>
+        
+        <p><strong>Create Mount Targets (one per subnet):</strong></p>
+        <pre><code>aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-01c24772a882a3a1b --security-groups sg-xxxxxxxxx --region us-west-1
+
+aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-06eb80d784d985109 --security-groups sg-xxxxxxxxx --region us-west-1</code></pre>
+    </div>
+    
+    <!-- Step 25-27 -->
+    <div class="step" id="step25">
+        <h3>STEP 25-27: Create EFS Access Points and StorageClass</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates EFS Access Points for each application volume and a StorageClass for dynamic provisioning.</p>
+        </div>
+        
+        <h4>Access Points Created</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Access Point</th>
+                    <th>Root Path</th>
+                    <th>Used By</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>zlvault-ap</td><td>/zlvault</td><td>zlui, zlserver</td></tr>
+                <tr><td>zluilogs-ap</td><td>/zluilogs</td><td>zlui</td></tr>
+                <tr><td>zlserverlogs-ap</td><td>/zlserverlogs</td><td>zlserver</td></tr>
+                <tr><td>zltikatemp-ap</td><td>/zltikatemp</td><td>zltika, zlui</td></tr>
+            </tbody>
+        </table>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Create Access Point (example for zlvault):</strong></p>
+        <pre><code>aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlvault-ap --region us-west-1</code></pre>
+        
+        <p><strong>Apply StorageClass:</strong></p>
+        <pre><code>kubectl apply -f yaml/efs-sc.yaml</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - EFS StorageClass</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-0a4ec87cd91178047
+  directoryPerms: "755"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+  basePath: "/dynamic_provisioning"</code></pre>
+            </div>
+        </details>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 5-6: Application Deployment              -->
+<!-- ============================================== -->
+<section id="phase5" class="phase">
+    <h2>PHASE 5-6: Application Deployment Preparation</h2>
+    
+    <!-- Step 28-32 -->
+    <div class="step" id="step28">
+        <h3>STEP 28-32: Create Service Account and ConfigMaps</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates the application service account and ConfigMaps for application configuration.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Create Service Account:</strong></p>
+        <pre><code>kubectl create serviceaccount zlapp-sa --namespace default</code></pre>
+        
+        <p><strong>Create Database ConfigMap:</strong></p>
+        <pre><code>kubectl create configmap db-config \
+  --from-literal=DB_HOST=usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com \
+  --from-literal=DB_PORT=1433 \
+  --from-literal=DB_NAME=ZLDB \
+  --from-literal=DB_USER=pfuser \
+  --from-literal=DB_TYPE=mssql</code></pre>
+        
+        <p><strong>Create Database Secret:</strong></p>
+        <pre><code>kubectl create secret generic db-secret --from-literal=DB_PASSWORD=YourSecurePassword</code></pre>
+        
+        <p><strong>Apply Application ConfigMap:</strong></p>
+        <pre><code>kubectl apply -f yaml/zlapp-config.yaml</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zlapp-config.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config  
+  namespace: default
+data:
+  ZOO_SERVERS: zlzookeeper-0.zk-hs.default.svc.cluster.local:2181,zlzookeeper-1.zk-hs.default.svc.cluster.local:2181,zlzookeeper-2.zk-hs.default.svc.cluster.local:2181
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"
+  __tika.ZLTikaService.Host: zltika
+  __tika.ZLTikaService.Port: "9972"
+  DEFAULT_URL: ps/PmApp/zlp_dummy?mgc=1&amp;NextPage=/app/home.jsp&amp;domain=yourdomain.com&amp;la=en&amp;authMethod=ZipLipDB&amp;resId=trac_login</code></pre>
+            </div>
+        </details>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 7: ZooKeeper Deployment                  -->
+<!-- ============================================== -->
+<section id="phase7" class="phase">
+    <h2>PHASE 7: ZooKeeper Deployment</h2>
+    
+    <h3>Overview</h3>
+    <p>ZooKeeper provides distributed coordination for the ZL Application. It's deployed as a 3-node StatefulSet for high availability.</p>
+    
+    <!-- Step 33 -->
+    <div class="step" id="step33">
+        <h3>STEP 33: Deploy ZooKeeper Services</h3>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code># Client service (for application connections)
+kubectl apply -f yaml/zk-cs.yaml
+
+# Headless service (for pod-to-pod communication)
+kubectl apply -f yaml/zk-hs.yaml</code></pre>
+        
+        <p><strong>Verify Services:</strong></p>
+        <pre><code>kubectl get services zk-cs zk-hs</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - ZooKeeper Services (zk-cs.yaml &amp; zk-hs.yaml)</summary>
+            <div class="expand-content">
+                <pre><code># zk-cs.yaml - ZooKeeper Client Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zlzookeeper
+
+---
+# zk-hs.yaml - ZooKeeper Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zlzookeeper
+  name: zk-hs
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zlzookeeper</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 34-35 -->
+    <div class="step" id="step34">
+        <h3>STEP 34-35: Deploy ZooKeeper StatefulSet</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Deploys a 3-node ZooKeeper ensemble as a Kubernetes StatefulSet with persistent storage.</p>
+        </div>
+        
+        <div class="step-section">
+            <h4>❓ Why StatefulSet?</h4>
+            <ul>
+                <li><strong>Stable identities:</strong> Pods get predictable names (zlzookeeper-0, zlzookeeper-1, zlzookeeper-2)</li>
+                <li><strong>Ordered deployment:</strong> Pods start sequentially</li>
+                <li><strong>Persistent storage:</strong> Each pod gets its own EBS volume</li>
+                <li><strong>Stable network:</strong> DNS names persist across restarts</li>
+            </ul>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code>kubectl apply -f yaml/zlzookeeper-statefulset.yaml
+
+# Watch pod creation
+kubectl get pods -l app=zlzookeeper -w</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zlzookeeper-statefulset.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlzookeeper
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: peer
+            - containerPort: 3888
+              name: election
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ebs-sc
+        resources:
+          requests:
+            storage: 10Gi</code></pre>
+            </div>
+        </details>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 8: Application Services Deployment       -->
+<!-- ============================================== -->
+<section id="phase8" class="phase">
+    <h2>PHASE 8: Application Services Deployment</h2>
+    
+    <h3>Overview</h3>
+    <p>This phase deploys the main application services: Tika (document conversion), ZL Server (backend), and ZL UI (frontend).</p>
+    
+    <!-- Step 37 -->
+    <div class="step" id="step37">
+        <h3>STEP 37: Deploy Document Conversion ConfigMap</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a ConfigMap containing the Tika service connection settings. This overrides the default localhost connection to point to the Kubernetes zltika service.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code>kubectl apply -f yaml/docconvert-configmap.yaml</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - docconvert-configmap.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docconvert-config
+  namespace: default
+data:
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 38 -->
+    <div class="step" id="step38">
+        <h3>STEP 38: Deploy Tika Service</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Deploys the Apache Tika document conversion service that processes documents for text extraction and format conversion.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code># Deploy Tika pod
+kubectl apply -f yaml/zltika-deployment.yaml
+
+# Create Tika service
+kubectl apply -f yaml/zltika-service.yaml
+
+# Verify
+kubectl get deployment zltika
+kubectl get service zltika</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zltika-deployment.yaml &amp; zltika-service.yaml</summary>
+            <div class="expand-content">
+                <pre><code># zltika-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zltika
+  name: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zltika
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+
+---
+# zltika-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zltika
+  name: zltika
+spec:
+  ports:
+    - name: "9972"
+      port: 9972
+      targetPort: 9972
+  selector:
+    app: zltika</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 39 -->
+    <div class="step" id="step39">
+        <h3>STEP 39: Deploy ZL Server</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Deploys the ZL Server backend application that handles business logic, database operations, and application services.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code>kubectl apply -f yaml/zlserver-deployment.yaml
+
+# Watch Pod Startup
+kubectl get pods -l app=zlserver -w
+
+# Check Logs for Initialization
+kubectl logs deployment/zlserver -f</code></pre>
+        
+        <div class="success">
+            <strong>Expected Log Message:</strong> <code>Done initalizing ZLServer</code>
+        </div>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zlserver-deployment.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlserver
+  name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zlservertemp
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+            - mountPath: /opt/ZipLip/logs
+              name: zlserverlogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+      volumes:
+        - name: zlservertemp
+          persistentVolumeClaim:
+            claimName: zlservertemp-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 40 -->
+    <div class="step" id="step40">
+        <h3>STEP 40: Deploy ZL UI</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Deploys the ZL UI web frontend that provides the user interface for the application.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code># Deploy UI pod
+kubectl apply -f yaml/zlui-deployment.yaml
+
+# Create UI service
+kubectl apply -f yaml/zlui-service.yaml
+
+# Verify
+kubectl get deployment zlui
+kubectl get service zlui-service</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zlui-deployment.yaml &amp; zlui-service.yaml</summary>
+            <div class="expand-content">
+                <pre><code># zlui-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+
+---
+# zlui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zlui
+  name: zlui-service
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: zlui</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 41-42 -->
+    <div class="step" id="step41">
+        <h3>STEP 41-42: Verify All Pods Running</h3>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code>kubectl get pods -n default</code></pre>
+        
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>NAME                        READY   STATUS    RESTARTS   AGE
+zltika-xxxxxxxxxx-xxxxx     1/1     Running   0          10m
+zlserver-xxxxxxxxxx-xxxxx   1/1     Running   0          8m
+zlui-xxxxxxxxxx-xxxxx       1/1     Running   0          5m
+zlzookeeper-0               1/1     Running   0          20m
+zlzookeeper-1               1/1     Running   0          19m
+zlzookeeper-2               1/1     Running   0          18m</code></pre>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 9: Load Balancer Configuration           -->
+<!-- ============================================== -->
+<section id="phase9" class="phase">
+    <h2>PHASE 9: Load Balancer Configuration</h2>
+    
+    <h3>Overview</h3>
+    <p>This phase configures the AWS Load Balancer Controller and creates an Ingress resource to expose the ZL Application via an Application Load Balancer (ALB).</p>
+    
+    <!-- Step 43-44 -->
+    <div class="step" id="step43">
+        <h3>STEP 43-44: Install AWS Load Balancer Controller</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Installs the AWS Load Balancer Controller which provisions and manages ALBs based on Kubernetes Ingress resources.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Create IAM Policy:</strong></p>
+        <pre><code>curl -o iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.0/docs/install/iam_policy.json
+
+aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json</code></pre>
+        
+        <p><strong>Create Service Account:</strong></p>
+        <pre><code>eksctl create iamserviceaccount --cluster=usw1-zlps-eks-01 --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::995553364920:policy/AWSLoadBalancerControllerIAMPolicy --approve</code></pre>
+        
+        <p><strong>Install with Helm:</strong></p>
+        <pre><code>helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=usw1-zlps-eks-01 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller</code></pre>
+        
+        <!-- Confluence Expand for JSON -->
+        <details>
+            <summary>View JSON - AWS Load Balancer Controller IAM Policy (Summary)</summary>
+            <div class="expand-content">
+                <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeAccountAttributes",
+        "ec2:DescribeAddresses",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInternetGateways",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcPeeringConnections",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeInstances",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeTags",
+        "ec2:GetCoipPoolUsage",
+        "ec2:DescribeCoipPools",
+        "elasticloadbalancing:*"
+      ],
+      "Resource": "*"
+    }
+    // ... additional statements for full policy
+  ]
+}</code></pre>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Step 45-46 -->
+    <div class="step" id="step45">
+        <h3>STEP 45-46: Create Ingress Resource</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>Creates a Kubernetes Ingress resource that triggers the AWS Load Balancer Controller to provision an Application Load Balancer (ALB).</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code>kubectl apply -f yaml/zlui-ingress.yaml
+
+# Wait for ALB provisioning (2-5 minutes)
+kubectl get ingress zlui-ingress -w
+
+# Get ALB URL
+kubectl get ingress zlui-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'</code></pre>
+        
+        <!-- Confluence Expand for YAML -->
+        <details>
+            <summary>View YAML - zlui-ingress.yaml</summary>
+            <div class="expand-content">
+                <pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zlui-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-01c24772a882a3a1b,subnet-06eb80d784d985109
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zlui-service
+            port:
+              number: 8080</code></pre>
+            </div>
+        </details>
+        
+        <div class="success">
+            <strong>Application URL:</strong> <code>http://k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com</code>
+        </div>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- PHASE 10-11: Verification                      -->
+<!-- ============================================== -->
+<section id="phase10" class="phase">
+    <h2>PHASE 10-11: DNS, SSL, and Verification</h2>
+    
+    <!-- Step 47-50 -->
+    <div class="step" id="step47">
+        <h3>STEP 47-50: Optional SSL/TLS Configuration</h3>
+        
+        <div class="step-section">
+            <h4>📋 Explanation</h4>
+            <p>To enable HTTPS, request an ACM certificate and update the Ingress annotations.</p>
+        </div>
+        
+        <h4>💻 Code Block</h4>
+        <pre><code># Request ACM certificate
+aws acm request-certificate --domain-name zlapp.example.com --validation-method DNS --region us-west-1
+
+# Update ingress to use HTTPS (after certificate validation)
+# Add these annotations to zlui-ingress.yaml:
+# alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+# alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-1:995553364920:certificate/xxxxx
+# alb.ingress.kubernetes.io/ssl-redirect: '443'</code></pre>
+    </div>
+    
+    <!-- Step 51-54 -->
+    <div class="step" id="step51">
+        <h3>STEP 51-54: Final Verification</h3>
+        
+        <h4>💻 Code Block</h4>
+        <p><strong>Check All Resources:</strong></p>
+        <pre><code># All pods
+kubectl get pods -n default
+
+# All services
+kubectl get services -n default
+
+# Ingress status
+kubectl get ingress
+
+# PVCs
+kubectl get pvc</code></pre>
+        
+        <p><strong>Test Application:</strong></p>
+        <pre><code># Get ALB URL
+ALB_URL=$(kubectl get ingress zlui-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo "Application URL: http://$ALB_URL"
+
+# Test connectivity
+curl -I http://$ALB_URL</code></pre>
+        
+        <div class="success">
+            <strong>Deployment Complete!</strong> Access the application at the ALB URL displayed above.
+        </div>
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- APPENDIX A: Complete YAML Manifests            -->
+<!-- ============================================== -->
+<section id="appendix-a" class="appendix">
+    <h2>Appendix A: Complete YAML Manifests</h2>
+    
+    <p>This appendix contains all Kubernetes YAML manifests used in the deployment.</p>
+    
+    <h3>Application Deployment Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Type</th>
+                <th>Replicas</th>
+                <th>Storage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>zlui</td><td>Deployment</td><td>1</td><td>EFS (vault, logs, temp)</td></tr>
+            <tr><td>zlserver</td><td>Deployment</td><td>1</td><td>EFS (vault, logs, temp)</td></tr>
+            <tr><td>zltika</td><td>Deployment</td><td>1</td><td>EFS (temp)</td></tr>
+            <tr><td>zlzookeeper</td><td>StatefulSet</td><td>3</td><td>EBS (data)</td></tr>
+        </tbody>
+    </table>
+    
+    <details>
+        <summary>View YAML - Complete zlui-deployment.yaml</summary>
+        <div class="expand-content">
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config</code></pre>
+        </div>
+    </details>
+    
+    <details>
+        <summary>View YAML - Complete zlzookeeper-statefulset.yaml</summary>
+        <div class="expand-content">
+            <pre><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlzookeeper
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: peer
+            - containerPort: 3888
+              name: election
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ebs-sc
+        resources:
+          requests:
+            storage: 10Gi</code></pre>
+        </div>
+    </details>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- APPENDIX B: EFS Access Points                  -->
+<!-- ============================================== -->
+<section id="appendix-b" class="appendix">
+    <h2>Appendix B: EFS Access Points and Vault Structure</h2>
+    
+    <h3>B.1 EFS File System Details</h3>
+    <table>
+        <thead>
+            <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>File System ID</td><td><code>fs-0a4ec87cd91178047</code></td></tr>
+            <tr><td>Name</td><td>usw1-zlps-efs-01</td></tr>
+            <tr><td>Region</td><td>us-west-1</td></tr>
+            <tr><td>Performance</td><td>General Purpose</td></tr>
+        </tbody>
+    </table>
+    
+    <h3>B.2 EFS Access Points</h3>
+    <table>
+        <thead>
+            <tr><th>Access Point ID</th><th>Name</th><th>Root Path</th><th>Used By</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>fsap-070de74811e8c461f</code></td><td>zlvault-ap</td><td>/zlvault</td><td>zlui, zlserver</td></tr>
+            <tr><td><code>fsap-06e5e523915353e85</code></td><td>zluilogs-ap</td><td>/zluilogs</td><td>zlui</td></tr>
+            <tr><td><code>fsap-0e3cf05f6ae8f8a82</code></td><td>zlserverlogs-ap</td><td>/zlserverlogs</td><td>zlserver</td></tr>
+            <tr><td><code>fsap-08c3382b23a64f7fd</code></td><td>zltikatemp-ap</td><td>/zltikatemp</td><td>zltika, zlui</td></tr>
+        </tbody>
+    </table>
+    
+    <h3>B.3 Vault Directory Structure</h3>
+    <p>The following directories must exist in <code>/var/ZipLip/Vault/</code>:</p>
+    
+    <details>
+        <summary>View Complete Vault Directory Structure (31 directories)</summary>
+        <div class="expand-content">
+            <pre><code>/var/ZipLip/Vault/
+├── resource/
+├── secureResource/
+├── staging/
+├── zlreport/
+├── zlexport/
+├── zlperiodic/
+├── zlSecureMail/
+├── zlArchiveMail/
+├── zlArchiveAttach/
+├── zlJournalMail/
+├── zlJournalAttach/
+├── zlSearch/
+├── zlSearchMaster/
+├── zlSearchOther/
+├── zlFileRegular/
+├── zlFileSearch/
+├── zlFileSearchMaster/
+├── zlFileSearchOther/
+├── zlCompliance/
+├── zlCaseMgmt/
+├── zlCcPackage/
+├── zlRecord/
+├── zlTextDBTemp/
+├── zlTextDBMaster/
+├── zlBigDBApps/
+├── zlLogEvent/
+├── zlLogEventSearchMaster/
+├── zlLogEventSearch/
+├── zlInPlaceWorkspaceIndex/
+├── zlInPlaceMailContent/
+└── zlInPlaceFileRegular/</code></pre>
+        </div>
+    </details>
+    
+    <div class="warning">
+        <strong>Important:</strong> Directory names are case-sensitive on Linux/EFS! Names must match exactly.
+    </div>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- APPENDIX C-D: ConfigMaps and Networking        -->
+<!-- ============================================== -->
+<section id="appendix-c" class="appendix">
+    <h2>Appendix C: ConfigMaps and Secrets</h2>
+    
+    <h3>C.1 zlapp-config - Application Configuration</h3>
+    <pre><code>ZOO_SERVERS: zlzookeeper-0.zk-hs.default.svc.cluster.local:2181,...
+TIKA_HOST: zltika
+TIKA_PORT: "9972"</code></pre>
+    
+    <h3>C.2 db-config - Database Configuration</h3>
+    <pre><code>DB_HOST: usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com
+DB_PORT: 1433
+DB_NAME: ZLDB
+DB_USER: pfuser
+DB_TYPE: mssql</code></pre>
+    
+    <h3>C.3 db-secret - Database Credentials</h3>
+    <pre><code>DB_PASSWORD: &lt;BASE64_ENCODED_PASSWORD&gt;</code></pre>
+</section>
+
+<hr>
+
+<section id="appendix-d" class="appendix">
+    <h2>Appendix D: Services and Networking</h2>
+    
+    <h3>D.1 Kubernetes Services Summary</h3>
+    <table>
+        <thead>
+            <tr><th>Service</th><th>Type</th><th>Ports</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>zk-cs</td><td>ClusterIP</td><td>2181</td><td>ZooKeeper client connections</td></tr>
+            <tr><td>zk-hs</td><td>Headless</td><td>2888, 3888</td><td>ZooKeeper peer discovery</td></tr>
+            <tr><td>zltika</td><td>ClusterIP</td><td>9972</td><td>Document conversion</td></tr>
+            <tr><td>zlui-service</td><td>ClusterIP</td><td>8080</td><td>UI access</td></tr>
+        </tbody>
+    </table>
+    
+    <h3>D.2 External Access URLs</h3>
+    <table>
+        <thead>
+            <tr><th>Resource</th><th>URL/Endpoint</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Application (ALB)</td><td><code>http://k8s-default-zluiingr-*.us-west-1.elb.amazonaws.com</code></td></tr>
+            <tr><td>ECR Repository</td><td><code>995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01</code></td></tr>
+            <tr><td>RDS Database</td><td><code>usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com:1433</code></td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- APPENDIX E: Secure Deployment                  -->
+<!-- ============================================== -->
+<section id="appendix-e" class="appendix">
+    <h2>Appendix E: Secure Deployment (No Internet Access)</h2>
+    
+    <h3>E.1 Overview</h3>
+    <p>This appendix describes the secure deployment configuration that restricts external internet access to the ZL Application.</p>
+    
+    <h3>E.2 Architecture Changes</h3>
+    <table>
+        <thead>
+            <tr><th>Component</th><th>Standard</th><th>Secure</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>ALB Scheme</td><td><code>internet-facing</code></td><td><code>internal</code></td></tr>
+            <tr><td>ALB Subnets</td><td>Public</td><td>Private</td></tr>
+            <tr><td>Access Method</td><td>Direct Internet</td><td>VPN / Direct Connect</td></tr>
+        </tbody>
+    </table>
+    
+    <h3>E.3 Modified Ingress YAML</h3>
+    <details>
+        <summary>View YAML - Secure Internal Ingress</summary>
+        <div class="expand-content">
+            <pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zlui-ingress
+  annotations:
+    # Internal ALB - not accessible from internet
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    # Use PRIVATE subnets instead of public
+    alb.ingress.kubernetes.io/subnets: subnet-private-1a,subnet-private-1b
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    # Restrict to VPC CIDR only
+    alb.ingress.kubernetes.io/inbound-cidrs: "10.0.0.0/16"
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zlui-service
+            port:
+              number: 8080</code></pre>
+        </div>
+    </details>
+    
+    <h3>E.4 Access Methods</h3>
+    <ul>
+        <li><strong>AWS Client VPN:</strong> Users connect via VPN to access internal ALB</li>
+        <li><strong>Site-to-Site VPN:</strong> Corporate network connected via VPN</li>
+        <li><strong>AWS Direct Connect:</strong> Dedicated private connection</li>
+        <li><strong>SSM Session Manager:</strong> Port forwarding without SSH exposure</li>
+    </ul>
+    
+    <h3>E.5 Deployment Checklist</h3>
+    <table>
+        <thead>
+            <tr><th>✓</th><th>Task</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>☐</td><td>Update Ingress YAML</td><td>Change ALB scheme to <code>internal</code></td></tr>
+            <tr><td>☐</td><td>Update Subnet References</td><td>Use private subnet IDs</td></tr>
+            <tr><td>☐</td><td>Create Internal Security Group</td><td>Restrict inbound to VPC/VPN CIDRs</td></tr>
+            <tr><td>☐</td><td>Configure VPN Access</td><td>Set up Client VPN or Site-to-Site VPN</td></tr>
+            <tr><td>☐</td><td>Test Internal Access</td><td>Verify application accessible via VPN only</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<hr>
+
+<!-- ============================================== -->
+<!-- REVISION HISTORY                               -->
+<!-- ============================================== -->
+<section id="revision-history">
+    <h2>Document Revision History</h2>
+    <table>
+        <thead>
+            <tr><th>Version</th><th>Date</th><th>Author</th><th>Changes</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1.0</td><td>Dec 10, 2025</td><td>-</td><td>Initial deployment documentation</td></tr>
+            <tr><td>1.1</td><td>Dec 13, 2025</td><td>-</td><td>Added comprehensive formatting, HTML conversion</td></tr>
+            <tr><td>1.1-CF</td><td>Dec 14, 2025</td><td>-</td><td>Confluence-optimized version (no JavaScript)</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- Footer -->
+<div class="footer">
+    <p><strong>ZL Application AWS EKS Deployment Guide</strong></p>
+    <p>Version 1.1 (Confluence) | Last Updated: December 14, 2025</p>
+    <p><em>This version uses HTML5 &lt;details&gt; elements for expand/collapse - no JavaScript required</em></p>
+</div>
+
+</body>
+</html>

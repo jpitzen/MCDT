@@ -1,0 +1,113 @@
+# Services for ZL Application Stack
+# All internal services for inter-pod communication
+---
+# ZooKeeper Headless Service - For StatefulSet DNS resolution
+# Provides: zlzookeeper-{0,1,2}.zk-hs.default.svc.cluster.local
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - name: client
+    port: 2181
+    targetPort: 2181
+  - name: peer
+    port: 2888
+    targetPort: 2888
+  - name: election
+    port: 3888
+    targetPort: 3888
+  clusterIP: None  # Headless service
+  selector:
+    app: zlzookeeper
+---
+# ZooKeeper Client Service - Load balanced client access
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - name: client
+    port: 2181
+    targetPort: 2181
+  selector:
+    app: zlzookeeper
+  type: ClusterIP
+---
+# Tika Service - Document conversion service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zltika-service
+  labels:
+    app: zltika
+spec:
+  ports:
+  - name: http
+    port: 9998
+    targetPort: 9998
+    protocol: TCP
+  selector:
+    app: zltika
+  type: ClusterIP
+---
+# ZLUI Service - UI/Web interface (NodePort for external access, or LoadBalancer for AWS)
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui-service
+  labels:
+    app: zlui
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  selector:
+    app: zlui
+  type: LoadBalancer  # Use LoadBalancer for AWS ALB/NLB integration
+---
+# ZLSearch Service - Search service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlsearch-service
+  labels:
+    app: zlsearch
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: zlsearch
+  type: ClusterIP
+---
+# ZLServer Service - Main server (internal only)
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlserver-service
+  labels:
+    app: zlserver
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: zlserver
+  type: ClusterIP

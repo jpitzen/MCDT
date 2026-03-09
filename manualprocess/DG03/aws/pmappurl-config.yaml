@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pmappurl-config
+  namespace: default
+  labels:
+    app: zlui
+data:
+  pmappURL.cfg: |
+    //******** HOST SPECIFICATION *******************
+    //Set Machine Parameters manually if needed
+    //machine.local.ip = "0.0.0.0"
+    //machine.local.name = "XYZ"
+
+    //Modify these three variables.
+
+    //*******BEGIN pmappURL.cfg FILE ***************
+    #define HAS_SSL = true
+    web.server.URL = zlpsaws.zlpsonline.com
+    mail.server.host = @web.server.URL@
+
+    //**************DO NOT MODIFY VALUES BELOW*****************
+    web.secure.protocol = https
+    #if !HAS_SSL
+    web.secure.protocol = http
+    #endif
+
+    com.ziplip.prefix.appname=/ps
+    com.ziplip.url.prefix.insecure=http://@web.server.URL@@com.ziplip.prefix.appname@
+    com.ziplip.url.prefix.secure=@web.secure.protocol@://@web.server.URL@@com.ziplip.prefix.appname@
+    com.ziplip.url.prefix.default=@web.secure.protocol@://@web.server.URL@@com.ziplip.prefix.appname@
+    com.ziplip.url.prefix.report=@com.ziplip.url.prefix.default@
+    com.ziplip.webdav.prefix=/wd
+    com.ziplip.webdav.internal.prefix=@com.ziplip.prefix.appname@@com.ziplip.webdav.prefix@
+    com.ziplip.webdav.url.prefix=@web.secure.protocol@://@web.server.URL@@com.ziplip.webdav.prefix@
+    com.ziplip.lang.default=en
+
+    //selfLocation=true: Auto-detect URL from the HTTP request Host header.
+    //Works correctly when Tomcat Connector has proxyName/proxyPort set in
+    //server.xml (via tomcat-server-config ConfigMap) so that
+    //request.getServerName() returns the LB/proxy hostname.
+    _jspUtil.selfLocation = #com.zlti.pm.zlui.JspUtil~~true
+
+    //This reverse map comes into play when selfLocation is false.
+    //REVERSE URL REDIRECTIONS DUE TO PROXY SERVER RE-WRITING
+    //url.reverseMap.0=#wsi.config.StringNameValuePair~~http://localhost~~http://10.0.0.71
+    com.ziplip.url.prefix.reverseMap = #wsi.config.ArrayFactory~~url.reverseMap~~0
+
+    //**************END *****************
+    //*******END pmappURL.cfg FILE ***************

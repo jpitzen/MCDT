@@ -1,0 +1,61 @@
+EFS File System Setup Instructions
+=====================================
+
+Environment Details:
+- VPC: vpc-07644cdd0224da4f3
+- Region: us-west-1
+- Cluster: usw1-zlps-eks-01
+- Availability Zones: us-west-1a, us-west-1c (2 AZs)
+- Node Security Group: sg-0afb0a3f0c30ba84d (ClusterSharedNodeSecurityGroup)
+
+Subnet Information:
++------------+-------------------+----------------------------+
+|     AZ     |       CIDR        |         SubnetId           |
++------------+-------------------+----------------------------+
+|  us-west-1a|  192.168.0.0/19   |  subnet-01c24772a882a3a1b  |
+|  us-west-1a|  192.168.64.0/19  |  subnet-0c861c54ffa4ddbe6  |
+|  us-west-1c|  192.168.32.0/19  |  subnet-06eb80d784d985109  |
+|  us-west-1c|  192.168.96.0/19  |  subnet-039bd7f435475c3dc  |
++------------+-------------------+----------------------------+
+
+=====================================
+Step 1: Create EFS File System
+=====================================
+
+aws efs create-file-system --region us-west-1 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=usw1-zlps-efs-01
+
+** IMPORTANT: Note the FileSystemId from output (format: fs-xxxxxxxxx) **
+
+=====================================
+Step 2: Create Mount Targets
+=====================================
+
+Note: Only need 2 mount targets (one per AZ, not per subnet)
+
+For us-west-1a:
+aws efs create-mount-target --file-system-id <FILE_SYSTEM_ID> --subnet-id subnet-01c24772a882a3a1b --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+
+For us-west-1c:
+aws efs create-mount-target --file-system-id <FILE_SYSTEM_ID> --subnet-id subnet-06eb80d784d985109 --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+
+=====================================
+Step 3: Verify Mount Targets
+=====================================
+
+aws efs describe-mount-targets --file-system-id <FILE_SYSTEM_ID> --region us-west-1
+
+=====================================
+Step 4: Verify EFS File System
+=====================================
+
+aws efs describe-file-systems --file-system-id <FILE_SYSTEM_ID> --region us-west-1
+
+=====================================
+Notes:
+=====================================
+
+- EFS is a regional file system with mount targets per AZ
+- Pods connect to the mount target in the same AZ for lowest latency
+- Using ClusterSharedNodeSecurityGroup allows worker nodes to access EFS
+- Mount targets must be in 'available' state before use (may take 1-2 minutes)
+- Each mount target gets a unique IP address in its subnet

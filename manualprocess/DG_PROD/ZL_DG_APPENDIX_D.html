@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix D: Security Groups</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix D: Security Groups Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides security group configurations for the ZL application deployment on AWS EKS.</p>
+
+                <div class="phase-objectives">
+                    <h3>📋 Security Group Categories</h3>
+                    <ul>
+                        <li>EKS cluster and node security groups</li>
+                        <li>Application Load Balancer security groups</li>
+                        <li>RDS PostgreSQL database security groups</li>
+                        <li>EFS mount target security groups</li>
+                        <li>EC2 bastion host security groups</li>
+                        <li>Custom security groups for specific services</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <h2>☸️ EKS Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>EKS Cluster Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-eks-cluster-sg<br>
+                        <strong>Description:</strong> Security group for EKS cluster control plane<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>zl-eks-nodes-sg</td><td>Allow all traffic from worker nodes</td></tr>
+                            <tr><td>HTTPS</td><td>TCP</td><td>443</td><td>10.0.0.0/16</td><td>Allow HTTPS from VPC</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="security-group-section">
+                    <h3>EKS Worker Nodes Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-eks-nodes-sg<br>
+                        <strong>Description:</strong> Security group for EKS worker nodes<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>zl-eks-cluster-sg</td><td>Allow all traffic from control plane</td></tr>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>Self</td><td>Allow all traffic between nodes</td></tr>
+                            <tr><td>SSH</td><td>TCP</td><td>22</td><td>zl-bastion-sg</td><td>SSH access from bastion host</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>⚖️ Load Balancer Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>Application Load Balancer Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-alb-sg<br>
+                        <strong>Description:</strong> Security group for Application Load Balancer<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>HTTP</td><td>TCP</td><td>80</td><td>0.0.0.0/0</td><td>Allow HTTP from anywhere</td></tr>
+                            <tr><td>HTTPS</td><td>TCP</td><td>443</td><td>0.0.0.0/0</td><td>Allow HTTPS from anywhere</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>zl-eks-nodes-sg</td><td>Allow traffic to worker nodes</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>🐘 Database Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>RDS PostgreSQL Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-rds-sg<br>
+                        <strong>Description:</strong> Security group for RDS PostgreSQL database<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>PostgreSQL</td><td>TCP</td><td>5432</td><td>zl-eks-nodes-sg</td><td>Allow PostgreSQL from EKS nodes</td></tr>
+                            <tr><td>PostgreSQL</td><td>TCP</td><td>5432</td><td>zl-bastion-sg</td><td>Allow PostgreSQL from bastion host</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>💾 EFS Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>EFS Mount Target Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-efs-sg<br>
+                        <strong>Description:</strong> Security group for EFS mount targets<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>NFS</td><td>TCP</td><td>2049</td><td>zl-eks-nodes-sg</td><td>Allow NFS from EKS nodes</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>🖥️ Bastion Host Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>EC2 Bastion Host Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-bastion-sg<br>
+                        <strong>Description:</strong> Security group for EC2 bastion host<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>SSH</td><td>TCP</td><td>22</td><td>YOUR_IP/32</td><td>SSH access from your IP</td></tr>
+                            <tr><td>RDP</td><td>TCP</td><td>3389</td><td>YOUR_IP/32</td><td>RDP access from your IP (Windows)</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>🔍 Additional Service Security Groups</h2>
+
+                <div class="security-group-section">
+                    <h3>ZooKeeper Cluster Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-zookeeper-sg<br>
+                        <strong>Description:</strong> Security group for ZooKeeper cluster<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Custom TCP</td><td>TCP</td><td>2181</td><td>zl-eks-nodes-sg</td><td>ZooKeeper client port</td></tr>
+                            <tr><td>Custom TCP</td><td>TCP</td><td>2888</td><td>Self</td><td>ZooKeeper server port</td></tr>
+                            <tr><td>Custom TCP</td><td>TCP</td><td>3888</td><td>Self</td><td>ZooKeeper leader election</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="security-group-section">
+                    <h3>EC2 Windows Server Security Group</h3>
+                    <div class="sg-details">
+                        <strong>Name:</strong> zl-winserver-sg<br>
+                        <strong>Description:</strong> Security group for Windows EC2 instance<br>
+                        <strong>VPC:</strong> zl-vpc
+                    </div>
+                    <h4>Inbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Source</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>RDP</td><td>TCP</td><td>3389</td><td>zl-bastion-sg</td><td>RDP access from bastion</td></tr>
+                            <tr><td>HTTP</td><td>TCP</td><td>80</td><td>zl-eks-nodes-sg</td><td>HTTP access from EKS nodes</td></tr>
+                            <tr><td>HTTPS</td><td>TCP</td><td>443</td><td>zl-eks-nodes-sg</td><td>HTTPS access from EKS nodes</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Outbound Rules:</h4>
+                    <table class="security-rules">
+                        <thead>
+                            <tr><th>Type</th><th>Protocol</th><th>Port Range</th><th>Destination</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>All traffic</td><td>All</td><td>All</td><td>0.0.0.0/0</td><td>Allow all outbound traffic</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

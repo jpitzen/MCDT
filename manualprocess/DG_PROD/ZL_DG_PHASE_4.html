@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 4</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 4: EFS CSI Driver</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 4</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 4: EFS CSI Driver</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">10</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                    <span class="step-dot" data-step="8"></span>
+                    <span class="step-dot" data-step="9"></span>
+                    <span class="step-dot" data-step="10"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">EFS CSI Driver Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 4</strong> installs the Amazon EFS CSI Driver to provide shared, persistent storage that can be accessed by multiple pods simultaneously.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Understand EFS use cases and access points</li>
+                    <li data-steps="2,3,4">Install and configure EFS CSI Driver with IAM permissions</li>
+                    <li data-steps="5,6,7">Create EFS file system with security groups and mount targets</li>
+                    <li data-steps="8">Mount EFS on EC2/EKS nodes with TLS encryption</li>
+                    <li data-steps="9">Create EFS access points for application isolation</li>
+                    <li data-steps="10">Deploy StorageClass and persistent volumes</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+
+    <!-- JavaScript -->
+    <script>
+        // Step data for Phase 4
+        const stepData = {
+            1: {
+                title: "Overview & EFS Use Cases",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 1: EFS Overview</h3>
+                        <div class="step-description">Amazon EFS provides shared, persistent storage that can be accessed by multiple pods simultaneously.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <p>Amazon EFS provides shared, persistent storage that can be accessed by multiple pods simultaneously.</p>
+                    </div>
+
+                    <div class="table-section">
+                        <h4>EFS Use Cases in ZL Application</h4>
+                        <table>
+                            <tr><th>Mount Path</th><th>Purpose</th></tr>
+                            <tr><td><code>/zlvault</code></td><td>Main application vault (shared across all pods)</td></tr>
+                            <tr><td><code>/zluilogs</code></td><td>UI log files</td></tr>
+                            <tr><td><code>/zlserverlogs</code></td><td>Server log files</td></tr>
+                            <tr><td><code>/zltikatemp</code></td><td>Tika temporary file processing</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="table-section">
+                        <h4>EFS Access Points Created</h4>
+                        <table>
+                            <tr><th>Name</th><th>Access Point ID</th><th>Path</th></tr>
+                            <tr><td>zlvault-ap</td><td><code><YOUR_ZLVAULT_AP_ID></code></td><td>/zlvault</td></tr>
+                            <tr><td>zluilogs-ap</td><td><code><YOUR_ZLUILOGS_AP_ID></code></td><td>/zluilogs</td></tr>
+                            <tr><td>zlserverlogs-ap</td><td><code><YOUR_ZLSERVERLOGS_AP_ID></code></td><td>/zlserverlogs</td></tr>
+                            <tr><td>zltikatemp-ap</td><td><code><YOUR_ZLTIKATEMP_AP_ID></code></td><td>/zltikatemp</td></tr>
+                        </table>
+                    </div>
+                `
+            },
+            2: {
+                title: "Create EFS IAM Policy",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 2: Create EFS IAM Policy</h3>
+                        <div class="step-description">Creates the IAM policy required for the EFS CSI driver to manage EFS resources.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates IAM policy with permissions for EFS operations</li>
+                            <li>Allows CSI driver to create/delete access points</li>
+                            <li>Grants EC2 permissions for availability zone queries</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Policy JSON File:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DescribeAccessPoints",
+        "elasticfilesystem:DescribeFileSystems",
+        "elasticfilesystem:DescribeMountTargets",
+        "elasticfilesystem:DescribeMountTargetSecurityGroups"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:CreateAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DeleteAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeAvailabilityZones"
+      ],
+      "Resource": "*"
+    }
+  ]
+}')">Copy JSON</button>
+                            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DescribeAccessPoints",
+        "elasticfilesystem:DescribeFileSystems",
+        "elasticfilesystem:DescribeMountTargets",
+        "elasticfilesystem:DescribeMountTargetSecurityGroups"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:CreateAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DeleteAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeAvailabilityZones"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+                        </div>
+                        <p>Save this as <code>policies/EFS-IAM-policy.json</code></p>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create IAM Policy:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws iam create-policy --policy-name ZLEFSPolicy --policy-document file://policies/EFS-IAM-policy.json')">Copy</button>
+                            <pre><code>aws iam create-policy --policy-name ZLEFSPolicy --policy-document file://policies/EFS-IAM-policy.json</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                title: "Create IAM Service Account",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 3: Create IAM Service Account for EFS CSI Driver</h3>
+                        <div class="step-description">Creates a Kubernetes service account with IAM permissions for the EFS CSI driver.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates IAM service account for EFS CSI driver</li>
+                            <li>Attaches the EFS policy created in previous step</li>
+                            <li>Enables IRSA (IAM Roles for Service Accounts)</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('eksctl create iamserviceaccount --cluster use1-zlps-eks-01 --namespace kube-system --name efs-csi-controller-sa --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy --approve --role-name AmazonEKS_EFS_CSI_DriverRole')">Copy</button>
+                            <pre><code>eksctl create iamserviceaccount --cluster use1-zlps-eks-01 --namespace kube-system --name efs-csi-controller-sa --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy --approve --role-name AmazonEKS_EFS_CSI_DriverRole</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Note:</strong> This command creates both the Kubernetes service account and the corresponding IAM role with the necessary permissions.
+                    </div>
+                `
+            },
+            4: {
+                title: "Install EFS CSI Driver",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 4: Install EFS CSI Driver as EKS Add-on</h3>
+                        <div class="step-description">Installs the EFS CSI driver as an EKS managed add-on with the service account created in the previous step.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Installs EFS CSI driver as EKS managed add-on</li>
+                            <li>Uses the IAM service account created in previous step</li>
+                            <li>Enables EFS volume provisioning and mounting</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws eks create-addon --cluster-name use1-zlps-eks-01 --addon-name aws-efs-csi-driver --service-account-role-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:role/AmazonEKS_EFS_CSI_DriverRole --region us-east-1')">Copy</button>
+                            <pre><code>aws eks create-addon --cluster-name use1-zlps-eks-01 --addon-name aws-efs-csi-driver --service-account-role-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:role/AmazonEKS_EFS_CSI_DriverRole --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Installation:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get pods -n kube-system -l app=efs-csi-controller')">Copy</button>
+                            <pre><code>kubectl get pods -n kube-system -l app=efs-csi-controller</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                                 READY   STATUS    RESTARTS   AGE
+efs-csi-controller-6b8b8b8b8b-abcde   3/3     Running   0          30s
+efs-csi-controller-6b8b8b8b8b-fghij   3/3     Running   0          30s</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                title: "Create EFS File System",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 5: Create EFS File System</h3>
+                        <div class="step-description">Creates the EFS file system with appropriate performance and throughput settings.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates EFS file system with general purpose performance</li>
+                            <li>Configures bursting throughput mode</li>
+                            <li>Tags the file system for identification</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws efs create-file-system --region us-east-1 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=use1-zlps-efs-01')">Copy</button>
+                            <pre><code>aws efs create-file-system --region us-east-1 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=use1-zlps-efs-01</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>{
+    "CreationTime": "2025-12-16T...",
+    "FileSystemId": "<YOUR_EFS_FILE_SYSTEM_ID>",
+    "LifeCycleState": "creating",
+    "Name": "use1-zlps-efs-01",
+    "NumberOfMountTargets": 0,
+    "OwnerId": "<YOUR_ACCOUNT_ID>",
+    "PerformanceMode": "generalPurpose",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "use1-zlps-efs-01"
+        }
+    ],
+    "ThroughputMode": "bursting"
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Important</h4>
+                        <ul>
+                            <li>Save the FileSystemId (<code><YOUR_EFS_FILE_SYSTEM_ID></code>) - required for all subsequent EFS operations</li>
+                            <li>The file system will be in "creating" state initially</li>
+                        </ul>
+                    </div>
+                `
+            },
+            6: {
+                title: "Create EFS Security Group",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 6: Create EFS Security Group</h3>
+                        <div class="step-description">Creates a security group to allow NFS traffic from the EKS cluster to EFS mount targets.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates security group for EFS mount targets</li>
+                            <li>Allows NFS traffic (port 2049) from EKS cluster</li>
+                            <li>Restricts access to only authorized sources</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Get VPC ID and EKS Security Group:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Get VPC ID\naws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query &quot;cluster.resourcesVpcConfig.vpcId&quot; --output text\n\n# Get EKS Cluster Security Group ID\naws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query &quot;cluster.resourcesVpcConfig.clusterSecurityGroupId&quot; --output text')">Copy</button>
+                            <pre><code># Get VPC ID
+aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.resourcesVpcConfig.vpcId" --output text
+
+# Get EKS Cluster Security Group ID
+aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create EFS Security Group:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ec2 create-security-group --group-name use1-zlps-efs-sg --description &quot;Security group for EFS mount targets&quot; --vpc-id <YOUR_VPC_ID> --region us-east-1')">Copy</button>
+                            <pre><code>aws ec2 create-security-group --group-name use1-zlps-efs-sg --description "Security group for EFS mount targets" --vpc-id <YOUR_VPC_ID> --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Add NFS Inbound Rule:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ec2 authorize-security-group-ingress --group-id <YOUR_EFS_SG_ID> --protocol tcp --port 2049 --source-group <YOUR_EKS_CLUSTER_SG_ID> --region us-east-1')">Copy</button>
+                            <pre><code>aws ec2 authorize-security-group-ingress --group-id &lt;EFS_SG_ID&gt; --protocol tcp --port 2049 --source-group &lt;EKS_CLUSTER_SG_ID&gt; --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Security Group:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ec2 describe-security-groups --group-ids <YOUR_EFS_SG_ID> --region us-east-1 --query &quot;SecurityGroups[0].IpPermissions&quot;')">Copy</button>
+                            <pre><code>aws ec2 describe-security-groups --group-ids &lt;EFS_SG_ID&gt; --region us-east-1 --query "SecurityGroups[0].IpPermissions"</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            7: {
+                title: "Create Mount Targets",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 7: Create Mount Targets</h3>
+                        <div class="step-description">Creates mount targets in private subnets for EFS access from EKS worker nodes.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates mount targets in private subnets</li>
+                            <li>One mount target per Availability Zone</li>
+                            <li>Enables EFS access from worker nodes</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>List Private Subnets:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ec2 describe-subnets --filters &quot;Name=vpc-id,Values=<YOUR_VPC_ID>&quot; --region us-east-1 --query &quot;Subnets[*].[SubnetId,AvailabilityZone,CidrBlock,Tags[?Key==\'Name\'].Value|[0]]&quot; --output table')">Copy</button>
+                            <pre><code>aws ec2 describe-subnets --filters "Name=vpc-id,Values=<YOUR_VPC_ID>" --region us-east-1 \
+  --query "Subnets[*].[SubnetId,AvailabilityZone,CidrBlock,Tags[?Key=='Name'].Value|[0]]" --output table</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Mount Targets:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# For us-east-1a (Private Subnet)\naws efs create-mount-target --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --subnet-id <YOUR_PRIVATE_SUBNET_1A> --security-groups <YOUR_EFS_SG_ID> --region us-east-1\n\n# For us-east-1c (Private Subnet)\naws efs create-mount-target --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --subnet-id <YOUR_PRIVATE_SUBNET_1C> --security-groups <YOUR_EFS_SG_ID> --region us-east-1')">Copy</button>
+                            <pre><code># For us-east-1a (Private Subnet)
+aws efs create-mount-target --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --subnet-id <YOUR_PRIVATE_SUBNET_1A> --security-groups <YOUR_EFS_SG_ID> --region us-east-1
+
+# For us-east-1c (Private Subnet)
+aws efs create-mount-target --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --subnet-id <YOUR_PRIVATE_SUBNET_1C> --security-groups <YOUR_EFS_SG_ID> --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Mount Targets:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws efs describe-mount-targets --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --region us-east-1')">Copy</button>
+                            <pre><code>aws efs describe-mount-targets --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Why Private Subnets?</strong>
+                        <ul>
+                            <li>EFS traffic stays within the VPC (no internet exposure)</li>
+                            <li>EKS worker nodes run in private subnets</li>
+                            <li>Mount targets should be in the same subnets as clients accessing them</li>
+                        </ul>
+                    </div>
+                `
+            },
+            8: {
+                title: "Mount EFS on EC2/EKS Nodes",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 8: Mount EFS on EC2/EKS Nodes</h3>
+                        <div class="step-description">Install amazon-efs-utils and mount the EFS file system on EC2 instances or EKS worker nodes for direct access.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Installs amazon-efs-utils mount helper (supports TLS encryption)</li>
+                            <li>Creates mount point directory on the host</li>
+                            <li>Mounts EFS with TLS enabled (recommended for security)</li>
+                            <li>Configures automatic mounting via /etc/fstab</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Prerequisites</h4>
+                        <ul>
+                            <li>EC2 instance must be in the same VPC as EFS mount targets</li>
+                            <li>Security group must allow NFS traffic (TCP 2049) from EC2 to EFS</li>
+                            <li>Mount targets must be in "available" state</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Install amazon-efs-utils:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Amazon Linux 2 / Amazon Linux 2023\nsudo yum install -y amazon-efs-utils\n\n# Ubuntu / Debian\nsudo apt-get update\nsudo apt-get install -y amazon-efs-utils\n\n# Verify installation\nrpm -qa | grep amazon-efs-utils  # or dpkg -l | grep amazon-efs-utils')">Copy</button>
+                            <pre><code># Amazon Linux 2 / Amazon Linux 2023
+sudo yum install -y amazon-efs-utils
+
+# Ubuntu / Debian
+sudo apt-get update
+sudo apt-get install -y amazon-efs-utils
+
+# Verify installation
+rpm -qa | grep amazon-efs-utils  # or dpkg -l | grep amazon-efs-utils</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Mount Point:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('sudo mkdir -p /mnt/efs')">Copy</button>
+                            <pre><code>sudo mkdir -p /mnt/efs</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Mount EFS with TLS (Recommended):</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('sudo mount -t efs -o tls <YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs')">Copy</button>
+                            <pre><code>sudo mount -t efs -o tls <YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs</code></pre>
+                        </div>
+                        <div class="info-section">
+                            <strong>💡 TLS Encryption:</strong> The <code>-o tls</code> option enables encryption in transit, which is the recommended best practice for security. This is the default behavior when using amazon-efs-utils.
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Mount:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Check mounted filesystems\ndf -h | grep efs\n\n# Test write access\nsudo touch /mnt/efs/test-file.txt\nls -la /mnt/efs/\n\n# Clean up test\nsudo rm /mnt/efs/test-file.txt')">Copy</button>
+                            <pre><code># Check mounted filesystems
+df -h | grep efs
+
+# Test write access
+sudo touch /mnt/efs/test-file.txt
+ls -la /mnt/efs/
+
+# Clean up test
+sudo rm /mnt/efs/test-file.txt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Configure Automatic Mount (Add to /etc/fstab):</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Backup fstab first\nsudo cp /etc/fstab /etc/fstab.backup\n\n# Add EFS mount entry\necho &quot;<YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs efs defaults,_netdev 0 0&quot; | sudo tee -a /etc/fstab\n\n# Test fstab entry\nsudo mount -a')">Copy</button>
+                            <pre><code># Backup fstab first
+sudo cp /etc/fstab /etc/fstab.backup
+
+# Add EFS mount entry
+echo "<YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+
+# Test fstab entry
+sudo mount -a</code></pre>
+                        </div>
+                        <div class="info-section">
+                            <strong>💡 _netdev Option:</strong> This ensures the mount waits for network availability at boot time, preventing mount failures during system startup.
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📚 Additional Resources</h4>
+                        <ul>
+                            <li><a href="https://docs.aws.amazon.com/efs/latest/ug/using-amazon-efs-utils.html" target="_blank">AWS EFS Utils Documentation</a> - Official mount helper guide</li>
+                            <li><strong>Cross-Region Mounting:</strong> If mounting from a different region, configure <code>/etc/amazon/efs/efs-utils.conf</code> with the correct DNS target</li>
+                            <li><strong>IAM Authorization:</strong> For additional security, configure IAM-based access control in efs-utils.conf</li>
+                        </ul>
+                    </div>
+                `
+            },
+            9: {
+                title: "Create EFS Access Points",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 9: Create EFS Access Points</h3>
+                        <div class="step-description">Creates access points for application-specific entry points with enforced user identity and directory isolation.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates application-specific access points</li>
+                            <li>Provides directory isolation and user identity enforcement</li>
+                            <li>Enables secure multi-tenant access to shared file system</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Access Points:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# zlvault Access Point\\naws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory &quot;Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}&quot; --tags Key=Name,Value=zlvault-ap --region us-east-1\\n\\n# zluilogs Access Point\\naws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory &quot;Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}&quot; --tags Key=Name,Value=zluilogs-ap --region us-east-1\\n\\n# zlserverlogs Access Point\\naws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory &quot;Path=/zlserverlogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}&quot; --tags Key=Name,Value=zlserverlogs-ap --region us-east-1\\n\\n# zltikatemp Access Point\\naws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory &quot;Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}&quot; --tags Key=Name,Value=zltikatemp-ap --region us-east-1')">Copy</button>
+                            <pre><code># zlvault Access Point
+aws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlvault-ap --region us-east-1
+
+# zluilogs Access Point
+aws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zluilogs-ap --region us-east-1
+
+# zlserverlogs Access Point
+aws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlserverlogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlserverlogs-ap --region us-east-1
+
+# zltikatemp Access Point
+aws efs create-access-point --file-system-id <YOUR_EFS_FILE_SYSTEM_ID> --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zltikatemp-ap --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            10: {
+                title: 'Phase 4 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 4 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 5, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> EFS CSI Driver IAM policy created</label><br>
+                            <label><input type="checkbox"> EFS CSI Driver IAM service account configured</label><br>
+                            <label><input type="checkbox"> EFS CSI Driver installed as EKS add-on</label><br>
+                            <label><input type="checkbox"> EFS file system created</label><br>
+                            <label><input type="checkbox"> EFS security group configured with NFS inbound rules</label><br>
+                            <label><input type="checkbox"> Mount targets created in all availability zones</label><br>
+                            <label><input type="checkbox"> EFS mounted on EC2/EKS nodes with TLS encryption</label><br>
+                            <label><input type="checkbox"> EFS access points created (zlvault, zluilogs, zlserverlogs, zltikatemp)</label><br>
+                            <label><input type="checkbox"> EFS StorageClass and PersistentVolumes deployed</label><br>
+                            <label><input type="checkbox"> PersistentVolumeClaims created and bound</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 5:</strong> Once all items are checked, you can proceed to Phase 5 (S3 CSI Driver).
+                        </div>
+
+                        <!-- Bottom Pagination Controls -->
+                        <div class="pagination-controls bottom-controls">
+                            <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                                ← Previous Step
+                            </button>
+                            <div class="step-title">Phase 4 Completion Checklist</div>
+                            <button class="nav-btn next-btn" disabled style="background: var(--success-color);">
+                                Phase Complete ✓
+                            </button>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 10;
+        const phaseSteps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        function updatePagination() {
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                const step = parseInt(dot.dataset.step);
+                dot.classList.toggle('active', step === currentStep);
+                dot.classList.toggle('completed', step < currentStep);
+            });
+
+            // Update objectives highlighting
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                }
+            });
+
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentStep === 1;
+            document.getElementById('next-btn').disabled = currentStep === totalSteps;
+
+            // Update step info
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('step-title').textContent = stepData[currentStep].title;
+
+            // Update progress
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+
+            // Load step content
+            document.getElementById('step-container').innerHTML = stepData[currentStep].content;
+
+            // Update URL hash for bookmarking
+            window.location.hash = 'step-' + currentStep;
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updatePagination();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updatePagination();
+            }
+        }
+
+        function goToStep(step) {
+            if (step >= 1 && step <= totalSteps) {
+                currentStep = step;
+                updatePagination();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for hash in URL
+            const hash = window.location.hash;
+            if (hash.startsWith('#step-')) {
+                const step = parseInt(hash.replace('#step-', ''));
+                if (step >= 1 && step <= totalSteps) {
+                    currentStep = step;
+                }
+            }
+
+            updatePagination();
+
+            // Event listeners
+            document.getElementById('next-btn').addEventListener('click', nextStep);
+            document.getElementById('prev-btn').addEventListener('click', prevStep);
+
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    goToStep(parseInt(this.dataset.step));
+                });
+            });
+        });
+
+        // Utility functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show temporary feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                const originalClass = btn.className;
+                btn.textContent = 'Copied!';
+                btn.className = 'copy-btn copied';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.className = originalClass;
+                }, 2000);
+            });
+        }
+
+        function toggleYaml(btn) {
+            const content = btn.nextElementSibling;
+            const isVisible = content.style.display !== 'none';
+            content.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? '📄 View YAML' : '📄 Hide YAML';
+        }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,25 @@
+# Install Chocolatey (if not installed)
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install tools via Chocolatey
+choco install awscli kubernetes-cli eksctl kubernetes-helm git docker-desktop -y
+
+# Or install AWS CLI directly
+msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /quiet
+
+# Install eksctl directly (alternative)
+choco install eksctl -y
+# Or download from: https://github.com/weaveworks/eksctl/releases
+
+
+
+C:\Projects\aws-zl\Deployment Guide\vscan
+
+aws ec2 describe-security-groups --name use1-zlps-rds-sg --region us-east-1 --query "SecurityGroups[0].IpPermissions"
+
+aws ssm start-session --target i-0c4a7fcbb2ec5890c --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters {\"host\":[\"use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}' --region us-east-1
+
+
+aws ssm start-session --target i-0c4a7fcbb2ec5890c --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters {\"host\":[\"use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}' --region us-east-1

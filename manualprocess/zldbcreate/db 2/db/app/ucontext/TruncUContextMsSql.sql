@@ -1,0 +1,10 @@
+TRUNCATE TABLE pfuser.UContext
+TRUNCATE TABLE pfuser.UTag
+TRUNCATE TABLE pfuser.UContextDataSource
+TRUNCATE TABLE pfuser.UContextDataSourceRuns
+TRUNCATE TABLE pfuser.UCItem
+TRUNCATE TABLE pfuser.UContextSearch
+TRUNCATE TABLE pfuser.UContextAuditTrail
+TRUNCATE TABLE pfuser.UContextDataSourceIndexRuns
+TRUNCATE TABLE pfuser.UContextLiteSearch
+TRUNCATE TABLE pfuser.UContextLiteSearchRuns

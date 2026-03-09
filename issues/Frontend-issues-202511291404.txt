@@ -1,0 +1,2479 @@
+Cloud K8s deployment Platform.
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+
+Only fix items that are broken.
+
+
+=================
+Resolved
+=================
+
+
+
+
+==================
+Issue Description
+==================
+
+Prerequisite test fails
+
+
+==================
+Browser Error
+==================
+
+Failed to check prerequisites: Validation failed
+
+==================
+Terraform Output
+==================
+
+
+
+
+==================
+Browser Console
+==================
+
+content-scripts.js:1 CONTENT_SHELL: Page is excluded. Skipping shell protection.
+content-scripts.js:1 TSS: excluded result:  true
+content-scripts.js:1 SCHJK: Search Hijacking notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+content-scripts.js:1 Content Script Bridge: Unknown message type,  MSG_CHECK_DOMAIN_ALLOW_LIST_RESPONSE
+injection-tss-mv3.js:1 injection-tss TSS: hosted page injected
+injection-tss-mv3.js:1 injection-tss MBTSS: Nonce:  nonce
+react refresh:37 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:26
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:37
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+scheduler.development.js:517 [Violation] 'message' handler took 645ms
+[Violation] Forced reflow while executing JavaScript took 44ms
+api.js:171   GET http://localhost:3000/api/container-deployments/prerequisites 400 (Bad Request)
+dispatchXhrRequest @ xhr.js:198
+xhr @ xhr.js:15
+dispatchRequest @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+Axios.<computed> @ Axios.js:211
+wrap @ bind.js:12
+get @ api.js:171
+(anonymous) @ CloudDeploymentToolkit.jsx:391
+(anonymous) @ CloudDeploymentToolkit.jsx:997
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+CloudDeploymentToolkit.jsx:394  Failed to fetch prerequisites AxiosError {message: 'Request failed with status code 400', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+(anonymous) @ CloudDeploymentToolkit.jsx:394
+await in (anonymous)
+(anonymous) @ CloudDeploymentToolkit.jsx:997
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+content-scripts.js:1 DFP: Breach notification feature flag is enabled. true
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackWarnings
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackClose
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackWarnings
+api.js:171   GET http://localhost:3000/api/container-deployments/prerequisites 400 (Bad Request)
+dispatchXhrRequest @ xhr.js:198
+xhr @ xhr.js:15
+dispatchRequest @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+Axios.<computed> @ Axios.js:211
+wrap @ bind.js:12
+get @ api.js:171
+(anonymous) @ CloudDeploymentToolkit.jsx:391
+(anonymous) @ CloudDeploymentToolkit.jsx:997
+commitHookEffectListMount @ react-dom.development.js:23189
+invokePassiveEffectMountInDEV @ react-dom.development.js:25193
+invokeEffectsInDev @ react-dom.development.js:27390
+commitDoubleInvokeEffectsInDEV @ react-dom.development.js:27369
+flushPassiveEffectsImpl @ react-dom.development.js:27095
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+CloudDeploymentToolkit.jsx:394  Failed to fetch prerequisites AxiosError {message: 'Request failed with status code 400', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+(anonymous) @ CloudDeploymentToolkit.jsx:394
+await in (anonymous)
+(anonymous) @ CloudDeploymentToolkit.jsx:997
+commitHookEffectListMount @ react-dom.development.js:23189
+invokePassiveEffectMountInDEV @ react-dom.development.js:25193
+invokeEffectsInDev @ react-dom.development.js:27390
+commitDoubleInvokeEffectsInDEV @ react-dom.development.js:27369
+flushPassiveEffectsImpl @ react-dom.development.js:27095
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+favicon.ico:1   GET http://localhost:3000/favicon.ico 404 (Not Found)
+
+
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+fetch("http://localhost:3000/cloud-toolkit", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/static/js/bundle.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "878+GJSsI+CRZMg1rY/erg==",
+    "sec-websocket-version": "13",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/prerequisites", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/context", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/local-images", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/containers", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/info", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/credentials", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/deployments", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/services", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/pods", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/configmaps", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/secrets", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/events", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/resources", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/prerequisites", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/context", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"2e9-L2tNPPIGacfPKcdQDKXJrraU3HU\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/local-images", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"11aba-ap7Jo2HGjGrS5suwq/ec3LLyK68\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/containers", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"4f5-hTE9gFdZofpCOm8Qn6GTkNVW4c0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/info", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"2b7-0hx/eVhB3P7TS2/Lhp9Z4mRRlms\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/credentials", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"3b7-z7SNVMoNxu8ExaEGfjHkc73W7zs\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/deployments", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"655-SARs+knxaJSszHYidB9+C93ETNk\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/services", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"4f7-whuIcYPKfQ82P2eivEG/IdArC/Y\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/pods", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"a48-kaKxA/FyjQmAoUQtaOZiM50w9DY\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/configmaps", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"d2-Ju6XhBBj+GXV+hZJhD1C/BSN4TE\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/secrets", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"65-4itcqFKaItw7g9eF2KD5vjik7fc\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/events", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"68c-pCgGrzfNO8/FUo/UW4vwflGu4cQ\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/resources", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0NDQ0Mjg2LCJleHAiOjE3NjQ1MzA2ODZ9.FeGAR7wBLcTuswcK0mOUdhPVAOL_2fXftmwiWJ2QoL8",
+    "if-none-match": "W/\"a1-g7RV91Dl9GOmVboQ3LBBNT9Smfw\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referer": "http://localhost:3000/cloud-toolkit"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "eL/mJTBhZyxJUc9kS7gktA==",
+    "sec-websocket-version": "13",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+});
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:45436) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:45436) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Failed to compile.
+
+[eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 2725:12:  'Security' is not defined      react/jsx-no-undef
+  Line 2758:72:  'LockOutlined' is not defined  react/jsx-no-undef
+  Line 2758:91:  'LockOpen' is not defined      react/jsx-no-undef
+  Line 2785:22:  'PublicOff' is not defined     react/jsx-no-undef
+  Line 2801:73:  'LockOutlined' is not defined  react/jsx-no-undef
+  Line 2801:92:  'LockOpen' is not defined      react/jsx-no-undef
+  Line 2833:12:  'Label' is not defined         react/jsx-no-undef
+  Line 2889:51:  'CloudDone' is not defined     react/jsx-no-undef
+  Line 2897:59:  'CloudDone' is not defined     react/jsx-no-undef
+  Line 2959:12:  'Security' is not defined      react/jsx-no-undef
+  Line 3025:12:  'Router' is not defined        react/jsx-no-undef
+  Line 3067:59:  'PublicOff' is not defined     react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+WARNING in [eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 90:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 91:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 92:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 102:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 104:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 141:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 141:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 196:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 198:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 198:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 199:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 204:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 204:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 205:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 205:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 209:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 230:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 230:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 525:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 613:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+ERROR in [eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 2725:12:  'Security' is not defined      react/jsx-no-undef
+  Line 2758:72:  'LockOutlined' is not defined  react/jsx-no-undef
+  Line 2758:91:  'LockOpen' is not defined      react/jsx-no-undef
+  Line 2785:22:  'PublicOff' is not defined     react/jsx-no-undef
+  Line 2801:73:  'LockOutlined' is not defined  react/jsx-no-undef
+  Line 2801:92:  'LockOpen' is not defined      react/jsx-no-undef
+  Line 2833:12:  'Label' is not defined         react/jsx-no-undef
+  Line 2889:51:  'CloudDone' is not defined     react/jsx-no-undef
+  Line 2897:59:  'CloudDone' is not defined     react/jsx-no-undef
+  Line 2959:12:  'Security' is not defined      react/jsx-no-undef
+  Line 3025:12:  'Router' is not defined        react/jsx-no-undef
+  Line 3067:59:  'PublicOff' is not defined     react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 1 warning
+(node:45436) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+webpack compiled with 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+webpack compiled with 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\CloudDeploymentToolkit.jsx
+  Line 83:23:   'ChecklistIcon' is defined but never used                     no-unused-vars
+  Line 87:10:   'NetworkIcon' is defined but never used                       no-unused-vars
+  Line 88:15:   'SecurityIcon' is defined but never used                      no-unused-vars
+  Line 93:11:   'PrivateIcon' is defined but never used                       no-unused-vars
+  Line 94:13:   'SubnetIcon' is defined but never used                        no-unused-vars
+  Line 96:22:   'LoadBalancerIcon' is defined but never used                  no-unused-vars
+  Line 109:11:  'SyncIcon' is defined but never used                          no-unused-vars
+  Line 111:16:  'PlayIcon' is defined but never used                          no-unused-vars
+  Line 148:10:  'prerequisitesLoading' is assigned a value but never used     no-unused-vars
+  Line 148:32:  'setPrerequisitesLoading' is assigned a value but never used  no-unused-vars
+  Line 203:10:  'vpcDetails' is assigned a value but never used               no-unused-vars
+  Line 205:10:  'selectedLbTemplate' is assigned a value but never used       no-unused-vars
+  Line 205:30:  'setSelectedLbTemplate' is assigned a value but never used    no-unused-vars
+  Line 206:10:  'endpointUpdatePending' is assigned a value but never used    no-unused-vars
+  Line 211:10:  'selectedConfigMap' is assigned a value but never used        no-unused-vars
+  Line 211:29:  'setSelectedConfigMap' is assigned a value but never used     no-unused-vars
+  Line 212:10:  'selectedSecret' is assigned a value but never used           no-unused-vars
+  Line 212:26:  'setSelectedSecret' is assigned a value but never used        no-unused-vars
+  Line 216:10:  'podMetrics' is assigned a value but never used               no-unused-vars
+  Line 237:10:  'selectedStatefulSet' is assigned a value but never used      no-unused-vars
+  Line 237:31:  'setSelectedStatefulSet' is assigned a value but never used   no-unused-vars
+  Line 532:9:   'fetchVpcDetails' is assigned a value but never used          no-unused-vars
+  Line 620:9:   'fetchPodMetrics' is assigned a value but never used          no-unused-vars
+
+webpack compiled with 1 warning
+
+
+
+
+
+
+
+
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-11-29 14:01:07 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-29 14:01:07 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-29 14:01:07 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-29 14:01:07 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-29 14:01:07 [info]: DeploymentTemplateService initialized with builtin templates
+(node:61788) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61788) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-29 14:01:14 [info]: Database connection authenticated
+2025-11-29 14:01:14 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-29 14:01:14 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+2025-11-29 14:02:56 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 401,
+  "duration": "25ms"
+}
+2025-11-29 14:02:56 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 401,
+  "duration": "11ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:02:56 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:02:56 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:24:42 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/favicon.ico"
+}
+2025-11-29 14:24:42 [info]: GET /favicon.ico {
+  "method": "GET",
+  "path": "/favicon.ico",
+  "statusCode": 404,
+  "duration": "26ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:24:42 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT "id", "email", "first_name" AS "firstName", "last_name" AS "lastName", "password_hash" AS "passwordHash", "role", "is_active" AS "isActive", "last_login" AS "lastLogin", "mfa_enabled" AS "mfaEnabled", "mfa_secret" AS "mfaSecret", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "users" AS "User" WHERE "User"."email" = 'jpitzen@zlti.com';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:24:46 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+Executing (default): UPDATE "users" SET "last_login"=$1,"updated_at"=$2 WHERE "id" = $3
+2025-11-29 14:24:46 [info]: User logged in: jpitzen@zlti.com {
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:24:46 [info]: POST /login {
+  "method": "POST",
+  "path": "/login",
+  "statusCode": 200,
+  "duration": "457ms"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:24:47 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "101ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:24:47 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:24:47 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "72ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:24:47 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:00 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "163ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:00 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:00 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "36ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:00 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:04 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "49ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:04 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:04 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "24ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:04 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" IN ('completed', 'running') AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "status", "configuration", "results", "created_at" AS "createdAt", "completed_at" AS "completedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" IN ('completed', 'running') AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:10 [info]: Clusters listed {
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "clusterCount": 1
+}
+2025-11-29 14:25:10 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "57ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:10 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" IN ('completed', 'running') AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "status", "configuration", "results", "created_at" AS "createdAt", "completed_at" AS "completedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" IN ('completed', 'running') AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:10 [info]: Clusters listed {
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "clusterCount": 1
+}
+2025-11-29 14:25:10 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "29ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:10 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "ContainerDeployment"."id", "ContainerDeployment"."userId", "ContainerDeployment"."credentialId", "ContainerDeployment"."deploymentId", "ContainerDeployment"."name", "ContainerDeployment"."status", "ContainerDeployment"."currentPhase", "ContainerDeployment"."sourceType", "ContainerDeployment"."dockerfilePath", "ContainerDeployment"."buildContext", "ContainerDeployment"."gitRepoUrl", "ContainerDeployment"."gitBranch", "ContainerDeployment"."imageName", "ContainerDeployment"."imageTag", "ContainerDeployment"."localImageId", "ContainerDeployment"."deploymentTarget", "ContainerDeployment"."registryType", "ContainerDeployment"."registryUrl", "ContainerDeployment"."repositoryName", "ContainerDeployment"."registryRegion", "ContainerDeployment"."pushedImageUri", "ContainerDeployment"."k8sNamespace", "ContainerDeployment"."k8sDeploymentName", "ContainerDeployment"."k8sServiceName", "ContainerDeployment"."k8sServiceType", "ContainerDeployment"."k8sReplicas", "ContainerDeployment"."k8sContainerPort", "ContainerDeployment"."k8sServicePort", "ContainerDeployment"."k8sResourceRequests", "ContainerDeployment"."k8sResourceLimits", "ContainerDeployment"."k8sEnvironmentVars", "ContainerDeployment"."k8sConfigMaps", "ContainerDeployment"."k8sSecrets", "ContainerDeployment"."k8sHealthCheck", "ContainerDeployment"."buildArgs", "ContainerDeployment"."buildPlatform", "ContainerDeployment"."noCache", "ContainerDeployment"."progress", "ContainerDeployment"."logs", "ContainerDeployment"."errorMessage", "ContainerDeployment"."buildStartedAt", "ContainerDeployment"."buildCompletedAt", "ContainerDeployment"."pushStartedAt", "ContainerDeployment"."pushCompletedAt", "ContainerDeployment"."deployStartedAt", "ContainerDeployment"."deployCompletedAt", "ContainerDeployment"."metricsData", "ContainerDeployment"."previousImageUri", "ContainerDeployment"."rollbackAvailable", "ContainerDeployment"."createdAt", "ContainerDeployment"."updatedAt", "ContainerDeployment"."deletedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "clusterDeployment"."id" AS "clusterDeployment.id", "clusterDeployment"."cluster_name" AS "clusterDeployment.clusterName", "clusterDeployment"."status" AS "clusterDeployment.status" FROM "container_deployments" AS "ContainerDeployment" LEFT OUTER JOIN "credentials" AS "credential" ON "ContainerDeployment"."credentialId" = "credential"."id" LEFT OUTER JOIN "deployments" AS "clusterDeployment" ON "ContainerDeployment"."deploymentId" = "clusterDeployment"."id" WHERE ("ContainerDeployment"."deletedAt" IS NULL AND "ContainerDeployment"."userId" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d') ORDER BY "ContainerDeployment"."createdAt" DESC;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:13 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "67ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): SELECT count("Deployment"."id") AS "count" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."encrypted_credential_data" AS "credential.encryptedCredentialData", "credential"."credential_data_iv" AS "credential.credentialDataIv", "credential"."credential_data_auth_tag" AS "credential.credentialDataAuthTag", "credential"."additional_regions" AS "credential.additionalRegions", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt", "user"."id" AS "user.id", "user"."email" AS "user.email", "user"."first_name" AS "user.firstName", "user"."last_name" AS "user.lastName", "user"."password_hash" AS "user.passwordHash", "user"."role" AS "user.role", "user"."is_active" AS "user.isActive", "user"."last_login" AS "user.lastLogin", "user"."mfa_enabled" AS "user.mfaEnabled", "user"."mfa_secret" AS "user.mfaSecret", "user"."created_at" AS "user.createdAt", "user"."updated_at" AS "user.updatedAt" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:13 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "147ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:13 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "195ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "ContainerDeployment"."id", "ContainerDeployment"."userId", "ContainerDeployment"."credentialId", "ContainerDeployment"."deploymentId", "ContainerDeployment"."name", "ContainerDeployment"."status", "ContainerDeployment"."currentPhase", "ContainerDeployment"."sourceType", "ContainerDeployment"."dockerfilePath", "ContainerDeployment"."buildContext", "ContainerDeployment"."gitRepoUrl", "ContainerDeployment"."gitBranch", "ContainerDeployment"."imageName", "ContainerDeployment"."imageTag", "ContainerDeployment"."localImageId", "ContainerDeployment"."deploymentTarget", "ContainerDeployment"."registryType", "ContainerDeployment"."registryUrl", "ContainerDeployment"."repositoryName", "ContainerDeployment"."registryRegion", "ContainerDeployment"."pushedImageUri", "ContainerDeployment"."k8sNamespace", "ContainerDeployment"."k8sDeploymentName", "ContainerDeployment"."k8sServiceName", "ContainerDeployment"."k8sServiceType", "ContainerDeployment"."k8sReplicas", "ContainerDeployment"."k8sContainerPort", "ContainerDeployment"."k8sServicePort", "ContainerDeployment"."k8sResourceRequests", "ContainerDeployment"."k8sResourceLimits", "ContainerDeployment"."k8sEnvironmentVars", "ContainerDeployment"."k8sConfigMaps", "ContainerDeployment"."k8sSecrets", "ContainerDeployment"."k8sHealthCheck", "ContainerDeployment"."buildArgs", "ContainerDeployment"."buildPlatform", "ContainerDeployment"."noCache", "ContainerDeployment"."progress", "ContainerDeployment"."logs", "ContainerDeployment"."errorMessage", "ContainerDeployment"."buildStartedAt", "ContainerDeployment"."buildCompletedAt", "ContainerDeployment"."pushStartedAt", "ContainerDeployment"."pushCompletedAt", "ContainerDeployment"."deployStartedAt", "ContainerDeployment"."deployCompletedAt", "ContainerDeployment"."metricsData", "ContainerDeployment"."previousImageUri", "ContainerDeployment"."rollbackAvailable", "ContainerDeployment"."createdAt", "ContainerDeployment"."updatedAt", "ContainerDeployment"."deletedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "clusterDeployment"."id" AS "clusterDeployment.id", "clusterDeployment"."cluster_name" AS "clusterDeployment.clusterName", "clusterDeployment"."status" AS "clusterDeployment.status" FROM "container_deployments" AS "ContainerDeployment" LEFT OUTER JOIN "credentials" AS "credential" ON "ContainerDeployment"."credentialId" = "credential"."id" LEFT OUTER JOIN "deployments" AS "clusterDeployment" ON "ContainerDeployment"."deploymentId" = "clusterDeployment"."id" WHERE ("ContainerDeployment"."deletedAt" IS NULL AND "ContainerDeployment"."userId" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d') ORDER BY "ContainerDeployment"."createdAt" DESC;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:13 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "48ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:13 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:13 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "32ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:14 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("Deployment"."id") AS "count" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."encrypted_credential_data" AS "credential.encryptedCredentialData", "credential"."credential_data_iv" AS "credential.credentialDataIv", "credential"."credential_data_auth_tag" AS "credential.credentialDataAuthTag", "credential"."additional_regions" AS "credential.additionalRegions", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt", "user"."id" AS "user.id", "user"."email" AS "user.email", "user"."first_name" AS "user.firstName", "user"."last_name" AS "user.lastName", "user"."password_hash" AS "user.passwordHash", "user"."role" AS "user.role", "user"."is_active" AS "user.isActive", "user"."last_login" AS "user.lastLogin", "user"."mfa_enabled" AS "user.mfaEnabled", "user"."mfa_secret" AS "user.mfaSecret", "user"."created_at" AS "user.createdAt", "user"."updated_at" AS "user.updatedAt" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:14 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "139ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:14 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:15 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "7ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:25:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:16 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "990ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:17 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "17ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:17 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:17 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:19 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "6038ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:19 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:20 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "4521ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:20 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "4421ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:20 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "3091ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:20 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "4972ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:21 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "81ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:21 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "2ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:25:21 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1916ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:22 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "195ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:22 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "14ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:22 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:22 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:22 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:23 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "1955ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:23 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1998ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:23 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "2032ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:23 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "1300ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:24 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "48ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:24 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "1740ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:24 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "1617ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:25 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "1734ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:25 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "2049ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:26 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "2247ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:26 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "2453ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:28 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "2895ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:28 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "2976ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:25:28 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "2700ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:28 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:33 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "4348ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:36 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:25:43 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "8ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:25:43 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:27:33 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "7ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:27:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+2025-11-29 14:28:17 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "9ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:17 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:18 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "153ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:18 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:19 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "1514ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:19 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:23 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "5040ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:23 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "4588ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:23 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "3443ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:23 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "5530ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:23 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "5507ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:23 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "36ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:23 [info]: GET /prerequisites {
+  "method": "GET",
+  "path": "/prerequisites",
+  "statusCode": 400,
+  "duration": "2ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "prerequisites",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "failure"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:24 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/favicon.ico"
+}
+2025-11-29 14:28:24 [info]: GET /favicon.ico {
+  "method": "GET",
+  "path": "/favicon.ico",
+  "statusCode": 404,
+  "duration": "5ms"
+}
+2025-11-29 14:28:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:24 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "6ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:24 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:25 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "116ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:25 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1689ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:25 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1718ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:25 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1834ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:25 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "1638ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:25 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:26 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "1351ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:27 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "1863ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:27 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "1821ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:27 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "32ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:27 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "1892ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:27 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "2156ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:28:29 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1487ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:29 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1582ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:29 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "1498ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:28:29 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1612ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-29 14:28:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-29 14:31:39 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "383669ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:31:39 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "181924ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:31:39 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "201885ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-29 14:31:39 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "363835ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}

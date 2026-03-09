@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: efs-init-zlserver-zk
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: init
+          image: public.ecr.aws/amazonlinux/amazonlinux:2
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "Creating EFS directories for ZLServer ZK"
+              mkdir -p /efs/ZipLip/bin/zk
+              chmod -R 755 /efs/ZipLip
+              ls -ld /efs/ZipLip/bin/zk
+              echo "Listing /efs/ZipLip/bin/zk:"
+              ls -l /efs/ZipLip/bin/zk || true
+              echo "EFS ZK directory created successfully"
+          volumeMounts:
+            - name: efs-root
+              mountPath: /efs
+      volumes:
+        - name: efs-root
+          persistentVolumeClaim:
+            claimName: efs-root-pvc

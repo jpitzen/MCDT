@@ -1,0 +1,128 @@
+# ZLZooKeeper StatefulSet - Kubernetes-Optimized Image
+# Uses: zlzookeeper:11.1.0-b1140-k8s
+# Improvements:
+#   - Auto-creates myid from hostname (no init container)
+#   - Auto-generates zoo.cfg if not mounted
+#   - Kubernetes-aware defaults
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zlzookeeper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zlzookeeper
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      # NO INIT CONTAINER NEEDED - image auto-creates myid
+      containers:
+      - name: zlzookeeper
+        # Use Kubernetes-optimized image with -k8s suffix
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper-11.1.0-b1140-k8s
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        env:
+        # Kubernetes cluster configuration
+        - name: ZK_REPLICAS
+          value: "3"
+        - name: ZK_SERVICE_NAME
+          value: "zk-hs"
+        - name: ZK_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ZK_CLIENT_PORT
+          value: "2181"
+        - name: ZK_SERVER_PORT
+          value: "2888"
+        - name: ZK_ELECTION_PORT
+          value: "3888"
+        # Optional: Generate config automatically
+        # Remove this if mounting zoo.cfg via ConfigMap
+        - name: ZK_GENERATE_CONFIG
+          value: "true"
+        volumeMounts:
+        - mountPath: /var/lib/zookeeper/data
+          name: zk-data
+        - mountPath: /var/lib/zookeeper/log
+          name: zk-log
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        readinessProbe:
+          exec:
+            command:
+            - /opt/health/zk-health.sh
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+        livenessProbe:
+          exec:
+            command:
+            - /opt/health/zk-health.sh
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: zk-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: gp3
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: zk-log
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: gp3
+      resources:
+        requests:
+          storage: 10Gi

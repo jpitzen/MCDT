@@ -1,0 +1,5 @@
+Rollback Summary - Files modified and changes made:
+1. yaml/zlzookeeper-statefulset.yaml - Added authentication env vars, init container, volume mounts
+2. yaml/zk-hs.yaml - Added client port 2181 to headless service
+3. Created ConfigMaps: zk-config, zk-quorum-config, zk-jaas-config (all deleted)
+4. Current status: All changes rolled back, ZooKeeper pods still failing with clean config

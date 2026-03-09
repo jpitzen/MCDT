@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.3 | Dec 16, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item active" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>ZL Application AWS EKS Deployment Guide</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Home</span>
+                <span class="last-updated">Updated: Dec 16, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="overview-section">
+                <h2>🏠 Welcome to the ZL Application Deployment Guide</h2>
+                <p>This comprehensive guide walks you through deploying the ZL application on Amazon EKS (Elastic Kubernetes Service) with all necessary AWS integrations including ECR, EBS, EFS, S3, and RDS.</p>
+
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <h3>🎯 What You'll Deploy</h3>
+                        <ul>
+                            <li><strong>EKS Cluster:</strong> Managed Kubernetes control plane</li>
+                            <li><strong>Container Registry:</strong> ECR for Docker images</li>
+                            <li><strong>Storage:</strong> EBS, EFS, and S3 integrations</li>
+                            <li><strong>Database:</strong> RDS PostgreSQL instance</li>
+                            <li><strong>Application:</strong> ZL web application with ZooKeeper</li>
+                            <li><strong>Security:</strong> Inspector scanning and monitoring</li>
+                        </ul>
+                    </div>
+
+                    <div class="overview-card">
+                        <h3>📋 Prerequisites</h3>
+                        <p><strong>Before starting deployment:</strong></p>
+                        <ul>
+                            <li>AWS CLI v2.x+ installed and configured</li>
+                            <li>kubectl v1.28+ for cluster management</li>
+                            <li>eksctl v0.165+ for cluster creation</li>
+                            <li>Docker Desktop for container operations</li>
+                            <li>Helm v3.x for package management</li>
+                            <li>Git for repository cloning</li>
+                        </ul>
+                        <p><em>See Phase 0 for detailed setup instructions</em></p>
+                    </div>
+
+                    <div class="overview-card">
+                        <h3>🚀 Quick Start</h3>
+                        <ol>
+                            <li><strong>Phase 0:</strong> Configure AWS credentials and IAM</li>
+                            <li><strong>Phase 1:</strong> Create EKS cluster with worker nodes</li>
+                            <li><strong>Phase 2-5:</strong> Set up storage (ECR, EBS, EFS, S3)</li>
+                            <li><strong>Phase 6:</strong> Configure RDS database</li>
+                            <li><strong>Phase 7-8:</strong> Deploy ZooKeeper and application</li>
+                            <li><strong>Phase 9-11:</strong> Configure networking and scaling</li>
+                            <li><strong>Phase 12:</strong> Security scanning and validation</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-navigation">
+                <h2>📖 Deployment Phases</h2>
+                <p>Select a phase below to view detailed instructions:</p>
+
+                <div class="phase-grid">
+                    <a href="ZL_DG_PHASE_0.html" class="phase-card">
+                        <div class="phase-number">0</div>
+                        <div class="phase-content">
+                            <h3>AWS Configuration</h3>
+                            <p>Configure AWS credentials, create IAM users and policies, set up service accounts</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_1.html" class="phase-card">
+                        <div class="phase-number">1</div>
+                        <div class="phase-content">
+                            <h3>EKS Cluster Creation</h3>
+                            <p>Create managed EKS cluster with worker nodes and networking</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_2.html" class="phase-card">
+                        <div class="phase-number">2</div>
+                        <div class="phase-content">
+                            <h3>ECR & Image Management</h3>
+                            <p>Set up container registry and manage Docker images</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_3.html" class="phase-card">
+                        <div class="phase-number">3</div>
+                        <div class="phase-content">
+                            <h3>EBS CSI Driver</h3>
+                            <p>Configure persistent block storage for applications</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_4.html" class="phase-card">
+                        <div class="phase-number">4</div>
+                        <div class="phase-content">
+                            <h3>EFS CSI Driver</h3>
+                            <p>Set up shared file storage across pods</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_5.html" class="phase-card">
+                        <div class="phase-number">5</div>
+                        <div class="phase-content">
+                            <h3>S3 CSI Driver</h3>
+                            <p>Configure object storage integration</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_6.html" class="phase-card">
+                        <div class="phase-number">6</div>
+                        <div class="phase-content">
+                            <h3>Database Configuration</h3>
+                            <p>Deploy and configure RDS PostgreSQL database</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_7.html" class="phase-card">
+                        <div class="phase-number">7</div>
+                        <div class="phase-content">
+                            <h3>ZooKeeper Deployment</h3>
+                            <p>Set up ZooKeeper cluster for coordination</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_8.html" class="phase-card">
+                        <div class="phase-number">8</div>
+                        <div class="phase-content">
+                            <h3>Application Deployment</h3>
+                            <p>Deploy the ZL web application</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_9.html" class="phase-card">
+                        <div class="phase-number">9</div>
+                        <div class="phase-content">
+                            <h3>Network & Ingress</h3>
+                            <p>Configure ALB ingress and networking</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_10.html" class="phase-card">
+                        <div class="phase-number">10</div>
+                        <div class="phase-content">
+                            <h3>Cluster Autoscaling</h3>
+                            <p>Set up automatic scaling policies</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_11.html" class="phase-card">
+                        <div class="phase-number">11</div>
+                        <div class="phase-content">
+                            <h3>Post-Deployment</h3>
+                            <p>Final configuration and validation</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_12.html" class="phase-card">
+                        <div class="phase-number">12</div>
+                        <div class="phase-content">
+                            <h3>EC2 Configuration</h3>
+                            <p>EC2 instance setup and EFS mounting</p>
+                        </div>
+                    </a>
+
+                    <a href="ZL_DG_PHASE_13.html" class="phase-card">
+                        <div class="phase-number">13</div>
+                        <div class="phase-content">
+                            <h3>Security Scanning</h3>
+                            <p>Container vulnerability scanning</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+</script>
+
+</body>
+</html>

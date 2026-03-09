@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      initContainers:
+        - name: setup-config
+          image: busybox
+          command: ['sh', '-c', 'echo $(hostname) > /var/ZipLip/DATA/ZooKeeper/myid']
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+      containers:
+        - name: zlzookeeper
+          image: docker.io/library/zlzookeeper:zlzookeeper11.1.0-b1140
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: peer
+            - containerPort: 3888
+              name: election
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zk.cfg
+              subPath: zk.cfg
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zk-config
+          configMap:
+            name: zk-config
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 10Gi

@@ -1,0 +1,1215 @@
+Cloud K8s deployment Platform.
+
+=============================
+
+Instructions
+
+=============================
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+DB access must be through the pod.
+
+The Frontend and Backend dev servers are running in external powershell windows.
+
+Advise on when I should restart the dev servers.
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+5. I restarted both frontend and backend.
+
+Only fix items that are broken.
+
+==================
+Issue Description
+==================
+
+The deployment succeeded; however, it created the deployment in the wrong directory. 
+
+==================
+Browser Error
+==================
+
+
+
+==================
+Deployment Monitor Output
+==================
+
+Cloud Provider: • Region: N/A
+
+Deployment Monitor: 905ebdb2-44f3-4245-81db-43cacc2eb068
+Created: Dec 03, 2025 15:53:05
+✓ connected
+failed
+Deployment Progress
+
+75%
+
+Current Phase
+
+Cluster Ready
+Deployment Logs
+[LOG]
+Terraform initialized successfully
+
+15:40:43
+[TERRAFORM-OUTPUT]
+Terraform initialized
+
+15:40:43
+[INFO]
+Terraform variables written
+
+15:40:43
+[PHASE-TRANSITION]
+Phase: terraform-plan
+
+15:40:43
+[PHASE-TRANSITION]
+Phase: terraform-validate
+
+15:40:43
+[LOG]
+Validating Terraform configuration
+
+15:40:43
+
+==================
+Browser Console
+==================
+
+react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+:3000/api/deployment-drafts/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset:1   Failed to load resource: the server responded with a status of 400 (Bad Request)
+DeploymentDrafts.jsx:359  Reset failed: AxiosError
+handleResetDraft @ DeploymentDrafts.jsx:359
+:3000/api/deployment-drafts/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset:1   Failed to load resource: the server responded with a status of 400 (Bad Request)
+DeploymentDrafts.jsx:359  Reset failed: AxiosError
+handleResetDraft @ DeploymentDrafts.jsx:359
+useDeploymentSocket.js:70 Connection attempt 1/10
+useDeploymentSocket.js:318 Disconnecting WebSocket
+  WebSocket connection to 'ws://localhost:5000/socket.io/?deploymentId=905ebdb2-44f3-4245-81db-43cacc2eb068&EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
+doClose @ bundle.js:77597
+useDeploymentSocket.js:70 Connection attempt 1/10
+useDeploymentSocket.js:92 WebSocket connected: C3wce4YIgxa4QTFbAAAC
+useDeploymentSocket.js:101 Successfully subscribed to deployment: 905ebdb2-44f3-4245-81db-43cacc2eb068
+DeploymentStatusViewer.jsx:88 Loaded deployment status: Object
+DeploymentStatusViewer.jsx:93 Initializing progress from status: 15
+DeploymentStatusViewer.jsx:96 Initializing phase from status: terraform-init
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:172 Progress update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:172 Progress update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:155 Phase update received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+useDeploymentSocket.js:139 Deployment log received: Object
+
+
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+
+
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:131336) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:131336) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled successfully!
+
+You can now view k8s-deployer-frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.21:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+(node:131336) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 37:3:    'Collapse' is defined but never used                                                                            no-unused-vars
+  Line 41:3:    'Divider' is defined but never used                                                                             no-unused-vars
+  Line 60:17:   'ExpandMoreIcon' is defined but never used                                                                      no-unused-vars
+  Line 61:17:   'ExpandLessIcon' is defined but never used                                                                      no-unused-vars
+  Line 113:10:  'showRawOutput' is assigned a value but never used                                                              no-unused-vars
+  Line 118:6:   React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 37:3:    'Collapse' is defined but never used                                                                            no-unused-vars
+  Line 41:3:    'Divider' is defined but never used                                                                             no-unused-vars
+  Line 60:17:   'ExpandMoreIcon' is defined but never used                                                                      no-unused-vars
+  Line 61:17:   'ExpandLessIcon' is defined but never used                                                                      no-unused-vars
+  Line 113:10:  'showRawOutput' is assigned a value but never used                                                              no-unused-vars
+  Line 118:6:   React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 37:3:    'Collapse' is defined but never used                                                                            no-unused-vars
+  Line 41:3:    'Divider' is defined but never used                                                                             no-unused-vars
+  Line 60:17:   'ExpandMoreIcon' is defined but never used                                                                      no-unused-vars
+  Line 61:17:   'ExpandLessIcon' is defined but never used                                                                      no-unused-vars
+  Line 113:10:  'showRawOutput' is assigned a value but never used                                                              no-unused-vars
+  Line 118:6:   React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 37:3:    'Collapse' is defined but never used                                                                            no-unused-vars
+  Line 41:3:    'Divider' is defined but never used                                                                             no-unused-vars
+  Line 60:17:   'ExpandMoreIcon' is defined but never used                                                                      no-unused-vars
+  Line 61:17:   'ExpandLessIcon' is defined but never used                                                                      no-unused-vars
+  Line 113:10:  'showRawOutput' is assigned a value but never used                                                              no-unused-vars
+  Line 118:6:   React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning
+
+
+
+
+
+
+
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-12-03 15:35:23 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-12-03 15:35:23 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-12-03 15:35:23 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-12-03 15:35:23 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-12-03 15:35:23 [info]: DeploymentTemplateService initialized with builtin templates
+(node:116296) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+(Use `node --trace-warnings ...` to show where the warning was created)
+Executing (default): SELECT 1+1 AS result
+2025-12-03 15:35:24 [info]: Database connection authenticated
+2025-12-03 15:35:24 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-12-03 15:35:24 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:35:33 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "53ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:35:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:35:33 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "16ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:35:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:35:43 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "14ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:35:43 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:35:43 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "12ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:35:43 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:36:50 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "35ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:36:50 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "preview_results" AS "previewResults", "previewed_at" AS "previewedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58' AND "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:36:56 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset",
+  "statusCode": 400,
+  "duration": "7ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:36:56 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "preview_results" AS "previewResults", "previewed_at" AS "previewedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58' AND "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:37:18 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset",
+  "statusCode": 400,
+  "duration": "17ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:37:18 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/server.js`
+2025-12-03 15:37:43 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-12-03 15:37:44 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-12-03 15:37:44 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-12-03 15:37:44 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-12-03 15:37:44 [info]: DeploymentTemplateService initialized with builtin templates
+(node:43372) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+(Use `node --trace-warnings ...` to show where the warning was created)
+Executing (default): SELECT 1+1 AS result
+2025-12-03 15:37:45 [info]: Database connection authenticated
+2025-12-03 15:37:45 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-12-03 15:37:45 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/server.js`
+2025-12-03 15:37:51 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-12-03 15:37:51 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-12-03 15:37:51 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-12-03 15:37:51 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-12-03 15:37:51 [info]: DeploymentTemplateService initialized with builtin templates
+(node:91324) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+(Use `node --trace-warnings ...` to show where the warning was created)
+Executing (default): SELECT 1+1 AS result
+2025-12-03 15:37:53 [info]: Database connection authenticated
+2025-12-03 15:37:53 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-12-03 15:37:53 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "preview_results" AS "previewResults", "previewed_at" AS "previewedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58' AND "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"deployment_id"=$2,"approved_by"=$3,"approved_at"=$4,"approval_comment"=$5,"updated_at"=$6 WHERE "id" = $7
+2025-12-03 15:38:03 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:38:03 [info]: Deployment draft reset {
+  "draftId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "draftName": "usw1-deployment-01"
+}
+2025-12-03 15:38:03 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/reset",
+  "statusCode": 200,
+  "duration": "41ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:38:06 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "16ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:38:06 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "preview_results" AS "previewResults", "previewed_at" AS "previewedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"approved_by"=$2,"approved_at"=$3,"approval_comment"=$4,"updated_at"=$5 WHERE "id" = $6
+2025-12-03 15:38:11 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:38:11 [info]: Deployment draft approved {
+  "draftId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "approvedBy": "jpitzen@zlti.com",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:38:11 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/approve {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/approve",
+  "statusCode": 200,
+  "duration": "14ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:38:11 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "8ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:38:11 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."encrypted_credential_data" AS "credential.encryptedCredentialData", "credential"."credential_data_iv" AS "credential.credentialDataIv", "credential"."credential_data_auth_tag" AS "credential.credentialDataAuthTag", "credential"."additional_regions" AS "credential.additionalRegions", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (c15a83fa-376e-45b2-83c8-65c0537c90a4): START TRANSACTION;
+2025-12-03 15:38:13 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (c15a83fa-376e-45b2-83c8-65c0537c90a4): INSERT INTO "deployments" ("id","credential_id","user_id","cloud_provider","cluster_name","status","progress","current_phase","configuration","parameters","results","estimated_duration","terraform_state","terraform_outputs","deployment_phase","deployment_logs","metrics_data","tags","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "id","credential_id","user_id","cloud_provider","cluster_name","cluster_arn","status","destruction_requested_at","destruction_confirmed_at","destroyed_at","progress","current_phase","configuration","parameters","results","error_message","error_stack","started_at","paused_at","completed_at","estimated_duration","rolled_back_at","rolled_back_reason","terraform_working_dir","terraform_state","terraform_outputs","deployment_phase","terraform_version","deployment_logs","metrics_data","tags","created_at","updated_at";
+2025-12-03 15:38:13 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Deployment created {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "clusterName": "usw1-zlps-k8s-01"
+}
+Executing (c15a83fa-376e-45b2-83c8-65c0537c90a4): UPDATE "deployment_drafts" SET "status"=$1,"deployment_id"=$2,"updated_at"=$3 WHERE "id" = $4
+Executing (c15a83fa-376e-45b2-83c8-65c0537c90a4): COMMIT;
+2025-12-03 15:38:13 [info]: Deployment created from draft {
+  "draftId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "clusterName": "usw1-zlps-k8s-01"
+}
+2025-12-03 15:38:13 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/deploy {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/deploy",
+  "statusCode": 201,
+  "duration": "26ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."destruction_requested_at" AS "destructionRequestedAt", "Deployment"."destruction_confirmed_at" AS "destructionConfirmedAt", "Deployment"."destroyed_at" AS "destroyedAt", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:38:13 [info]: Starting terraform preview for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:38:13 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:38:13 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to terraform-plan-preview {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 25,
+  "metadata": {
+    "skipStatusChange": true
+  }
+}
+2025-12-03 15:38:13 [info]: [TerraformExecutor] Initializing Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:38:13 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to terraform-init {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 15,
+  "metadata": {
+    "status": "starting",
+    "skipStatusChange": true
+  }
+}
+2025-12-03 15:39:11 [info]: [TerraformExecutor] Copied environment files to deployment root {
+  "cloudProvider": "aws",
+  "srcEnvDir": "C:\\Projects\\ZLAWS\\automated-eks-deployer\\terraform\\environments\\aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+2025-12-03 15:39:14 [info]: [TerraformExecutor] Terraform initialized successfully {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "exitCode": 0
+}
+2025-12-03 15:39:14 [warn]: Failed to retrieve credentials from vault {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "vaultType": "aws-secrets",
+  "error": "AWS Secrets Manager not initialized"
+}
+2025-12-03 15:39:14 [info]: Terraform variables generated for deployment {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "variableCount": 116,
+  "isRedeployment": false
+}
+2025-12-03 15:39:14 [info]: [TerraformExecutor] Writing terraform.tfvars {
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "variablesCount": 116
+}
+2025-12-03 15:39:14 [info]: [TerraformExecutor] terraform.tfvars written successfully {
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "path": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.tfvars.json"
+}
+2025-12-03 15:39:14 [info]: [TerraformExecutor] Validating Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:39:14 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to terraform-validate {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 20,
+  "metadata": {
+    "status": "starting",
+    "skipStatusChange": true
+  }
+}
+2025-12-03 15:39:16 [info]: [TerraformExecutor] Terraform validation passed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+2025-12-03 15:39:16 [info]: AWS clients initialized {
+  "region": "us-west-1"
+}
+2025-12-03 15:39:18 [warn]: Could not retrieve VPC quota from Service Quotas, using default {
+  "error": "User: arn:aws:iam::995553364920:user/zlpsmsa is not authorized to perform: servicequotas:GetServiceQuota on resource: arn:aws:servicequotas:us-west-1:995553364920:vpc/L-F678F1CE because no identity-based policy allows the servicequotas:GetServiceQuota action"
+}
+2025-12-03 15:39:19 [warn]: Could not retrieve EIP quota from Service Quotas, using default {
+  "error": "User: arn:aws:iam::995553364920:user/zlpsmsa is not authorized to perform: servicequotas:GetServiceQuota on resource: arn:aws:servicequotas:us-west-1:995553364920:ec2/L-0263D0A3 because no identity-based policy allows the servicequotas:GetServiceQuota action"
+}
+2025-12-03 15:39:20 [info]: AWS deployment prerequisites check completed {
+  "valid": true,
+  "warningCount": 0,
+  "errorCount": 0
+}
+2025-12-03 15:39:20 [info]: AWS prerequisite check completed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "valid": true,
+  "errorCount": 0,
+  "warningCount": 0
+}
+2025-12-03 15:39:20 [info]: [TerraformExecutor] Planning Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "plan": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.plan"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:39:20 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to terraform-plan {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 30,
+  "metadata": {
+    "status": "starting",
+    "skipStatusChange": true
+  }
+}
+2025-12-03 15:39:23 [info]: [TerraformExecutor] Terraform plan completed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "planFile": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.plan"
+}
+2025-12-03 15:39:24 [info]: [TerraformExecutor] Retrieved plan details via terraform show {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "outputLength": 51851
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "terraform_working_dir"=$1,"updated_at"=$2 WHERE "id" = $3
+2025-12-03 15:39:24 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Terraform working dir set {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "workingDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:39:24 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to created {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 5,
+  "metadata": {
+    "skipStatusChange": true
+  }
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:39:24 [info]: Terraform preview completed for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 Plan: 41 to add, 0 to change, 0 to destroy {
+  "toAdd": 41,
+  "toChange": 0,
+  "toDestroy": 0,
+  "resources": [
+    {
+      "name": "aws_eip.nat[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_eip.nat[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_eip.nat[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_internet_gateway.main[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_nat_gateway.main[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_nat_gateway.main[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_nat_gateway.main[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table.private[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table.private[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table.private[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table.public[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.private[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.private[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.private[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.public[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.public[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_route_table_association.public[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.private[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.private[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.private[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.public[0]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.public[1]",
+      "action": "created"
+    },
+    {
+      "name": "aws_subnet.public[2]",
+      "action": "created"
+    },
+    {
+      "name": "aws_vpc.main[0]",
+      "action": "created"
+    },
+    {
+      "name": "module.ecr.aws_ecr_lifecycle_policy.main[0]",
+      "action": "created"
+    },
+    {
+      "name": "module.ecr.aws_ecr_repository.main",
+      "action": "created"
+    },
+    {
+      "name": "module.ecr.aws_ecr_repository_policy.main[0]",
+      "action": "created"
+    },
+    {
+      "name": "module.ecr.aws_iam_policy.ecr_access[0]",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_eks_cluster.main",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_eks_node_group.main",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_openid_connect_provider.cluster",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role.eks_cluster",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role.eks_node_group",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_block_storage_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_cluster_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_cni_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_compute_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_load_balancing_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_networking_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_node_group_policy",
+      "action": "created"
+    },
+    {
+      "name": "module.eks_cluster.aws_iam_role_policy_attachment.eks_registry_policy",
+      "action": "created"
+    }
+  ],
+  "valid": true
+}
+2025-12-03 15:39:24 [info]: POST /905ebdb2-44f3-4245-81db-43cacc2eb068/preview {
+  "method": "POST",
+  "path": "/905ebdb2-44f3-4245-81db-43cacc2eb068/preview",
+  "statusCode": 200,
+  "duration": "71489ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "credential_id" AS "credentialId", "name", "description", "cluster_name" AS "clusterName", "cloud_provider" AS "cloudProvider", "configuration", "estimated_monthly_cost" AS "estimatedMonthlyCost", "cost_breakdown" AS "costBreakdown", "status", "approved_by" AS "approvedBy", "approved_at" AS "approvedAt", "approval_comment" AS "approvalComment", "rejection_reason" AS "rejectionReason", "test_results" AS "testResults", "tested_at" AS "testedAt", "preview_results" AS "previewResults", "previewed_at" AS "previewedAt", "deployment_id" AS "deploymentId", "tags", "metadata", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" WHERE "DeploymentDraft"."id" = '2f7fa53c-94bc-4eef-b2fa-de1a15685d58' AND "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): UPDATE "deployment_drafts" SET "preview_results"=$1,"previewed_at"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:39:37 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:39:37 [info]: Preview results saved to draft {
+  "draftId": "2f7fa53c-94bc-4eef-b2fa-de1a15685d58",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "draftName": "usw1-deployment-01",
+  "hasDeploymentId": true
+}
+2025-12-03 15:39:37 [info]: POST /2f7fa53c-94bc-4eef-b2fa-de1a15685d58/save-preview {
+  "method": "POST",
+  "path": "/2f7fa53c-94bc-4eef-b2fa-de1a15685d58/save-preview",
+  "statusCode": 200,
+  "duration": "26ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."preview_results" AS "previewResults", "DeploymentDraft"."previewed_at" AS "previewedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:39:37 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "12ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:39:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."destruction_requested_at" AS "destructionRequestedAt", "Deployment"."destruction_confirmed_at" AS "destructionConfirmedAt", "Deployment"."destroyed_at" AS "destroyedAt", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:39:44 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:39:44 [info]: [Terraform] Initializing for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"status"=$3,"started_at"=$4,"updated_at"=$5 WHERE "id" = $6
+Executing (default): UPDATE "deployments" SET "status"=$1,"started_at"=$2,"current_phase"=$3,"metrics_data"=$4,"updated_at"=$5 WHERE "id" = $6
+2025-12-03 15:39:44 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 0: Phase updated to terraform-init {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 0,
+  "progress": 15,
+  "metadata": {}
+}
+2025-12-03 15:39:44 [info]: [TerraformExecutor] Initializing Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:39:44 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Deployment started {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."destruction_requested_at" AS "destructionRequestedAt", "Deployment"."destruction_confirmed_at" AS "destructionConfirmedAt", "Deployment"."destroyed_at" AS "destroyedAt", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."encrypted_credential_data" AS "credential.encryptedCredentialData", "credential"."credential_data_iv" AS "credential.credentialDataIv", "credential"."credential_data_auth_tag" AS "credential.credentialDataAuthTag", "credential"."additional_regions" AS "credential.additionalRegions", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployment_drafts" SET "status"=$1,"updated_at"=$2 WHERE "status" = $3 AND "deployment_id" = $4
+2025-12-03 15:39:44 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-init {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 15,
+  "metadata": {
+    "status": "starting"
+  }
+}
+2025-12-03 15:40:41 [info]: [TerraformExecutor] Copied environment files to deployment root {
+  "cloudProvider": "aws",
+  "srcEnvDir": "C:\\Projects\\ZLAWS\\automated-eks-deployer\\terraform\\environments\\aws",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+2025-12-03 15:40:41 [info]: Terraform execution initiated for deployment {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "clusterName": "usw1-zlps-k8s-01"
+}
+2025-12-03 15:40:41 [info]: POST /905ebdb2-44f3-4245-81db-43cacc2eb068/start {
+  "method": "POST",
+  "path": "/905ebdb2-44f3-4245-81db-43cacc2eb068/start",
+  "statusCode": 200,
+  "duration": "57555ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:40:41 [error]: Orchestrator execution failed for 905ebdb2-44f3-4245-81db-43cacc2eb068 Command failed: bash "C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh"
+/bin/bash: C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh: No such file or directory
+ {
+  "code": 127,
+  "killed": false,
+  "signal": null,
+  "cmd": "bash \"C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh\"",
+  "stdout": "",
+  "stderr": "/bin/bash: C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh: No such file or directory\n",
+  "stack": "Error: Command failed: bash \"C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh\"\n/bin/bash: C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh: No such file or directory\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at ChildProcess.exithandler (node:child_process:414:12)\n    at ChildProcess.emit (node:events:518:28)\n    at ChildProcess.emit (node:domain:489:12)\n    at maybeClose (node:internal/child_process:1101:16)\n    at Socket.<anonymous> (node:internal/child_process:456:11)\n    at Socket.emit (node:events:518:28)\n    at Socket.emit (node:domain:489:12)\n    at Pipe.<anonymous> (node:net:351:12)"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "status"=$1,"error_message"=$2,"error_stack"=$3,"updated_at"=$4 WHERE "id" = $5
+2025-12-03 15:40:41 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Deployment failed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "error": "Command failed: bash \"C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh\"\n/bin/bash: C:/Projects/ZLAWS/automated-eks-deployer/backend/scripts/deploy-orchestrator.sh: No such file or directory\n"
+}
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."destruction_requested_at" AS "destructionRequestedAt", "Deployment"."destruction_confirmed_at" AS "destructionConfirmedAt", "Deployment"."destroyed_at" AS "destroyedAt", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."cloud_region" AS "credential.cloudRegion", "user"."id" AS "user.id", "user"."email" AS "user.email" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:40:42 [info]: GET /905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "method": "GET",
+  "path": "/905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "statusCode": 200,
+  "duration": "6ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:40:42 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:40:42 [warn]: [WebSocket] Connection without auth token {
+  "clientId": "C3wce4YIgxa4QTFbAAAC"
+}
+2025-12-03 15:40:42 [info]: [WebSocket] Client connected {
+  "clientId": "C3wce4YIgxa4QTFbAAAC"
+}
+2025-12-03 15:40:42 [info]: [WebSocket] Client subscribed to deployment {
+  "clientId": "C3wce4YIgxa4QTFbAAAC",
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "totalSubscribers": 1
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): SELECT "Deployment"."id", "Deployment"."credential_id" AS "credentialId", "Deployment"."user_id" AS "userId", "Deployment"."cloud_provider" AS "cloudProvider", "Deployment"."cluster_name" AS "clusterName", "Deployment"."cluster_arn" AS "clusterArn", "Deployment"."status", "Deployment"."destruction_requested_at" AS "destructionRequestedAt", "Deployment"."destruction_confirmed_at" AS "destructionConfirmedAt", "Deployment"."destroyed_at" AS "destroyedAt", "Deployment"."progress", "Deployment"."current_phase" AS "currentPhase", "Deployment"."configuration", "Deployment"."parameters", "Deployment"."results", "Deployment"."error_message" AS "errorMessage", "Deployment"."error_stack" AS "errorStack", "Deployment"."started_at" AS "startedAt", "Deployment"."paused_at" AS "pausedAt", "Deployment"."completed_at" AS "completedAt", "Deployment"."estimated_duration" AS "estimatedDuration", "Deployment"."rolled_back_at" AS "rolledBackAt", "Deployment"."rolled_back_reason" AS "rolledBackReason", "Deployment"."terraform_working_dir" AS "terraformWorkingDir", "Deployment"."terraform_state" AS "terraformState", "Deployment"."terraform_outputs" AS "terraformOutputs", "Deployment"."deployment_phase" AS "deploymentPhase", "Deployment"."terraform_version" AS "terraformVersion", "Deployment"."deployment_logs" AS "deploymentLogs", "Deployment"."metrics_data" AS "metricsData", "Deployment"."tags", "Deployment"."created_at" AS "createdAt", "Deployment"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."cloud_region" AS "credential.cloudRegion", "user"."id" AS "user.id", "user"."email" AS "user.email" FROM "deployments" AS "Deployment" LEFT OUTER JOIN "credentials" AS "credential" ON "Deployment"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "user" ON "Deployment"."user_id" = "user"."id" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-12-03 15:40:42 [info]: GET /905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "method": "GET",
+  "path": "/905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "statusCode": 200,
+  "duration": "7ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-12-03 15:40:42 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-12-03 15:40:43 [info]: [TerraformExecutor] Terraform initialized successfully {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "exitCode": 0
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:43 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Terraform working dir set {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "workingDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:43 [info]: [Terraform] Generating variables for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+2025-12-03 15:40:43 [warn]: Failed to retrieve credentials from vault {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "vaultType": "aws-secrets",
+  "error": "AWS Secrets Manager not initialized"
+}
+2025-12-03 15:40:43 [info]: Terraform variables generated for deployment {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "variableCount": 116,
+  "isRedeployment": false
+}
+2025-12-03 15:40:43 [info]: [TerraformExecutor] Writing terraform.tfvars {
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "variablesCount": 116
+}
+2025-12-03 15:40:43 [info]: [TerraformExecutor] terraform.tfvars written successfully {
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "path": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.tfvars.json"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:43 [info]: [Terraform] Validating configuration for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:40:43 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-plan {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 30,
+  "metadata": {}
+}
+2025-12-03 15:40:43 [info]: [TerraformExecutor] Validating Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:40:43 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-validate {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 20,
+  "metadata": {
+    "status": "starting"
+  }
+}
+2025-12-03 15:40:46 [info]: [TerraformExecutor] Terraform validation passed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:46 [info]: [Terraform] Planning for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+2025-12-03 15:40:46 [info]: [TerraformExecutor] Planning Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "plan": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.plan"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:40:46 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-plan {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 30,
+  "metadata": {
+    "status": "starting"
+  }
+}
+2025-12-03 15:40:49 [info]: [TerraformExecutor] Terraform plan completed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "planFile": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.plan"
+}
+2025-12-03 15:40:51 [info]: [TerraformExecutor] Retrieved plan details via terraform show {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "outputLength": 51851
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:51 [info]: [Terraform] Applying for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:40:51 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-apply {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 60,
+  "metadata": {}
+}
+2025-12-03 15:40:51 [info]: [TerraformExecutor] Applying Terraform for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "deploymentDir": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01",
+  "plan": "\\tmp\\zlaws_deployments\\clusters\\aws-us-east-1-usw1-zlps-k8s-01\\terraform.plan"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:40:51 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to terraform-apply {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 60,
+  "metadata": {
+    "status": "starting"
+  }
+}
+2025-12-03 15:53:05 [info]: [TerraformExecutor] Terraform apply completed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068"
+}
+2025-12-03 15:53:05 [info]: [TerraformExecutor] Capturing Terraform outputs for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068 {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068"
+}
+2025-12-03 15:53:05 [error]: [TerraformExecutor] Command execution failed {
+  "command": "output",
+  "exitCode": "ENOENT",
+  "error": "spawn C:\\WINDOWS\\system32\\cmd.exe ENOENT"
+}
+2025-12-03 15:53:05 [warn]: [TerraformExecutor] Failed to capture outputs {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "exitCode": "ENOENT"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+2025-12-03 15:53:05 [info]: [Terraform] Cluster ready for deployment 905ebdb2-44f3-4245-81db-43cacc2eb068
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "deployment_phase"=$1,"progress"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-12-03 15:53:05 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Phase updated to cluster-ready {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "progress": 75,
+  "metadata": {}
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "destruction_requested_at" AS "destructionRequestedAt", "destruction_confirmed_at" AS "destructionConfirmedAt", "destroyed_at" AS "destroyedAt", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "metrics_data" AS "metricsData", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."id" = '905ebdb2-44f3-4245-81db-43cacc2eb068';
+Executing (default): UPDATE "deployments" SET "status"=$1,"deployment_phase"=$2,"results"=$3,"completed_at"=$4,"progress"=$5,"metrics_data"=$6,"updated_at"=$7 WHERE "id" = $8
+2025-12-03 15:53:05 [info]: DEPLOYMENT[905ebdb2-44f3-4245-81db-43cacc2eb068] Phase 1: Deployment completed {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "phase": 1,
+  "outputs": {}
+}
+2025-12-03 15:53:05 [info]: [Terraform] Deployment completed successfully {
+  "deploymentId": "905ebdb2-44f3-4245-81db-43cacc2eb068",
+  "cloudProvider": "aws",
+  "clusterName": "usw1-zlps-k8s-01",
+  "outputs": []
+}

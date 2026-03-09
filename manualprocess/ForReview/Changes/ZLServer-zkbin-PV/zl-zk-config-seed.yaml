@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zl-zk-config-seed
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: seed-zk-bin
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlserver:11.1.0-b1140
+          imagePullPolicy: Always
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+
+              SRC=/opt/ZipLip/bin/zk
+              DST=/efs/ZipLip/bin/zk
+
+              mkdir -p "$DST"
+
+              if [ -f "$DST/tcdb.cfg" ]; then
+                echo "ZK bin already seeded"
+                ls -l "$DST"
+                exit 0
+              fi
+
+              echo "Seeding ZK bin from image → EFS"
+              cp -a "$SRC"/. "$DST"/
+
+              echo "Final EFS ZK bin:"
+              ls -l "$DST"
+              echo "ZK bin seed completed successfully"
+          volumeMounts:
+            - name: zk-efs
+              mountPath: /efs
+
+      volumes:
+        - name: zk-efs
+          persistentVolumeClaim:
+            claimName: zlserver-binzk-efs

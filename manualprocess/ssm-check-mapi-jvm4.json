@@ -1,0 +1,31 @@
+{
+  "commands": [
+    "$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8",
+    "",
+    "Write-Host '=== Procrun Java Parameters ==='",
+    "$javaPath = 'HKLM:\\SOFTWARE\\WOW6432Node\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc\\Parameters\\Java'",
+    "if (Test-Path $javaPath) {",
+    "    $props = Get-ItemProperty -Path $javaPath",
+    "    Write-Host \"Jvm: $($props.Jvm)\"",
+    "    Write-Host \"JvmMs: $($props.JvmMs)\"",
+    "    Write-Host \"JvmMx: $($props.JvmMx)\"",
+    "    Write-Host \"Options:\"",
+    "    $props.Options | ForEach-Object { Write-Host \"  $_\" }",
+    "} else {",
+    "    Write-Host 'Path not found, trying alternative...'",
+    "    $javaPath = 'HKLM:\\SOFTWARE\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc\\Parameters\\Java'",
+    "    if (Test-Path $javaPath) {",
+    "        $props = Get-ItemProperty -Path $javaPath",
+    "        Write-Host \"Jvm: $($props.Jvm)\"",
+    "        Write-Host \"JvmMs: $($props.JvmMs)\"",
+    "        Write-Host \"JvmMx: $($props.JvmMx)\"",
+    "        Write-Host \"Options:\"",
+    "        $props.Options | ForEach-Object { Write-Host \"  $_\" }",
+    "    }",
+    "}",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== zlmapiservice.bat content ==='",
+    "Get-Content 'E:\\ZipLip\\ZLMapiConnector\\bin\\zlmapiservice.bat' | ForEach-Object { $_ -replace '[^\\x00-\\x7F]', '' }"
+  ]
+}

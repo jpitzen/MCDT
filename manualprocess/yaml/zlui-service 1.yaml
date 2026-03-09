@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui
+  labels:
+    app: zlui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: "8000"
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    - name: "fileconnector"
+      port: 9975
+      protocol: TCP
+      targetPort: 9975
+    - name: "sharepoint"
+      port: 9970
+      protocol: TCP
+      targetPort: 9970
+    - name: "o365"
+      port: 9983
+      protocol: TCP
+      targetPort: 9983
+    - name: "smtp"
+      port: 587
+      protocol: TCP
+      targetPort: 587
+  selector:
+    app: zlui

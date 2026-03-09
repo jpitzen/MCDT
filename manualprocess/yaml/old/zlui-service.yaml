@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zlui
+  name: zlui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0c861c54ffa4ddbe6,subnet-039bd7f435475c3dc"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      protocol: "TCP"
+      targetPort: 80
+    - name: "8000"
+      port: 8000
+      protocol: "TCP"
+      targetPort: 8000
+  selector:
+    app: zlui

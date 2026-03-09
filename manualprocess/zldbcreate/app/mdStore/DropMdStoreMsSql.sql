@@ -1,0 +1,2 @@
+DROP SEQUENCE pfuser.MetaDataStoreItem_sequence
+DROP TABLE pfuser.MetaDataStoreItem

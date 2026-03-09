@@ -1,0 +1,993 @@
+=================
+
+Browser Console Log
+
+=================
+
+
+
+06:48:16.923 content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+06:48:17.544 react refresh:37 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+06:48:17.645 deprecations.ts:9 ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:26
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:17.648 deprecations.ts:9 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:37
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:17.799 favicon.ico:1  GET http://localhost:3000/favicon.ico 404 (Not Found)
+06:48:36.099 useDeploymentSocket.js:70 Connection attempt 1/10
+06:48:36.102 useDeploymentSocket.js:301 Disconnecting WebSocket
+06:48:36.102 useDeploymentSocket.js:316 WebSocket connection to 'ws://localhost:5000/socket.io/?deploymentId=bd94fbeb-2cd4-4664-a25b-f708c88716ff&EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
+doClose @ websocket.js:81
+close @ transport.js:55
+_onClose @ socket.js:512
+close @ socket.js:448
+close @ socket.js:477
+onclose @ manager.js:305
+_close @ manager.js:283
+_destroy @ manager.js:251
+destroy @ socket.js:632
+disconnect @ socket.js:655
+(anonymous) @ useDeploymentSocket.js:316
+(anonymous) @ useDeploymentSocket.js:379
+safelyCallDestroy @ react-dom.development.js:22971
+commitHookEffectListUnmount @ react-dom.development.js:23139
+invokePassiveEffectUnmountInDEV @ react-dom.development.js:25246
+invokeEffectsInDev @ react-dom.development.js:27390
+commitDoubleInvokeEffectsInDEV @ react-dom.development.js:27363
+flushPassiveEffectsImpl @ react-dom.development.js:27095
+flushPassiveEffects @ react-dom.development.js:27023
+(anonymous) @ react-dom.development.js:26808
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:36.103 useDeploymentSocket.js:70 Connection attempt 1/10
+06:48:36.136 useDeploymentSocket.js:92 WebSocket connected: fDuTe-qwQ_1Qj0nLAAAC
+06:48:36.148 useDeploymentSocket.js:101 Successfully subscribed to deployment: bd94fbeb-2cd4-4664-a25b-f708c88716ff
+06:48:36.158 DeploymentStatusViewer.jsx:80 Loaded deployment status: {success: true, status: {…}}
+06:48:50.155 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.151Z', data: {…}}
+06:48:50.167 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'progress-update', timestamp: '2025-11-25T11:48:50.152Z', data: {…}}
+06:48:50.171 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.171 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.186 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.183Z', data: {…}}
+06:48:50.189 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.189 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.195 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.190Z', data: {…}}
+06:48:50.198 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.198 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.203 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'phase-update', timestamp: '2025-11-25T11:48:50.200Z', data: {…}}
+06:48:50.206 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.207 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.211 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.201Z', data: {…}}
+06:48:50.213 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.213 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.218 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'phase-update', timestamp: '2025-11-25T11:48:50.212Z', data: {…}}
+06:48:50.224 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.212Z', data: {…}}
+06:48:50.226 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.226 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.231 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:50.212Z', data: {…}}
+06:48:50.236 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:50.236 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.827 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:57.824Z', data: {…}}
+06:48:57.832 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.833 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.848 useDeploymentSocket.js:168 Progress update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'progress-update', timestamp: '2025-11-25T11:48:57.825Z', data: {…}}
+06:48:57.851 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:57.830Z', data: {…}}
+06:48:57.852 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'phase-update', timestamp: '2025-11-25T11:48:57.844Z', data: {…}}
+06:48:57.858 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.858 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.872 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:57.845Z', data: {…}}
+06:48:57.879 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.879 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.895 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:48:57.845Z', data: {…}}
+06:48:57.902 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:48:57.903 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.955 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:01.952Z', data: {…}}
+06:49:01.958 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.959 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.970 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:01.957Z', data: {…}}
+06:49:01.976 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.976 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.987 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'phase-update', timestamp: '2025-11-25T11:49:01.969Z', data: {…}}
+06:49:01.991 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:01.969Z', data: {…}}
+06:49:01.992 useDeploymentSocket.js:155 Phase update received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'phase-update', timestamp: '2025-11-25T11:49:01.975Z', data: {…}}
+06:49:01.997 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:01.997 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:02.015 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:01.976Z', data: {…}}
+06:49:02.015 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:01.976Z', data: {…}}
+06:49:02.020 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:02.020 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:35.553 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:35.534Z', data: {…}}
+06:49:35.557 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:35.558 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:35.653 useDeploymentSocket.js:139 Deployment log received: {deploymentId: 'bd94fbeb-2cd4-4664-a25b-f708c88716ff', eventType: 'log', timestamp: '2025-11-25T11:49:35.649Z', data: {…}}
+06:49:35.657 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19245
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+06:49:35.657 LinearProgress.js:275 MUI: You need to provide a value prop when using the determinate or buffer variant of LinearProgress .
+LinearProgress @ LinearProgress.js:275
+renderWithHooks @ react-dom.development.js:15486
+updateForwardRef @ react-dom.development.js:19252
+beginWork @ react-dom.development.js:21675
+beginWork$1 @ react-dom.development.js:27465
+performUnitOfWork @ react-dom.development.js:26596
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performConcurrentWorkOnRoot @ react-dom.development.js:25777
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+
+
+===================
+
+Browser Network Log
+
+===================
+
+fetch("http://localhost:3000/login", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/static/js/bundle.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "+GCMUOdviIq+wzP/hjCcWw==",
+    "sec-websocket-version": "13",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/auth/login", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcwOTgyLCJleHAiOjE3NjQxNTczODJ9.kyNJmfOxs75NUKRtjjmrqWeTvaZMYhXsB45PDYPQdX8",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/login"
+  },
+  "body": "{\"email\":\"jpitzen@zlti.com\",\"password\":\"YfJ!D_oCFzWn4dep6uptk_@gdL\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/dashboard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "if-none-match": "W/\"1bb7-lfPy6W83ly6EEC0S52cIwRoOdo4\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/dashboard"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "if-none-match": "W/\"8cd-Ji29ygpsmICceygW3QKQsVrWLb4\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/48364eed-fc9c-4af4-8cda-2f619b803ee3/reset", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "if-none-match": "W/\"8cd-Ji29ygpsmICceygW3QKQsVrWLb4\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/48364eed-fc9c-4af4-8cda-2f619b803ee3/approve", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": "{\"comment\":\"\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "if-none-match": "W/\"80c-Gyp6LHfYsZkgUvEAw3Knt2O/Ll8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployment-drafts/48364eed-fc9c-4af4-8cda-2f619b803ee3/deploy", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployments/bd94fbeb-2cd4-4664-a25b-f708c88716ff/start", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-drafts"
+  },
+  "body": null,
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/deployments/bd94fbeb-2cd4-4664-a25b-f708c88716ff", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-status/bd94fbeb-2cd4-4664-a25b-f708c88716ff"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/deployments/bd94fbeb-2cd4-4664-a25b-f708c88716ff", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZDg0NzgyZS00YmY5LTQ5YWItYTU3Zi0yMDFkYjNjMzAwNjUiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MDcxMzAwLCJleHAiOjE3NjQxNTc3MDB9.6ZHxhNxLymCFXvyJrSKJsKFq3_GVUK4EK1c7US_h48U",
+    "if-none-match": "W/\"65e-9Mjj85K/MiXbpeS85+9mfUt+GUY\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "_streamlit_xsrf=2|e2a27e6f|898fa9ae08d465ede77e52b5ff588280|1763463968; ajs_anonymous_id=79618712-eff8-4d59-9567-e55bc48432ae",
+    "Referer": "http://localhost:3000/deployment-status/bd94fbeb-2cd4-4664-a25b-f708c88716ff"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBGEe.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "x-browser-channel": "stable",
+    "x-browser-copyright": "Copyright 2025 Google LLC. All Rights reserved.",
+    "x-browser-validation": "Aj9fzfu+SaGLBY9Oqr3S7RokOtM=",
+    "x-browser-year": "2025",
+    "x-client-data": "CJG2yQEIpbbJAQipncoBCLaDywEIlqHLAQiFoM0BCPSYzwE=",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:5000/socket.io/?deploymentId=bd94fbeb-2cd4-4664-a25b-f708c88716ff&EIO=4&transport=websocket", {
+  "body": null,
+  "method": ""
+}); ;
+fetch("ws://localhost:5000/socket.io/?deploymentId=bd94fbeb-2cd4-4664-a25b-f708c88716ff&EIO=4&transport=websocket", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "UERLdABNFX3LXtAe+yTlMw==",
+    "sec-websocket-version": "13"
+  },
+  "body": null,
+  "method": "GET"
+});

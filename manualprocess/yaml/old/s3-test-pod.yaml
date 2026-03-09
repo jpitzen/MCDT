@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: s3-test-pod
+  namespace: default
+spec:
+  serviceAccountName: zlapp-sa
+  containers:
+  - name: test-container
+    image: busybox:latest
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    volumeMounts:
+    - mountPath: /s3-data
+      name: s3-volume
+  volumes:
+  - name: s3-volume
+    persistentVolumeClaim:
+      claimName: s3-archive-pvc

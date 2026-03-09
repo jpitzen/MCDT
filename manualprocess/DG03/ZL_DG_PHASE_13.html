@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 13</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 13: Security Scanning</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 13</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 13: Security Scanning</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">6</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button type="button" class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Security Scanning Overview</div>
+                <button type="button" class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 13</strong> covers container vulnerability scanning using both local (Grype) and cloud (AWS Inspector) tools to ensure container images are secure before production deployment.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Understand security scanning tools and methodologies</li>
+                    <li data-steps="2">Scan container images for known CVEs using Grype</li>
+                    <li data-steps="3">Fetch vulnerability findings from AWS Inspector</li>
+                    <li data-steps="4">Use interactive scanner tool to load and analyze results</li>
+                    <li data-steps="5">Compare scan results between different tools</li>
+                    <li data-steps="6">Generate remediation plans for critical vulnerabilities</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            </div> <!-- step-container -->
+        </div> <!-- page-content -->
+    </div> <!-- content-wrapper -->
+</main>
+
+    <script>
+        // Step navigation system
+        let currentStep = 1;
+        const totalSteps = 6;
+        
+        const stepData = {
+            1: {
+                title: "Step 69: Security Scanning Overview",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 69: Security Scanning Overview</h3>
+                        <p><strong>Phase 13</strong> focuses on identifying and documenting security vulnerabilities in container images before deployment to production.</p>
+                        
+                        <h4>📋 Tools Used</h4>
+                        <ul>
+                            <li><strong>Grype:</strong> Local open-source vulnerability scanner</li>
+                            <li><strong>AWS Inspector:</strong> Cloud-native AWS scanning service</li>
+                        </ul>
+
+                        <h4>Why Security Scanning?</h4>
+                        <ul>
+                            <li>Identify known CVEs (Common Vulnerabilities and Exposures)</li>
+                            <li>Ensure compliance with security policies</li>
+                            <li>Create remediation plans for critical vulnerabilities</li>
+                            <li>Document security posture before production deployment</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>📌 Note:</strong> This phase focuses on scanning and documentation. Actual remediation should be performed before production deployment.
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)" disabled>
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 69: Vulnerability Scanning Overview</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            2: {
+                title: "Step 70: Scan with Grype",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 70: Scan Container Images with Grype</h3>
+                        <p>Use Grype to perform local vulnerability scans on container images.</p>
+                        
+                        <h4>Step 70a: Install Grype</h4>
+                        <pre><code># macOS
+brew install grype
+
+# Linux
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+# Verify installation
+grype version</code></pre>
+
+                        <h4>Step 70b: Scan Local Image</h4>
+                        <pre><code># Scan a local Docker image
+grype <IMAGE_NAME>:<TAG>
+
+# Example
+grype postgres:16-alpine
+
+# Output to JSON
+grype postgres:16-alpine -o json > grype-scan-results.json</code></pre>
+
+                        <h4>Step 70c: Scan ECR Image</h4>
+                        <pre><code># Authenticate to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+
+# Scan ECR image
+grype <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/<REPO_NAME>:<TAG>
+
+# Example with output
+grype <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/zlui:latest -o json > zlui-grype-scan.json</code></pre>
+
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <p><strong>Expected:</strong> Grype outputs vulnerability findings with severity levels (Critical, High, Medium, Low, Negligible)</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 70: Scan with Grype</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            3: {
+                title: "Step 71: Fetch AWS Inspector Results",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 71: Fetch Vulnerability Findings from AWS Inspector</h3>
+                        <p>AWS Inspector automatically scans ECR images when they are pushed. Retrieve the scan results.</p>
+                        
+                        <h4>Step 71a: Enable Inspector for ECR</h4>
+                        <pre><code># Enable Inspector scanning (if not already enabled)
+aws inspector2 enable --resource-types ECR
+
+# Verify Inspector is enabled
+aws inspector2 batch-get-account-status --account-ids <ACCOUNT_ID></code></pre>
+
+                        <h4>Step 71b: List ECR Image Scan Findings</h4>
+                        <pre><code># List findings for specific image
+aws ecr describe-image-scan-findings \\
+  --repository-name <REPO_NAME> \\
+  --image-id imageTag=<TAG> \\
+  --region us-east-1
+
+# Example
+aws ecr describe-image-scan-findings \\
+  --repository-name zlui \\
+  --image-id imageTag=latest \\
+  --region us-east-1 \\
+  --output json > zlui-inspector-scan.json</code></pre>
+
+                        <h4>Step 71c: Get Inspector Findings via Inspector API</h4>
+                        <pre><code># List all findings for ECR repository
+aws inspector2 list-findings \\
+  --filter-criteria '{\"ecrImageRepositoryName\":[{\"comparison\":\"EQUALS\",\"value\":\"zlui\"}]}' \\
+  --region us-east-1 \\
+  --output json > zlui-inspector-findings.json</code></pre>
+
+                        <div class="info-box">
+                            <strong>📌 Note:</strong> Inspector scans may take several minutes after image push. Check scan status before retrieving findings.
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 71: Fetch AWS Inspector Results</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            4: {
+                title: "Step 72: Use Interactive Scanner Tool",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 72: Use Interactive Vulnerability Scanner</h3>
+                        <p>This page includes an interactive tool to load, compare, and export vulnerability scan results.</p>
+                        
+                        <h4>📋 Tool Features</h4>
+                        <ul>
+                            <li>Load Grype JSON scan results</li>
+                            <li>Load AWS Inspector JSON scan results</li>
+                            <li>Compare results between different scans</li>
+                            <li>Filter by severity (Critical, High, Medium, Low)</li>
+                            <li>Export comparison to CSV</li>
+                        </ul>
+
+                        <h4>How to Use the Scanner</h4>
+                        <ol>
+                            <li>Scroll down to the "Interactive Vulnerability Scanner" section</li>
+                            <li>Use Slot A, B, or C to load scan JSON files</li>
+                            <li>Click "Load Scan" after selecting your JSON file</li>
+                            <li>Use filters to focus on specific severities</li>
+                            <li>Compare multiple scans side-by-side</li>
+                            <li>Export results to CSV for reporting</li>
+                        </ol>
+
+                        <div class="info-box">
+                            <strong>📌 Tip:</strong> Use Slot A for Grype results and Slot B for Inspector results to compare findings between tools.
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 72: Use Interactive Scanner Tool</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            5: {
+                title: "Step 73: Compare Scan Results",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 73: Compare Vulnerability Scan Results</h3>
+                        <p>Analyze differences between scanning tools to get comprehensive vulnerability coverage.</p>
+                        
+                        <h4>Why Compare Scanners?</h4>
+                        <ul>
+                            <li><strong>Different CVE Databases:</strong> Grype and Inspector use different vulnerability databases</li>
+                            <li><strong>Detection Variations:</strong> Some CVEs may only appear in one scanner</li>
+                            <li><strong>False Positives:</strong> Cross-validation helps identify potential false positives</li>
+                            <li><strong>Comprehensive Coverage:</strong> Using both provides more complete security assessment</li>
+                        </ul>
+
+                        <h4>Key Comparison Metrics</h4>
+                        <pre><code># Count vulnerabilities by severity
+cat grype-scan.json | jq '[.matches[].vulnerability.severity] | group_by(.) | map({severity: .[0], count: length})'
+
+# Compare unique CVEs between scans
+cat grype-scan.json | jq -r '.matches[].vulnerability.id' | sort -u > grype-cves.txt
+cat inspector-scan.json | jq -r '.findings[].packageVulnerabilityDetails.vulnerabilityId' | sort -u > inspector-cves.txt
+comm -3 grype-cves.txt inspector-cves.txt</code></pre>
+
+                        <h4>Analysis Focus Areas</h4>
+                        <ol>
+                            <li><strong>Critical & High Severity:</strong> Prioritize for immediate remediation</li>
+                            <li><strong>CVEs with Fixes Available:</strong> Can be resolved by updating packages</li>
+                            <li><strong>Common Detections:</strong> High confidence vulnerabilities found by both tools</li>
+                            <li><strong>Unique Detections:</strong> Require individual assessment</li>
+                        </ol>
+
+                        <div class="warning-section">
+                            <h4>⚠️ Important Considerations</h4>
+                            <ul>
+                                <li>Not all detected CVEs may be exploitable in your deployment context</li>
+                                <li>Some vulnerabilities may be in development dependencies not present at runtime</li>
+                                <li>Always review CVE descriptions and assess actual risk</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 73: Compare Scan Results</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            6: {
+                title: "Step 74: Phase 13 Completion",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 74: Generate Remediation Plans and Complete Phase 13</h3>
+                        
+                        <h4>Document Security Findings</h4>
+                        <p>Create a comprehensive security report including:</p>
+                        <ul>
+                            <li>Total vulnerabilities by severity</li>
+                            <li>Critical and High severity items requiring immediate action</li>
+                            <li>Medium and Low severity items for backlog</li>
+                            <li>Comparison between Grype and Inspector findings</li>
+                            <li>Remediation timeline and plan</li>
+                        </ul>
+
+                        <h4>Generate Remediation Plan</h4>
+                        <pre><code># Example remediation plan format
+## Critical Vulnerabilities (Action Required)
+- CVE-2024-XXXXX: Update package X from v1.0 to v1.2
+- CVE-2024-YYYYY: Apply security patch or rebuild with updated base image
+
+## High Severity (Priority Remediation)
+- CVE-2024-ZZZZZ: Update dependency, test, and redeploy
+
+## Medium/Low Severity (Backlog)
+- Review and plan updates during next maintenance window</code></pre>
+
+                        <div class="completion-checklist" style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; border: 2px solid #4caf50; margin: 30px 0;">
+                            <h4 style="color: #2e7d32; margin-top: 0;">📋 Phase 13 Completion Checklist</h4>
+                            <p style="margin-bottom: 15px;">Ensure all items are completed before moving to production:</p>
+                            <div style="margin: 15px 0;">
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Grype scans completed for all custom container images
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    AWS Inspector findings retrieved and reviewed
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Scan results compared and analyzed
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Critical vulnerabilities documented with remediation plans
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Security findings report created and shared with team
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Remediation timeline established for critical/high findings
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="success-box" style="margin-top: 30px;">
+                            <h4>🎉 Security Scanning Complete!</h4>
+                            <p>All container images have been scanned and security posture documented.</p>
+                            <p style="margin-top: 15px;"><strong>Next Steps:</strong></p>
+                            <ul>
+                                <li>Remediate critical and high severity vulnerabilities before production</li>
+                                <li>Schedule regular security scans as part of CI/CD pipeline</li>
+                                <li>Monitor for new CVEs affecting deployed images</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h4>📚 Additional Resources</h4>
+                            <ul>
+                                <li><a href="https://github.com/anchore/grype" target="_blank">Grype Documentation</a></li>
+                                <li><a href="https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html" target="_blank">AWS Inspector User Guide</a></li>
+                                <li><a href="https://nvd.nist.gov/" target="_blank">NIST National Vulnerability Database</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-controls" style="margin-top: 30px;">
+                            <button type="button" class="nav-btn" onclick="navigateStep(-1)">← Previous Step</button>
+                            <span style="display: inline-block; padding: 12px 24px; background: #4caf50; color: white; border-radius: 4px; font-weight: bold;">
+                                ✓ Deployment Guide Complete
+                            </span>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Show specific step
+        function showStep(stepNum) {
+            if (stepNum < 1 || stepNum > totalSteps) return;
+            
+            currentStep = stepNum;
+            const step = stepData[stepNum];
+            
+            // Update content
+            document.getElementById('step-container').innerHTML = step.content;
+            
+            // Update progress bar
+            const progress = ((stepNum - 1) / (totalSteps - 1)) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            
+            // Update step dots with completed class
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const dotStep = index + 1;
+                dot.classList.remove('active', 'completed');
+                if (dotStep === stepNum) {
+                    dot.classList.add('active');
+                } else if (dotStep < stepNum) {
+                    dot.classList.add('completed');
+                }
+            });
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = (stepNum === 1);
+            document.getElementById('next-btn').disabled = (stepNum === totalSteps);
+            
+            // Update objectives highlighting with inline styles
+            document.querySelectorAll('#objectives-list li').forEach((li, index) => {
+                if (index + 1 === stepNum) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e8f4ff';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                }
+            });
+            
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+            
+            // Save progress
+            localStorage.setItem('zl-phase13-current-step', stepNum);
+            
+            // Update URL hash
+            window.location.hash = 'step' + stepNum;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Navigate between steps
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize copy buttons for dynamically loaded content
+        function initializeCopyButtons() {
+            document.querySelectorAll('#step-container pre').forEach(pre => {
+                // Skip if already wrapped or inside yaml-panel or output-block
+                if (pre.parentElement.classList.contains('pre-wrapper')) return;
+                if (pre.closest('.yaml-panel')) return;
+                if (pre.closest('.output-block')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                wrapper.style.position = 'relative';
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+
+        // Page Navigation
+        const pages = ['home', 'environment', 'phase0', 'phase1', 'phase2', 'phase3', 'phase4', 'phase5', 'phase6', 'phase7', 'phase8', 'phase9', 'phase10', 'phase11', 'phase12', 'troubleshooting', 'appendix-a', 'appendix-b', 'appendix-c', 'appendix-d', 'appendix-e', 'appendix-f'];
+        
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show selected page
+            const page = document.getElementById('page-' + pageId);
+            if (page) {
+                page.classList.add('active');
+            }
+            
+            // Update nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(btn) {
+            const wrapper = btn.closest('.pre-wrapper');
+            const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+            const text = code.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopied(btn);
+                }).catch(() => {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+        
+        function fallbackCopy(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                btn.textContent = 'Failed';
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopied(btn) {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        // Add copy buttons on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation button event listeners
+            document.getElementById('prev-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateStep(-1);
+            });
+            
+            document.getElementById('next-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateStep(1);
+            });
+            
+            // Step dot click handlers
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    showStep(parseInt(this.dataset.step));
+                });
+            });
+            
+            // Load saved step or start at step 1
+            const savedStep = localStorage.getItem('zl-phase13-current-step');
+            const hashStep = window.location.hash.match(/step(\d+)/);
+            
+            if (hashStep) {
+                showStep(parseInt(hashStep[1]));
+            } else if (savedStep) {
+                showStep(parseInt(savedStep));
+            } else {
+                showStep(1);
+            }
+            
+            // Initialize copy buttons for static content
+            document.querySelectorAll('pre').forEach(pre => {
+                if (pre.parentElement.classList.contains('pre-wrapper')) return;
+                if (pre.closest('.yaml-panel')) return;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                wrapper.style.position = 'relative';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) { 
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this); 
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        });
+
+        // ==================== Phase 12 Interactive Scanner ====================
+        
+        // Store loaded vulnerabilities globally
+        let loadedVulnerabilities = [];
+        let currentScanFile = '';
+        
+        // Store fetched ECR images
+        let ecrImagesCache = { grype: [], inspector: [] };
+        
+        // Fetch ECR images and populate dropdown
+        function fetchEcrImages(target) {
+            let repoUri, region, statusEl, selectEl;
+            
+            if (target === 'grype') {
+                repoUri = document.getElementById('grypeEcrUri')?.value.trim();
+                region = document.getElementById('grypeRegion')?.value.trim() || 'us-east-1';
+                statusEl = document.getElementById('grypeImageStatus');
+                selectEl = document.getElementById('grypeImageSelect');
+            } else {
+                const repoName = document.getElementById('inspectorRepoName')?.value.trim();
+                region = document.getElementById('inspectorRegion')?.value.trim() || 'us-east-1';
+                statusEl = document.getElementById('inspectorImageStatus');
+                selectEl = document.getElementById('inspectorImageSelect');
+                repoUri = repoName;
+            }
+            
+            if (!repoUri) {
+                alert('Please enter the ECR repository');
+                return;
+            }
+            
+            const repoName = target === 'grype' 
+                ? repoUri.split('/').pop() 
+                : repoUri;
+            
+            statusEl.innerHTML = '<span style="color: #17a2b8;">⏳ Fetching images from ECR...</span>';
+            
+            const fetchScript = `# Fetch ECR images - Run this in PowerShell, then paste results below
+aws ecr describe-images --repository-name ${repoName} --region ${region} --query "imageDetails[*].{tags:imageTags[0],pushed:imagePushedAt,size:imageSizeInBytes,digest:imageDigest}" --output json | ConvertFrom-Json | Sort-Object pushed -Descending | Select-Object -First 20 | ConvertTo-Json`;
+            
+            const instructions = `
+<div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin-top: 10px;">
+    <strong>📋 To fetch images:</strong>
+    <ol style="margin: 10px 0 0 20px; padding: 0;">
+        <li>Run this command in PowerShell to update the image list:</li>
+    </ol>
+    <div class="pre-wrapper" style="position: relative; margin: 10px 0;">
+        <button class="copy-btn" type="button" onclick="event.preventDefault(); event.stopPropagation(); copyToClipboard(this);">Copy</button>
+        <pre style="background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 4px; font-size: 0.8em; overflow-x: auto; margin: 0;"><code>aws ecr describe-images --repository-name ${repoName} --region ${region} --query "imageDetails[*].{tag:imageTags[0],pushed:imagePushedAt}" --output json > vscan/ecr-images.json</code></pre>
+    </div>
+    <li style="margin-left: 20px;">Then click <strong>Fetch Images</strong> again to reload</li>
+    <p style="margin: 5px 0 0 0; font-size: 0.85em;">Or paste JSON output here:</p>
+    <textarea id="${target}ImageJson" style="width: 100%; height: 80px; font-family: monospace; font-size: 0.8em;" placeholder='Paste JSON array from: aws ecr describe-images --output json'></textarea>
+    <button onclick="parseEcrImageJson('${target}')" class="scanner-btn secondary" style="margin-top: 5px;">Parse JSON</button>
+</div>`;
+            
+            statusEl.innerHTML = instructions;
+            
+            tryLoadImageManifest(target, repoName, region, selectEl, statusEl);
+        }
+        
+        function tryLoadImageManifest(target, repoName, region, selectEl, statusEl) {
+            try {
+                fetch('vscan/ecr-images.json?t=' + Date.now())
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                    })
+                    .then(images => {
+                        if (images && images.length > 0) {
+                            populateImageSelect(target, images, selectEl);
+                            statusEl.innerHTML = '<span style="color: #28a745;">✓ Loaded ' + images.length + ' images from manifest</span>' + statusEl.innerHTML;
+                        }
+                    });
+            } catch (e) {
+                // Manifest not available, user will need to paste JSON
+            }
+        }
+        
+        function parseEcrImageJson(target) {
+            const textarea = document.getElementById(target + 'ImageJson');
+            const statusEl = document.getElementById(target + 'ImageStatus');
+            const selectEl = document.getElementById(target + 'ImageSelect');
+            
+            try {
+                let json = textarea.value.trim();
+                let images = JSON.parse(json);
+                if (images.imageDetails) images = images.imageDetails;
+                
+                if (!Array.isArray(images) || images.length === 0) {
+                    throw new Error('No images found in JSON');
+                }
+                
+                populateImageSelect(target, images, selectEl);
+                statusEl.innerHTML = '<span style="color: #28a745;">✓ Loaded ' + images.length + ' images</span>';
+                
+                ecrImagesCache[target] = images;
+                
+            } catch (e) {
+                statusEl.innerHTML = '<span style="color: #dc3545;">❌ Error parsing JSON: ' + e.message + '</span>';
+            }
+        }
+        
+        function populateImageSelect(target, images, selectEl) {
+            const isInspector = target === 'inspector';
+            
+            let options = '<option value="">-- Select an image --</option>';
+            
+            if (isInspector) {
+                options += '<option value="__ALL__">📦 All Images in Repository (deduplicated)</option>';
+            }
+            
+            images.forEach(img => {
+                const tag = img.tag || img.tags || img.imageTags?.[0] || 'untagged';
+                const pushed = img.pushed || img.imagePushedAt || '';
+                const pushedDate = pushed ? new Date(pushed).toLocaleDateString() : '';
+                const displayText = tag + (pushedDate ? ' (' + pushedDate + ')' : '');
+                
+                options += '<option value="' + tag + '">' + displayText + '</option>';
+            });
+            
+            selectEl.innerHTML = options;
+        }
+        
+        function generateGrypeScript() {
+            const ecrUri = document.getElementById('grypeEcrUri')?.value.trim();
+            const imageTag = document.getElementById('grypeImageSelect')?.value;
+            
+            if (!ecrUri) {
+                alert('Please enter the ECR repository URI');
+                return;
+            }
+            
+            if (!imageTag) {
+                alert('Please select an image from the dropdown');
+                return;
+            }
+            
+            const imageUri = ecrUri + ':' + imageTag;
+            
+            const ecrMatch = ecrUri.match(/(\d+)\.dkr\.ecr\.([^.]+)\.amazonaws\.com/);
+            const accountId = ecrMatch ? ecrMatch[1] : 'ACCOUNT_ID';
+            const region = ecrMatch ? ecrMatch[2] : 'us-east-1';
+            
+            const vscanPath = document.getElementById('vscanPath')?.value.trim();
+            if (!vscanPath) {
+                alert('Please enter the vscan folder path');
+                return;
+            }
+            
+            const script = `# Grype Security Scan Script
+# Generated: ${new Date().toISOString()}
+# Image: ${imageUri}
+
+# Output folder for scan results
+$vscanDir = "${vscanPath.replace(/\\/g, '\\\\')}"
+
+# Create vscan folder if it doesn't exist
+if (!(Test-Path $vscanDir)) {
+    New-Item -ItemType Directory -Path $vscanDir -Force | Out-Null
+    Write-Host "Created vscan folder: $vscanDir" -ForegroundColor Green
+}
+
+# Generate timestamp for filename
+$timestamp = Get-Date -Format "yyyyMMddHHmmss"
+$outputFile = Join-Path $vscanDir "RawScanResults_$timestamp.json"
+$manifestFile = Join-Path $vscanDir "scans.json"
+
+# Step 1: Login to ECR
+Write-Host "Logging into ECR..." -ForegroundColor Cyan
+aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${accountId}.dkr.ecr.${region}.amazonaws.com
+
+# Step 2: Run Grype scan and save JSON results
+Write-Host "Running Grype scan on: ${imageUri}" -ForegroundColor Cyan
+Write-Host "Output file: $outputFile" -ForegroundColor Yellow
+C:\\\\tools\\\\grype\\\\grype.exe ${imageUri} -o json | Out-File -FilePath $outputFile -Encoding UTF8
+
+# Step 3: Update scans manifest for web UI
+Write-Host "Updating scan manifest..." -ForegroundColor Cyan
+$scanFiles = Get-ChildItem -Path $vscanDir -Filter "RawScanResults_*.json" | Sort-Object Name -Descending | Select-Object -ExpandProperty Name
+$scanFiles | ConvertTo-Json | Out-File -FilePath $manifestFile -Encoding UTF8
+Write-Host "Manifest updated with $($scanFiles.Count) scan(s)" -ForegroundColor Green
+
+# Step 4: Display summary
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "Scan complete!" -ForegroundColor Green
+Write-Host "Results saved to: $outputFile" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "Click 'Refresh' in the Scan History section to load results." -ForegroundColor Yellow`;
+            
+            document.getElementById('grypeScriptCode').querySelector('code').textContent = script;
+            document.getElementById('grypeScriptOutput').style.display = 'block';
+        }
+        
+        function refreshSlotGrypeList() {
+            const select = document.getElementById('slotGrypeSelect');
+            if (!select) return;
+            
+            fetch('vscan/scans.json?t=' + Date.now())
+                .then(response => {
+                    if (!response.ok) {
+                        select.innerHTML = '<option value="">-- No scans found --</option>';
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(jsonFiles => {
+                    select.innerHTML = '<option value="">-- Select a scan (' + jsonFiles.length + ' available) --</option>';
+                    
+                    jsonFiles.forEach(file => {
+                        const opt = document.createElement('option');
+                        opt.value = 'vscan/' + file;
+                        
+                        const inspectorMatch = file.match(/InspectorScan_(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+                        const grypeMatch = file.match(/RawScanResults_(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+                        
+                        if (inspectorMatch) {
+                            opt.textContent = '🔍 Inspector ' + inspectorMatch[1] + '-' + inspectorMatch[2] + '-' + inspectorMatch[3] + ' ' + inspectorMatch[4] + ':' + inspectorMatch[5];
+                        } else if (grypeMatch) {
+                            opt.textContent = '🛡️ Grype ' + grypeMatch[1] + '-' + grypeMatch[2] + '-' + grypeMatch[3] + ' ' + grypeMatch[4] + ':' + grypeMatch[5];
+                        } else {
+                            opt.textContent = file;
+                        }
+                        select.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    select.innerHTML = '<option value="">-- Error loading --</option>';
+                });
+        }
+        
+        function generateInspectorScanCommand() {
+            const repoName = document.getElementById('inspectorRepoName')?.value.trim();
+            const selectedImage = document.getElementById('inspectorImageSelect')?.value;
+            const region = document.getElementById('inspectorRegion')?.value.trim() || 'us-east-1';
+            
+            if (!repoName) {
+                alert('Please enter the ECR repository name');
+                return;
+            }
+            
+            if (!selectedImage || selectedImage === '__ALL__') {
+                alert('Please select a specific image to check status (not "All Images")');
+                return;
+            }
+            
+            const imageTag = selectedImage;
+            
+            const command = `# Check AWS Inspector Scan Status for ECR Image
+# Generated: ${new Date().toISOString()}
+# Repository: ${repoName}
+# Image Tag: ${imageTag}
+# Region: ${region}
+
+Write-Host "Checking Inspector coverage for ${imageTag}..." -ForegroundColor Cyan
+Write-Host ""
+
+# Create filter file for coverage check (avoids PowerShell escaping issues)
+$coverageFilterFile = Join-Path $env:TEMP "inspector-coverage-filter.json"
+$coverageFilter = '{"resourceType":[{"comparison":"EQUALS","value":"AWS_ECR_CONTAINER_IMAGE"}],"ecrRepositoryName":[{"comparison":"EQUALS","value":"${repoName}"}],"ecrImageTags":[{"comparison":"EQUALS","value":"${imageTag}"}]}'
+[System.IO.File]::WriteAllText($coverageFilterFile, $coverageFilter)
+
+# Step 1: Check Inspector coverage status
+$coverageJson = aws inspector2 list-coverage --region ${region} --filter-criteria file://$coverageFilterFile --output json 2>$null
+$coverage = $coverageJson | ConvertFrom-Json
+
+if ($coverage.coveredResources.Count -eq 0) {
+    Write-Host "Image not found in Inspector coverage." -ForegroundColor Red
+    Write-Host "The image may need to be re-pushed to ECR to trigger Inspector scanning." -ForegroundColor Yellow
+} else {
+    $resource = $coverage.coveredResources[0]
+    $status = $resource.scanStatus.statusCode
+    $reason = $resource.scanStatus.reason
+    
+    Write-Host "Scan Status: $status" -ForegroundColor $(if ($status -eq "ACTIVE") { "Green" } else { "Yellow" })
+    Write-Host "Reason: $reason" -ForegroundColor $(if ($reason -eq "SUCCESSFUL") { "Green" } else { "Yellow" })
+    Write-Host ""
+    
+    if ($status -eq "INACTIVE" -and $reason -eq "UNSUPPORTED_MEDIA_TYPE") {
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "UNSUPPORTED IMAGE FORMAT" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "This image uses a media type that AWS Inspector doesn't support." -ForegroundColor Yellow
+        Write-Host "This typically happens with:" -ForegroundColor Yellow
+        Write-Host "  - Images built with older Docker versions" -ForegroundColor Gray
+        Write-Host "  - Images using Docker manifest v1 (schema1)" -ForegroundColor Gray
+        Write-Host "  - Some Windows container images" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "To fix this, rebuild the image with a newer Docker version" -ForegroundColor Cyan
+        Write-Host "or use 'docker buildx' with --provenance=false flag." -ForegroundColor Cyan
+    } elseif ($status -eq "ACTIVE" -and $reason -eq "SUCCESSFUL") {
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host "IMAGE SCANNED SUCCESSFULLY" -ForegroundColor Green
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "Use 'Fetch Findings Script' to retrieve vulnerability results." -ForegroundColor Cyan
+    } else {
+        Write-Host "Status: $status - $reason" -ForegroundColor Yellow
+    }
+}
+
+# Create filter file for findings check
+$findingsFilterFile = Join-Path $env:TEMP "inspector-findings-filter.json"
+$findingsFilter = '{"ecrImageRepositoryName":[{"comparison":"EQUALS","value":"${repoName}"}],"ecrImageTags":[{"comparison":"EQUALS","value":"${imageTag}"}]}'
+[System.IO.File]::WriteAllText($findingsFilterFile, $findingsFilter)
+
+# Step 2: Show count of findings for this image
+Write-Host ""
+Write-Host "Checking for existing findings..." -ForegroundColor Cyan
+$findingsCount = aws inspector2 list-findings --region ${region} --filter-criteria file://$findingsFilterFile --query "length(findings)" --output text 2>$null
+
+# Cleanup temp files
+Remove-Item $coverageFilterFile -Force -ErrorAction SilentlyContinue
+Remove-Item $findingsFilterFile -Force -ErrorAction SilentlyContinue
+
+Write-Host "Findings available: $findingsCount" -ForegroundColor $(if ([int]$findingsCount -gt 0) { "Yellow" } else { "Gray" })`;
+            
+            document.getElementById('inspectorCommandCode').querySelector('code').textContent = command;
+            document.getElementById('inspectorCommandOutput').style.display = 'block';
+        }
+
+        function generateInspectorCommand() {
+            const repoName = document.getElementById('inspectorRepoName')?.value.trim();
+            const selectedImage = document.getElementById('inspectorImageSelect')?.value;
+            const region = document.getElementById('inspectorRegion')?.value.trim() || 'us-east-1';
+            const vscanPath = document.getElementById('inspectorVscanPath')?.value.trim();
+            
+            if (!repoName) {
+                alert('Please enter the ECR repository name');
+                return;
+            }
+            
+            if (!vscanPath) {
+                alert('Please enter the vscan folder path');
+                return;
+            }
+            
+            const imageTag = selectedImage === '__ALL__' || !selectedImage ? '' : selectedImage;
+            const scanTarget = imageTag ? imageTag : 'all images';
+            
+            const command = `# AWS Inspector - Fetch ECR Image Findings
+# Generated: ${new Date().toISOString()}
+# Repository: ${repoName}
+# Target: ${scanTarget}
+# Region: ${region}
+
+# Output folder for scan results (same as Grype scans)
+$vscanDir = "${vscanPath.replace(/\\/g, '\\\\')}"
+
+# Create vscan folder if it doesn't exist
+if (!(Test-Path $vscanDir)) {
+    New-Item -ItemType Directory -Path $vscanDir -Force | Out-Null
+    Write-Host "Created vscan folder: $vscanDir" -ForegroundColor Green
+}
+
+# Generate timestamp for filename
+$timestamp = Get-Date -Format "yyyyMMddHHmmss"
+$outputFile = Join-Path $vscanDir "InspectorScan_$timestamp.json"
+$manifestFile = Join-Path $vscanDir "scans.json"
+
+# Build the filter criteria JSON and save to temp file
+$filterFile = Join-Path $env:TEMP "inspector-filter.json"
+${imageTag ? `$filterJson = '{"ecrImageRepositoryName":[{"comparison":"EQUALS","value":"${repoName}"}],"ecrImageTags":[{"comparison":"EQUALS","value":"${imageTag}"}]}'` : `$filterJson = '{"ecrImageRepositoryName":[{"comparison":"EQUALS","value":"${repoName}"}]}'`}
+[System.IO.File]::WriteAllText($filterFile, $filterJson)
+
+# Step 1: Fetch findings from AWS Inspector
+Write-Host "Fetching AWS Inspector findings..." -ForegroundColor Cyan
+Write-Host "Repository: ${repoName}" -ForegroundColor Yellow
+Write-Host "Target: ${scanTarget}" -ForegroundColor Yellow
+
+# Set encoding for proper output handling
+$env:PYTHONIOENCODING = "utf-8"
+$env:PYTHONUTF8 = "1"
+$env:AWS_PAGER = ""
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+$tempJsonFile = Join-Path $env:TEMP "inspector_findings_$([guid]::NewGuid().ToString('N')).json"
+$tempErrFile = Join-Path $env:TEMP "inspector_err.txt"
+
+Write-Host "Fetching all findings (this may take a moment)..." -ForegroundColor Gray
+
+# Use Start-Process with file redirect to avoid PowerShell encoding issues
+$proc = Start-Process -FilePath "aws" -ArgumentList "inspector2","list-findings","--region","${region}","--filter-criteria","file://$filterFile","--output","json" -RedirectStandardOutput $tempJsonFile -RedirectStandardError $tempErrFile -NoNewWindow -Wait -PassThru
+
+if ($proc.ExitCode -ne 0) {
+    $errContent = Get-Content $tempErrFile -Raw -ErrorAction SilentlyContinue
+    Write-Host "Warning: AWS CLI returned exit code $($proc.ExitCode)" -ForegroundColor Yellow
+    if ($errContent) { Write-Host $errContent -ForegroundColor Yellow }
+}
+
+# Read and parse the results
+$result = [System.IO.File]::ReadAllText($tempJsonFile)
+$json = $result | ConvertFrom-Json
+$allFindings = $json.findings
+
+Write-Host "  Retrieved $($allFindings.Count) findings" -ForegroundColor Gray
+
+# Clean up temp files
+Remove-Item $tempJsonFile -ErrorAction SilentlyContinue
+Remove-Item $tempErrFile -ErrorAction SilentlyContinue
+
+# Build final JSON and save
+$finalJson = @{ findings = $allFindings } | ConvertTo-Json -Depth 20 -Compress
+[System.IO.File]::WriteAllText($outputFile, $finalJson, [System.Text.Encoding]::UTF8)
+
+# Clean up temp filter file  
+Remove-Item $filterFile -ErrorAction SilentlyContinue
+
+# Step 2: Display summary
+Write-Host ""
+Write-Host "Findings Summary:" -ForegroundColor Cyan
+$findingCount = $allFindings.Count
+
+if ($findingCount -gt 0) {
+    $critical = ($allFindings | Where-Object { $_.severity -eq "CRITICAL" }).Count
+    $high = ($allFindings | Where-Object { $_.severity -eq "HIGH" }).Count
+    $medium = ($allFindings | Where-Object { $_.severity -eq "MEDIUM" }).Count
+    $low = ($allFindings | Where-Object { $_.severity -eq "LOW" }).Count
+    
+    Write-Host "CRITICAL: $critical" -ForegroundColor Red
+    Write-Host "HIGH:     $high" -ForegroundColor DarkYellow
+    Write-Host "MEDIUM:   $medium" -ForegroundColor Yellow
+    Write-Host "LOW:      $low" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "Total findings: $findingCount" -ForegroundColor Yellow
+} else {
+    Write-Host "No findings returned (image may not be scanned yet)" -ForegroundColor Yellow
+}
+
+# Step 3: Update scans manifest
+Write-Host "Updating scan manifest..." -ForegroundColor Cyan
+$grypeFiles = Get-ChildItem -Path $vscanDir -Filter "RawScanResults_*.json" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
+$inspectorFiles = Get-ChildItem -Path $vscanDir -Filter "InspectorScan_*.json" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
+$allFiles = @($grypeFiles) + @($inspectorFiles) | Sort-Object -Descending
+$allFiles | ConvertTo-Json | Out-File -FilePath $manifestFile -Encoding UTF8
+Write-Host "Manifest updated with $($allFiles.Count) scan(s)" -ForegroundColor Green
+
+# Done
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "Inspector scan complete!" -ForegroundColor Green
+Write-Host "Results saved to: $outputFile" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "Click 'Refresh' in the scan dropdown to load results." -ForegroundColor Yellow`;
+            
+            document.getElementById('inspectorCommandCode').querySelector('code').textContent = command;
+            document.getElementById('inspectorCommandOutput').style.display = 'block';
+        }
+        
+        // ==================== Multi-Scan Comparison System ====================
+        
+        const scanSlots = {
+            A: { loaded: false, source: null, label: null, data: null, vulns: [] },
+            B: { loaded: false, source: null, label: null, data: null, vulns: [] },
+            C: { loaded: false, source: null, label: null, data: null, vulns: [] }
+        };
+        
+        function addScanToSlot(slotId, source, label, data) {
+            const slot = scanSlots[slotId];
+            if (!slot) return;
+            
+            let vulns = [];
+            if (source === 'grype') {
+                vulns = parseGrypeData(data);
+            } else if (source === 'inspector') {
+                vulns = parseInspectorData(data);
+            } else if (source === 'upload') {
+                if (data.matches) {
+                    vulns = parseGrypeData(data);
+                } else if (data.findings) {
+                    vulns = parseInspectorData(data);
+                } else {
+                    alert('Unrecognized scan format');
+                    return;
+                }
+            }
+            
+            slot.loaded = true;
+            slot.source = source;
+            slot.label = label;
+            slot.data = data;
+            slot.vulns = vulns;
+            
+            updateSlotUI(slotId);
+            updateComparisonAvailability();
+        }
+        
+        function parseGrypeData(data) {
+            const matches = data.matches || [];
+            return matches.map(m => ({
+                severity: m.vulnerability?.severity || 'Unknown',
+                package: m.artifact?.name || 'Unknown',
+                installed: m.artifact?.version || 'Unknown',
+                fixedIn: m.vulnerability?.fix?.versions?.join(', ') || 'No fix',
+                cve: m.vulnerability?.id || 'Unknown',
+                type: m.artifact?.type || 'Unknown',
+                hasfix: m.vulnerability?.fix?.state === 'fixed',
+                key: `${m.vulnerability?.id || ''}:${m.artifact?.name || ''}:${m.artifact?.version || ''}`
+            }));
+        }
+        
+        function parseInspectorData(data) {
+            const findings = data.findings || [];
+            
+            const allImageTags = new Set();
+            findings.forEach(f => {
+                const tags = f.resources?.[0]?.details?.awsEcrContainerImage?.imageTags || [];
+                tags.forEach(t => allImageTags.add(t));
+            });
+            const totalImageCount = allImageTags.size;
+            
+            const cveMap = new Map();
+            
+            findings.forEach(f => {
+                const cve = f.packageVulnerabilityDetails?.vulnerabilityId || f.title?.split(' - ')?.[0] || 'Unknown';
+                const pkg = f.packageVulnerabilityDetails?.vulnerablePackages?.[0]?.name || 
+                            f.title?.split(' - ')?.[1] || 'Unknown';
+                const version = f.packageVulnerabilityDetails?.vulnerablePackages?.[0]?.version || 'Unknown';
+                const key = `${cve}:${pkg}:${version}`;
+                
+                const imageTags = f.resources?.[0]?.details?.awsEcrContainerImage?.imageTags || ['untagged'];
+                
+                if (cveMap.has(key)) {
+                    const existing = cveMap.get(key);
+                    imageTags.forEach(t => existing.imageTags.add(t));
+                } else {
+                    cveMap.set(key, {
+                        severity: f.severity || 'Unknown',
+                        package: pkg,
+                        installed: version,
+                        fixedIn: f.packageVulnerabilityDetails?.vulnerablePackages?.[0]?.fixedInVersion || 'No fix',
+                        cve: cve,
+                        type: f.packageVulnerabilityDetails?.vulnerablePackages?.[0]?.packageManager || 'Unknown',
+                        hasfix: !!f.packageVulnerabilityDetails?.vulnerablePackages?.[0]?.fixedInVersion,
+                        key: key,
+                        imageTags: new Set(imageTags),
+                        totalImageCount: totalImageCount
+                    });
+                }
+            });
+            
+            return Array.from(cveMap.values()).map(v => ({
+                ...v,
+                images: v.imageTags.size >= v.totalImageCount ? 'All' : Array.from(v.imageTags).join(', '),
+                imageCount: v.imageTags.size,
+                imageTags: Array.from(v.imageTags)
+            }));
+        }
+        
+        function updateSlotUI(slotId) {
+            const slot = scanSlots[slotId];
+            const slotEl = document.getElementById('slot-' + slotId);
+            if (!slotEl) return;
+            
+            const contentEl = slotEl.querySelector('.slot-content');
+            const actionsEl = slotEl.querySelector('.slot-actions');
+            
+            if (slot.loaded) {
+                const counts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+                slot.vulns.forEach(v => {
+                    if (counts.hasOwnProperty(v.severity)) counts[v.severity]++;
+                });
+                
+                let extraInfo = '';
+                if (slot.source === 'inspector' && slot.vulns.length > 0 && slot.vulns[0].totalImageCount) {
+                    const imageCount = slot.vulns[0].totalImageCount;
+                    extraInfo = '<div class="slot-images">Across ' + imageCount + ' image' + (imageCount > 1 ? 's' : '') + '</div>';
+                }
+                
+                contentEl.innerHTML = `
+                    <div class="slot-badge badge-${slot.source}">${slot.source.toUpperCase()}</div>
+                    <div class="slot-label">${slot.label}</div>
+                    <div class="slot-stats">
+                        <span class="severity-critical">${counts.Critical} Crit</span> |
+                        <span class="severity-high">${counts.High} High</span> |
+                        <span style="color: #fd7e14">${counts.Medium} Med</span> |
+                        <span style="color: #6c757d">${counts.Low} Low</span>
+                    </div>
+                    <div class="slot-total">Total: ${slot.vulns.length} unique CVEs</div>
+                    ${extraInfo}
+                `;
+                actionsEl.innerHTML = '<button class="btn btn-sm" onclick="clearSlot(\'' + slotId + '\')">Clear</button>';
+                slotEl.classList.add('loaded');
+            } else {
+                contentEl.innerHTML = `
+                    <div class="slot-empty">Empty Slot</div>
+                    <div style="font-size: 0.85em; color: #6c757d;">Load a scan from Grype, Inspector, or Upload</div>
+                `;
+                actionsEl.innerHTML = '';
+                slotEl.classList.remove('loaded');
+            }
+        }
+        
+        function clearSlot(slotId) {
+            scanSlots[slotId] = { loaded: false, source: null, label: null, data: null, vulns: [] };
+            updateSlotUI(slotId);
+            updateComparisonAvailability();
+        }
+        
+        function updateComparisonAvailability() {
+            const loadedCount = Object.values(scanSlots).filter(s => s.loaded).length;
+            const compareBtn = document.getElementById('runCompareBtn');
+            if (compareBtn) {
+                compareBtn.disabled = loadedCount < 2;
+                compareBtn.textContent = loadedCount < 2 
+                    ? 'Compare (Load ' + (2 - loadedCount) + ' more scan' + (loadedCount === 1 ? '' : 's') + ')'
+                    : 'Compare ' + loadedCount + ' Scans';
+            }
+        }
+        
+        function getNextAvailableSlot() {
+            for (const slotId of ['A', 'B', 'C']) {
+                if (!scanSlots[slotId].loaded) return slotId;
+            }
+            return null;
+        }
+        
+        function loadGrypeToSlot() {
+            const select = document.getElementById('slotGrypeSelect');
+            const filePath = select?.value;
+            
+            if (!filePath) {
+                alert('Please select a scan from the dropdown');
+                return;
+            }
+            
+            const slotId = getNextAvailableSlot();
+            if (!slotId) {
+                alert('All slots are full. Clear a slot first.');
+                return;
+            }
+            
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load file');
+                    return response.json();
+                })
+                .then(data => {
+                    const filename = filePath.split('/').pop();
+                    let label, source;
+                    
+                    const inspectorMatch = filename.match(/InspectorScan_(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+                    const grypeMatch = filename.match(/RawScanResults_(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+                    
+                    if (inspectorMatch) {
+                        source = 'inspector';
+                        label = 'Inspector ' + inspectorMatch[1] + '-' + inspectorMatch[2] + '-' + inspectorMatch[3] + ' ' + inspectorMatch[4] + ':' + inspectorMatch[5];
+                    } else if (grypeMatch) {
+                        source = 'grype';
+                        label = 'Grype ' + grypeMatch[1] + '-' + grypeMatch[2] + '-' + grypeMatch[3] + ' ' + grypeMatch[4] + ':' + grypeMatch[5];
+                    } else {
+                        source = 'upload';
+                        label = filename;
+                    }
+                    
+                    addScanToSlot(slotId, source, label, data);
+                })
+                .catch(err => {
+                    alert('Error loading scan: ' + err.message);
+                });
+        }
+        
+        function loadUploadToSlot(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const slotId = getNextAvailableSlot();
+            if (!slotId) {
+                alert('All slots are full. Clear a slot first.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    addScanToSlot(slotId, 'upload', file.name, data);
+                } catch (err) {
+                    alert('Error parsing JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function runComparison() {
+            const loadedSlots = Object.entries(scanSlots).filter(([_, s]) => s.loaded);
+            
+            if (loadedSlots.length < 2) {
+                alert('Load at least 2 scans to compare');
+                return;
+            }
+            
+            const sources = loadedSlots.map(([_, s]) => s.source);
+            const uniqueSources = [...new Set(sources)];
+            const isCrossScanner = uniqueSources.length > 1;
+            
+            const getMatchKey = (v) => isCrossScanner ? v.cve : v.key;
+            
+            const [baselineId, baseline] = loadedSlots[0];
+            const baselineCVEs = new Set(baseline.vulns.map(v => getMatchKey(v)));
+            
+            const allCVEs = new Map();
+            
+            baseline.vulns.forEach(v => {
+                const matchKey = getMatchKey(v);
+                allCVEs.set(matchKey, {
+                    ...v,
+                    matchKey: matchKey,
+                    inScans: { [baselineId]: true },
+                    detectedBy: { [baseline.source]: true },
+                    status: 'unchanged',
+                    scannerDetails: { [baseline.source]: { package: v.package, version: v.installed } }
+                });
+            });
+            
+            loadedSlots.slice(1).forEach(([slotId, slot]) => {
+                const slotCVEs = new Set(slot.vulns.map(v => getMatchKey(v)));
+                
+                slot.vulns.forEach(v => {
+                    const matchKey = getMatchKey(v);
+                    if (allCVEs.has(matchKey)) {
+                        const existing = allCVEs.get(matchKey);
+                        existing.inScans[slotId] = true;
+                        existing.detectedBy[slot.source] = true;
+                        if (!existing.scannerDetails) existing.scannerDetails = {};
+                        existing.scannerDetails[slot.source] = { package: v.package, version: v.installed };
+                    } else {
+                        allCVEs.set(matchKey, {
+                            ...v,
+                            matchKey: matchKey,
+                            inScans: { [slotId]: true },
+                            detectedBy: { [slot.source]: true },
+                            status: 'new',
+                            scannerDetails: { [slot.source]: { package: v.package, version: v.installed } }
+                        });
+                    }
+                });
+                
+                baseline.vulns.forEach(v => {
+                    const matchKey = getMatchKey(v);
+                    if (!slotCVEs.has(matchKey)) {
+                        const entry = allCVEs.get(matchKey);
+                        if (entry && !entry.inScans[slotId]) {
+                            entry.inScans[slotId] = false;
+                        }
+                    }
+                });
+            });
+            
+            const comparedData = [];
+            allCVEs.forEach((cve, key) => {
+                const scanPresence = Object.entries(cve.inScans);
+                const presentIn = scanPresence.filter(([_, present]) => present).length;
+                const totalScans = loadedSlots.length;
+                const detectedByScanners = Object.keys(cve.detectedBy || {});
+                
+                if (presentIn === totalScans) {
+                    cve.status = 'unchanged';
+                } else if (isCrossScanner && detectedByScanners.length === 1) {
+                    cve.status = 'gap';
+                    cve.detectedByScanner = detectedByScanners[0];
+                } else if (!cve.inScans[baselineId]) {
+                    cve.status = 'new';
+                } else if (presentIn < totalScans && cve.inScans[baselineId]) {
+                    cve.status = 'fixed';
+                }
+                
+                comparedData.push(cve);
+            });
+            
+            window.comparisonMode = isCrossScanner ? 'cross-scanner' : 'same-scanner';
+            
+            const stats = {
+                total: comparedData.length,
+                new: comparedData.filter(c => c.status === 'new').length,
+                fixed: comparedData.filter(c => c.status === 'fixed').length,
+                gap: comparedData.filter(c => c.status === 'gap').length,
+                unchanged: comparedData.filter(c => c.status === 'unchanged').length,
+                critical: comparedData.filter(c => c.severity === 'Critical').length,
+                high: comparedData.filter(c => c.severity === 'High').length,
+                isCrossScanner: isCrossScanner
+            };
+            
+            window.comparisonData = comparedData;
+            window.comparisonSlots = loadedSlots;
+            
+            const baselineTotal = baseline.vulns.length;
+            const latestSlot = loadedSlots[loadedSlots.length - 1][1];
+            const latestTotal = latestSlot.vulns.length;
+            stats.trend = latestTotal - baselineTotal;
+            
+            renderComparisonSummary(stats, loadedSlots);
+            renderComparisonTable(comparedData, loadedSlots);
+            
+            document.getElementById('comparisonResults').style.display = 'block';
+            document.getElementById('comparisonResults').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function renderComparisonSummary(stats, loadedSlots) {
+            const summaryEl = document.getElementById('compareSummary');
+            if (!summaryEl) return;
+            
+            const trendClass = stats.trend < 0 ? 'trend-down' : (stats.trend > 0 ? 'trend-up' : '');
+            const trendIcon = stats.trend < 0 ? '↓' : (stats.trend > 0 ? '↑' : '→');
+            const trendText = stats.trend < 0 ? Math.abs(stats.trend) + ' fewer' : (stats.trend > 0 ? stats.trend + ' more' : 'No change');
+            
+            if (stats.isCrossScanner) {
+                summaryEl.innerHTML = `
+                    <div class="compare-card">
+                        <div class="compare-card-title">Total Unique CVEs</div>
+                        <div class="compare-card-value">${stats.total}</div>
+                        <div class="compare-trend">Across all scanners</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">🟢 Both Scanners</div>
+                        <div class="compare-card-value" style="color: #28a745">${stats.unchanged}</div>
+                        <div class="compare-trend">Confirmed by both</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">🟡 Scanner Gap</div>
+                        <div class="compare-card-value" style="color: #ffc107">${stats.gap}</div>
+                        <div class="compare-trend">Only one scanner</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">Critical+High</div>
+                        <div class="compare-card-value" style="color: #e83e8c">${stats.critical + stats.high}</div>
+                        <div class="compare-trend">${stats.critical} Crit / ${stats.high} High</div>
+                    </div>
+                    <div class="compare-card" style="background: #fff3cd; border-color: #ffc107;">
+                        <div class="compare-card-title">⚠️ Note</div>
+                        <div style="font-size: 0.85em; color: #856404;">Scanner Gap = different detection coverage, not remediation</div>
+                    </div>
+                `;
+            } else {
+                summaryEl.innerHTML = `
+                    <div class="compare-card">
+                        <div class="compare-card-title">Total CVEs</div>
+                        <div class="compare-card-value">${stats.total}</div>
+                        <div class="compare-trend ${trendClass}">${trendIcon} ${trendText}</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">🔴 New Issues</div>
+                        <div class="compare-card-value" style="color: #dc3545">${stats.new}</div>
+                        <div class="compare-trend">Regressions</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">🟢 Fixed</div>
+                        <div class="compare-card-value" style="color: #28a745">${stats.fixed}</div>
+                        <div class="compare-trend">Remediated</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">⚪ Unchanged</div>
+                        <div class="compare-card-value" style="color: #6c757d">${stats.unchanged}</div>
+                        <div class="compare-trend">Still present</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="compare-card-title">Critical+High</div>
+                        <div class="compare-card-value" style="color: #e83e8c">${stats.critical + stats.high}</div>
+                        <div class="compare-trend">${stats.critical} Crit / ${stats.high} High</div>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderComparisonTable(data, loadedSlots) {
+            const tbody = document.getElementById('compareTableBody');
+            if (!tbody) return;
+            
+            const isCrossScanner = window.comparisonMode === 'cross-scanner';
+            
+            const hasImageData = loadedSlots.some(([_, s]) => s.source === 'inspector');
+            
+            const severityOrder = { Critical: 0, High: 1, Medium: 2, Low: 3, Negligible: 4, Unknown: 5 };
+            const statusOrder = { new: 0, gap: 1, fixed: 2, unchanged: 3 };
+            
+            data.sort((a, b) => {
+                const statusDiff = (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
+                if (statusDiff !== 0) return statusDiff;
+                return (severityOrder[a.severity] || 5) - (severityOrder[b.severity] || 5);
+            });
+            
+            tbody.innerHTML = '';
+            
+            data.forEach(v => {
+                const row = document.createElement('tr');
+                row.className = 'compare-row';
+                row.dataset.status = v.status;
+                row.dataset.severity = v.severity;
+                row.dataset.detectedby = Object.keys(v.detectedBy || {}).join(', ');
+                
+                const statusClass = 'compare-status-' + v.status;
+                const statusLabel = isCrossScanner ? 
+                    (v.status === 'unchanged' ? 'Both' : (v.status === 'gap' ? 'Only ' + (v.detectedByScanner || '') : v.status.charAt(0).toUpperCase() + v.status.slice(1))) :
+                    v.status.charAt(0).toUpperCase() + v.status.slice(1);
+                const severityClass = 'severity-' + v.severity.toLowerCase();
+                
+                const presenceCells = loadedSlots.map(([id, _]) => {
+                    const present = v.inScans[id];
+                    return '<td class="presence-cell">' + (present ? '✓' : '—') + '</td>';
+                }).join('');
+                
+                let imagesCell = '';
+                if (hasImageData) {
+                    if (v.images === 'All') {
+                        imagesCell = '<td><span class="images-all" title="Affects all scanned images">All</span></td>';
+                    } else if (v.images) {
+                        const imageList = v.imageTags?.join('\n') || v.images;
+                        imagesCell = '<td><span class="images-partial" title="' + imageList + '">' + (v.imageCount || 1) + ' image' + ((v.imageCount || 1) > 1 ? 's' : '') + '</span></td>';
+                    } else {
+                        imagesCell = '<td><span class="images-na">—</span></td>';
+                    }
+                }
+                
+                row.innerHTML = `
+                    <td><span class="${statusClass}">${statusLabel}</span></td>
+                    <td><span class="${severityClass}">${v.severity}</span></td>
+                    <td><a href="https://nvd.nist.gov/vuln/detail/${v.cve}" target="_blank">${v.cve}</a></td>
+                    <td>${v.package}</td>
+                    <td><code>${v.installed}</code></td>
+                    <td>${v.hasfix ? '<code>' + v.fixedIn + '</code>' : '<span style="color:#999">No fix</span>'}</td>
+                    ${imagesCell}
+                    ${presenceCells}
+                `;
+                tbody.appendChild(row);
+            });
+            
+            const thead = document.getElementById('compareTableHead');
+            if (thead) {
+                const presenceHeaders = loadedSlots.map(([id, s]) => '<th>Scan ' + id + '<br><small>' + s.source + '</small></th>').join('');
+                const imagesHeader = hasImageData ? '<th>Images</th>' : '';
+                thead.innerHTML = `
+                    <tr>
+                        <th>Status</th>
+                        <th>Severity</th>
+                        <th>CVE</th>
+                        <th>Package</th>
+                        <th>Version</th>
+                        <th>Fix Available</th>
+                        ${imagesHeader}
+                        ${presenceHeaders}
+                    </tr>
+                `;
+            }
+        }
+        
+        function filterCompareStatus(status) {
+            document.querySelectorAll('.compare-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.status === status);
+            });
+            
+            const rows = document.querySelectorAll('.compare-row');
+            rows.forEach(row => {
+                const show = status === 'all' || row.dataset.status === status;
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        
+        function exportComparisonReport() {
+            const data = window.comparisonData;
+            if (!data || data.length === 0) {
+                alert('No comparison data to export. Run a comparison first.');
+                return;
+            }
+            
+            const isCrossScanner = window.comparisonMode === 'cross-scanner';
+            const loadedSlots = window.comparisonSlots || [];
+            
+            const hasImageData = loadedSlots.some(([_, s]) => s.source === 'inspector');
+            
+            let csv = 'Status,Severity,CVE,Package,Version,Fix Available';
+            if (isCrossScanner) csv += ',Detected By';
+            if (hasImageData) csv += ',Images';
+            loadedSlots.forEach(([id, s]) => {
+                csv += ',Scan ' + id + ' (' + s.source + ')';
+            });
+            csv += '\n';
+            
+            const severityOrder = { Critical: 0, High: 1, Medium: 2, Low: 3, Negligible: 4, Unknown: 5 };
+            const statusOrder = { new: 0, gap: 1, fixed: 2, unchanged: 3 };
+            
+            const sortedData = [...data].sort((a, b) => {
+                const statusDiff = (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
+                if (statusDiff !== 0) return statusDiff;
+                return (severityOrder[a.severity] || 5) - (severityOrder[b.severity] || 5);
+            });
+            
+            sortedData.forEach(v => {
+                const detectedBy = Object.keys(v.detectedBy || {}).join(' & ');
+                const fixText = v.hasfix ? v.fixedIn : 'No fix';
+                const imagesText = hasImageData ? (v.images || '—') : '';
+                
+                csv += `${v.status},${v.severity},"${v.cve}","${v.package}","${v.installed}","${fixText}"`;
+                if (isCrossScanner) csv += `,"${detectedBy}"`;
+                if (hasImageData) csv += `,"${imagesText}"`;
+                
+                loadedSlots.forEach(([id, _]) => {
+                    csv += `,${v.inScans[id] ? 'Yes' : 'No'}`;
+                });
+                csv += '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'scan-comparison-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            ['A', 'B', 'C'].forEach(slotId => updateSlotUI(slotId));
+            updateComparisonAvailability();
+        });
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+
+

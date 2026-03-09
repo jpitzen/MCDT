@@ -1,0 +1,90 @@
+# ZLServer Deployment - Kubernetes-Optimized Image
+# Uses: zlserver:11.1.0-b1140-k8s
+# Improvements:
+#   - No Java install at startup (pre-installed)
+#   - No config copy workaround (writable paths)
+#   - No DocumentConversion.xml ConfigMap (env var templating)
+#   - Kubernetes-aware defaults
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlserver
+  labels:
+    app: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      containers:
+      - name: zlserver
+        # Use Kubernetes-optimized image with -k8s suffix
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-11.1.0-b1140-k8s
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        envFrom:
+        - configMapRef:
+            name: zlapp-config
+        env:
+        # Tika connection - image will template DocumentConversion.xml
+        - name: TIKA_HOST
+          value: "zltika"
+        - name: TIKA_PORT
+          value: "9972"
+        # Database password from secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+        volumeMounts:
+        # Direct mount to final locations (no copy needed with -k8s image)
+        - mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+          name: zkclient-config
+          subPath: tcdb.cfg
+        - mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+          name: zkclient-config
+          subPath: zkQuorum.cfg
+        # Persistent storage
+        - mountPath: /opt/ZipLip/zlservertemp
+          name: zlservertemp-efs
+        - mountPath: /opt/ZipLip/zlserverLogs
+          name: zlserverlogs-efs
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        readinessProbe:
+          httpGet:
+            path: /ps/app/home.jsp
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /ps/app/home.jsp
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 10
+      volumes:
+      - name: zkclient-config
+        configMap:
+          name: zkclient-config
+      - name: zlservertemp-efs
+        persistentVolumeClaim:
+          claimName: zlservertemp-efs
+      - name: zlserverlogs-efs
+        persistentVolumeClaim:
+          claimName: zlserverlogs-efs

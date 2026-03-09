@@ -1,0 +1,5 @@
+{
+  "commands": [
+    "sqlcmd -S use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com -d ZLDB -U pfuser -P 'LJZ-wkVv@t_!d*PiM2tbx3TZ4h' -C -Q \"SELECT dvID, dvName, dvLocalPath FROM DiskVolume\""
+  ]
+}

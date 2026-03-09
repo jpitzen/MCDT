@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zoo
+  template:
+    metadata:
+      labels:
+        app: zoo
+    spec:
+      containers:
+      - name: uw1-zlps-ecr-01
+        image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper11.1.0-b1140
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: docker-secret

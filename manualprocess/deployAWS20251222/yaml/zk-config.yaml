@@ -1,0 +1,57 @@
+# ZooKeeper Server Configuration ConfigMap
+# Auth key MUST match client's zkclient-config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-config
+data:
+  zk.cfg: |
+    cfg.dir = @zlTs.root@/config
+    log.dir = @zlTs.root@/logs
+
+    log.enableLog4j=false
+    log.output=#wsi.util.Log4JFactory~~@log.enableLog4j@
+
+    #include @cfg.dir@/common/Constants.cfg
+
+    zk.clientPort=2181
+
+    #include /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+
+    zkParam.tickTime=2000
+    zkParam.initLimit=10
+    zkParam.syncLimit=5
+    zkParam.autopurge.snapRetainCount=3
+    zkParam.autopurge.purgeInterval=1
+
+    acv.zkParam=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkParam.
+
+    log.level = 24
+    log.flush = 20
+    log.rollOver=86400
+
+    te.logs=#wsi.util.TimedErrands~~Logs Errand_Runner~~true
+    te.misc=#wsi.util.TimedErrands~~Misc Errand_Runner~~true
+    te.services=#wsi.util.TimedErrands~~Services Errand_Runner~~true
+
+    zlTs.log.main =#wsi.util.WebLog~~@log.dir@~~main~~@log.level@~~@te.logs@~~@log.flush@~~@log.rollOver@~~false
+
+    app.zk.name=ZLZK
+    app.zk.id=17
+
+    #include @cfg.dir@/zkChild.cfg
+
+    __zk.main=#com.zlti.zlzookeeper.server.ZLZooKeeperServer~~@acv.zkParam@~~@acv.zkQuorum@
+  zkQuorum.cfg: |
+    #if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED
+    #define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true
+    
+    // ZooKeeper Authentication Key - MUST match client zkclient-config
+    _zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~Zh2CX0aZm7f+tRNic77CKvCtYwrxz8Nt7QY1y1T6B5AV4tcMVWGBf4J2Lei/JSDU9KKPspAK2nYPUJF7mQmIVg==
+    
+    // id,machine,clientPort,peerPort,electionPort,dataDir,[hostname]
+    zkQuorum.0=0~~zlzookeeper-0~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0~~zlzookeeper-0.zk-hs.default.svc.cluster.local
+    zkQuorum.1=1~~zlzookeeper-1~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1~~zlzookeeper-1.zk-hs.default.svc.cluster.local
+    zkQuorum.2=2~~zlzookeeper-2~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2~~zlzookeeper-2.zk-hs.default.svc.cluster.local
+    acv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.
+    #endif

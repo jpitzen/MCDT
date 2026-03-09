@@ -1,0 +1,70 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zookeeper-init
+spec:
+  template:
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+      - name: zookeeper-init
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+        imagePullPolicy: Never
+        command:
+        - /bin/bash
+        - -c
+        - |
+          # Wait for ZooKeeper cluster to be ready
+          echo "Waiting for ZooKeeper cluster to be ready..."
+          for i in {1..30}; do
+            if /opt/ZipLip/bin/zkutil.sh -s "ls /" > /dev/null 2>&1; then
+              echo "ZooKeeper cluster is ready"
+              break
+            fi
+            echo "Waiting for ZooKeeper... ($i/30)"
+            sleep 10
+          done
+
+          # Initialize ZooKeeper authentication keys
+          echo "Initializing ZooKeeper authentication keys..."
+          /opt/ZipLip/bin/zkutil.sh -k
+
+          # Load database configuration into ZooKeeper
+          echo "Loading database configuration..."
+          cd /opt/ZipLip/bin/zk && /opt/ZipLip/bin/zkldr.sh tcdb.cfg
+
+          # Verify initialization
+          echo "Verifying ZooKeeper initialization..."
+          /opt/ZipLip/bin/zkutil.sh -s "ls /zl"
+
+          echo "ZooKeeper initialization completed successfully"
+        envFrom:
+        - configMapRef:
+            name: zlapp-config
+        volumeMounts:
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config/zk.cfg
+          subPath: zk.cfg
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+          subPath: zkQuorum.cfg
+        - name: zk-jaas-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config/zookeeper_jaas.conf
+          subPath: zookeeper_jaas.conf
+        - name: zkclient-config
+          mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+          subPath: tcdb.cfg
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zk-config
+      - name: zk-jaas-config
+        configMap:
+          name: zk-jaas-config
+      - name: zkclient-config
+        configMap:
+          name: zkclient-config
+      restartPolicy: Never
+  backoffLimit: 3

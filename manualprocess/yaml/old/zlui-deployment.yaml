@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver11.1.0-b1140
+          imagePullPolicy: Always
+          #imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "10"
+            - name: SERVICE_EXECUTORS
+              value: "10"
+            - name: MANAGED_EXECUTORS
+              value: "10"  
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            #- mountPath: /var/ZipLip/Master
+            #  name: azurefileshare-master
+            #- mountPath: /var/ZipLip/Temp
+            #  name: azurefileshare-temp
+#            - mountPath: /opt/ZipLip/bin/zk
+#              name: zkfolder
+      imagePullSecrets:
+        - name: regcred
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+#       - name: zkfolder
+#          persistentVolumeClaim:
+#            claimName: zlfolder
+        #- name: azurefileshare-master
+        #  azureFile:
+        #    secretName: storage-account-1-secret
+        #    shareName: master
+        #    readOnly: false
+        #- name: azurefileshare-temp
+        #  azureFile:
+        #    secretName: storage-account-1-secret
+        #    shareName: temp
+        #    readOnly: false
+status: {}

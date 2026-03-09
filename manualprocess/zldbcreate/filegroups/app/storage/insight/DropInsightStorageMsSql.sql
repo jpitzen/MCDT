@@ -1,0 +1,20 @@
+DROP SEQUENCE pfuser01.FileTag_Sequence
+DROP TABLE pfuser01.FileTag
+DROP TABLE pfuser01.FileTagAction
+DROP SEQUENCE pfuser01.FileTreeDataCollect_sequence
+DROP TABLE pfuser01.FileTreeDataCollect
+DROP SEQUENCE pfuser01.FileTreeSearch_sequence
+DROP TABLE pfuser01.FileTreeSearch
+DROP TABLE pfuser01.FileTreeEntry
+DROP TABLE pfuser01.FileTreePrivileges
+DROP TABLE pfuser01.FileTreeRemediation
+DROP SEQUENCE pfuser01.FTRemediationRuns_seq
+DROP TABLE pfuser01.FileTreeRemediationRuns
+DROP SEQUENCE pfuser01.FileTreeDashboard_seq
+DROP TABLE pfuser01.FileTreeDashboard
+DROP TABLE pfuser01.FileTreeAuditTrail
+DROP TABLE pfuser01.FileTreeScheduledRuns
+DROP SEQUENCE pfuser01.FTDispositionRuns_sequence
+DROP TABLE pfuser01.FileTreeDispositionRuns
+DROP TABLE pfuser01.FileTreeEntrySyncAction
+

@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 7</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 7: ZooKeeper Deployment</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 7</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 7: ZooKeeper Deployment</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">9</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                    <span class="step-dot" data-step="8"></span>
+                    <span class="step-dot" data-step="9"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">ZooKeeper Deployment Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 7</strong> deploys Apache ZooKeeper to provide distributed coordination services for cluster state management, leader election, and configuration synchronization.</p>
+                <div class="info" style="margin-top: 15px;">
+                    <strong>📌 Version Note:</strong> ConfigMaps and deployment manifests reference ZL Version 11.1.0 (Build 1140). Verify image tags and configuration values match your target ZL version.
+                </div>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Deploy ZooKeeper headless service (zk-hs)</li>
+                    <li data-steps="2">Deploy ZooKeeper client service (zk-cs)</li>
+                    <li data-steps="3">Create ZooKeeper EFS Persistent Volume and Claim</li>
+                    <li data-steps="4">Create zlapp-config ConfigMap (NO ZOO_SERVERS)</li>
+                    <li data-steps="5">Create zkclient-config ConfigMap with zkQuorum</li>
+                    <li data-steps="6">Deploy ZooKeeper StatefulSet (3 replicas)</li>
+                    <li data-steps="7">Run ZooKeeper Config Seed Job (one-time setup)</li>
+                    <li data-steps="8">Verify ZooKeeper quorum and pod status</li>
+                    <li data-steps="9">Complete Phase 7 deployment checklist</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            
+            <!-- Bottom Navigation Controls (Always visible) -->
+            <div class="pagination-controls bottom-controls" id="bottom-nav">
+                <button class="nav-btn prev-btn" id="prev-btn-bottom" onclick="navigateStep(-1)">
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="bottom-step-title">Step 1 of 9</div>
+                <button class="nav-btn next-btn" id="next-btn-bottom" onclick="navigateStep(1)">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript -->
+<script>
+        // Step data for Phase 7
+        const stepData = {
+            1: {
+                title: "Deploy ZooKeeper Headless Service",
+                content: `
+                    <h3>Step 38: Deploy ZooKeeper Headless Service</h3>
+                    <p>Create the headless service for ZooKeeper peer discovery and cluster communication.</p>
+                    
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates headless service (clusterIP: None) for ZooKeeper peer discovery</li>
+                            <li>Enables StatefulSet pods to communicate via stable DNS names</li>
+                            <li>Exposes ports 2888 (follower) and 3888 (leader election)</li>
+                        </ul>
+                    </div>
+
+                    <h4>Deploy Headless Service:</h4>
+                    <pre><code>kubectl apply -f yaml/zk-hs.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zk-hs.yaml</code> headless service configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zk-hs')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zk-hs.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zk-hs" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zk-hs.yaml (Headless Service)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zk-hs')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zk-hs">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Verify Service:</h4>
+                    <pre><code>kubectl get service zk-hs
+kubectl describe service zk-hs</code></pre>
+
+                    <div class="info-section">
+                        <strong>💡 Headless Service Purpose:</strong>
+                        <ul>
+                            <li><strong>StatefulSet DNS:</strong> Each pod gets <code>zlzookeeper-0.zk-hs.default.svc.cluster.local</code></li>
+                            <li><strong>No Load Balancing:</strong> Direct pod-to-pod communication for cluster coordination</li>
+                            <li><strong>Stable Network Identity:</strong> Pods retain DNS names across restarts</li>
+                        </ul>
+                    </div>
+                `
+            },
+            2: {
+                title: "Deploy ZooKeeper Client Service",
+                content: `
+                    <h3>Step 39: Deploy ZooKeeper Client Service</h3>
+                    <p>Create the client service for application connections to ZooKeeper.</p>
+                    
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates standard service with cluster IP for load-balanced client connections</li>
+                            <li>Exposes port 2181 for ZooKeeper client protocol</li>
+                            <li>Provides single endpoint for applications to connect</li>
+                        </ul>
+                    </div>
+
+                    <h4>Deploy Client Service:</h4>
+                    <pre><code>kubectl apply -f yaml/zk-cs.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zk-cs.yaml</code> client service configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zk-cs')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zk-cs.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zk-cs" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zk-cs.yaml (Client Service)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zk-cs')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zk-cs">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Verify Service:</h4>
+                    <pre><code>kubectl get service zk-cs
+kubectl describe service zk-cs</code></pre>
+
+                    <div class="info-section">
+                        <h4>Why ZooKeeper Is Needed</h4>
+                        <ul>
+                            <li><strong>Cluster Coordination:</strong> Manages which ZL server instance handles specific tasks</li>
+                            <li><strong>Leader Election:</strong> Ensures single-writer for critical operations</li>
+                            <li><strong>Configuration Management:</strong> Centralizes application settings</li>
+                            <li><strong>Service Discovery:</strong> Enables pods to find each other</li>
+                        </ul>
+                    </div>
+                `
+            },
+            3: {
+                title: "Create ZooKeeper EFS PV/PVC",
+                content: `
+                    <h3>Step 40: Create ZooKeeper EFS Persistent Volume</h3>
+                    <p>Create the EFS-backed persistent volume for ZooKeeper configuration files.</p>
+                    
+                    <div class="warning-section">
+                        <h4>🔴 NEW - Bootstrap Job Architecture</h4>
+                        <p>ZooKeeper configuration is now stored on EFS-backed persistent storage. This allows configuration to persist across pod restarts and be shared between ZooKeeper and ZLServer components.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates EFS-backed PersistentVolume for ZooKeeper config</li>
+                            <li>Shared between ZooKeeper pods, ZLServer pods, and Bootstrap Job</li>
+                            <li>Configuration is seeded once and persists across restarts</li>
+                            <li>No more re-initialization on every pod restart</li>
+                        </ul>
+                    </div>
+
+                    <h4>Deploy ZooKeeper Config PV:</h4>
+                    <pre><code>kubectl apply -f yaml/zk-config-pv.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zk-config-pv.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zk-config-pv')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zk-config-pv.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zk-config-pv" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zk-config-pv.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zk-config-pv')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zk-config-pv">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Deploy ZooKeeper Config PVC:</h4>
+                    <pre><code>kubectl apply -f yaml/zk-config-pvc.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zk-config-pvc.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zk-config-pvc')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zk-config-pvc.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zk-config-pvc" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zk-config-pvc.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zk-config-pvc')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zk-config-pvc">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Verify PV/PVC Status:</h4>
+                    <pre><code># Verify PV is Available
+kubectl get pv zk-config-pv
+
+# Verify PVC is Bound
+kubectl get pvc zk-config-efs</code></pre>
+                    <div class="output-block">
+                        <pre><code>NAME           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  
+zk-config-pv   1Gi        RWX            Retain           Bound    default/zk-config-efs
+
+NAME            STATUS   VOLUME         CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+zk-config-efs   Bound    zk-config-pv   1Gi        RWX                           10s</code></pre>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Bootstrap Job Benefits:</strong>
+                        <ul>
+                            <li><strong>One-time Setup:</strong> ZK initialization runs once, not on every restart</li>
+                            <li><strong>Persistent Config:</strong> Config changes survive pod restarts</li>
+                            <li><strong>Shared Storage:</strong> ZK, ZLServer, and Bootstrap Job share same config</li>
+                            <li><strong>No Image Rebuilds:</strong> Config changes don't require new Docker images</li>
+                        </ul>
+                    </div>
+                `
+            },
+            4: {
+                title: "Deploy zlapp-config ConfigMap",
+                content: `
+                    <h3>Step 41a: Deploy zlapp-config ConfigMap</h3>
+                    <p>Create the application configuration ConfigMap with Tika settings.</p>
+                    
+                    <div class="warning-section">
+                        <h4>⚠️ CRITICAL: Do NOT Use ZOO_SERVERS Environment Variable</h4>
+                        <p>The <code>ZOO_SERVERS</code> environment variable triggers sed commands in the startup script that corrupt the zkQuorum.cfg file. DO NOT include it in zlapp-config.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📁 Master ConfigMap Bundle</h4>
+                        <p>The repository maintains <code>aws/clean/configmaps.yaml</code>, which aggregates all ConfigMaps. This step focuses on zlapp-config only.</p>
+                    </div>
+
+                    <h4>Apply zlapp-config:</h4>
+                    <pre><code>kubectl apply -f yaml/zlapp-config.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlapp-config.yaml</code> configuration (NO ZOO_SERVERS):</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlapp-config')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlapp-config.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlapp-config" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlapp-config.yaml (NO ZOO_SERVERS)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlapp-config')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlapp-config">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Verify ConfigMap:</h4>
+                    <pre><code># Verify ZOO_SERVERS is NOT present
+kubectl get configmap zlapp-config -o yaml | grep -i zoo
+
+# Should return no results - ZOO_SERVERS must NOT be present</code></pre>
+                `
+            },
+            5: {
+                title: "Deploy zkclient-config ConfigMap",
+                content: `
+                    <h3>Step 41b: Deploy zkclient-config ConfigMap</h3>
+                    <p>Create the ZooKeeper client configuration with zkQuorum.cfg and tcdb.cfg files.</p>
+                    
+                    <div class="warning-section">
+                        <h4>🔴 UPDATED - MSSQL TrustServerCertificate</h4>
+                        <p>With newer MSSQL JDBC drivers (10.2+), <code>TrustServerCertificate=true</code> is now enabled by default in tcdb.cfg at the Docker image level. This ensures stable database connectivity across environments.</p>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Provides zkQuorum.cfg with full DNS names for ZooKeeper nodes</li>
+                            <li>Includes tcdb.cfg with database connection settings</li>
+                            <li>Ensures proper ZooKeeper cluster discovery</li>
+                        </ul>
+                    </div>
+
+                    <h4>Apply zkclient-config:</h4>
+                    <pre><code>kubectl apply -f yaml/zkclient-config.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zkclient-config.yaml</code> configuration with full DNS names:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zkclient-config')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zkclient-config.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zkclient-config" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zkclient-config.yaml (with full DNS names)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zkclient-config')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zkclient-config">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Critical Configuration Points:</strong>
+                        <ul>
+                            <li><strong>Full DNS Names:</strong> Use <code>zlzookeeper-N.zk-hs.default.svc.cluster.local</code> format</li>
+                            <li><strong>Auth Key:</strong> Generate via <code>/opt/ZipLip/bin/zkutil -g</code> on a running pod</li>
+                            <li><strong>Database Settings:</strong> Update RDS endpoint, password, and database name</li>
+                            <li><strong>TrustServerCertificate:</strong> Enabled by default for MSSQL JDBC 10.2+ compatibility</li>
+                        </ul>
+                    </div>
+
+                    <h4>Verify ConfigMap:</h4>
+                    <pre><code># Verify full DNS names in zkQuorum
+kubectl get configmap zkclient-config -o yaml | grep zkQuorum
+
+# Check tcdb.cfg is present
+kubectl get configmap zkclient-config -o yaml | grep tcdb</code></pre>
+                `
+            },
+            6: {
+                title: "Deploy ZooKeeper StatefulSet",
+                content: `
+                    <h3>Step 42: Deploy ZooKeeper StatefulSet</h3>
+                    <p>Deploy the ZooKeeper ensemble as a StatefulSet with 3 replicas and persistent storage.</p>
+                    
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates 3 ZooKeeper pods (zlzookeeper-0, zlzookeeper-1, zlzookeeper-2)</li>
+                            <li>Provisions persistent volumes for each pod</li>
+                            <li>Initializes myid files via init container</li>
+                            <li>Forms ZooKeeper quorum for cluster coordination</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Critical ZooKeeper Requirements</h4>
+                        <ul>
+                            <li><strong>Odd Number Quorum:</strong> ZooKeeper requires an odd number of nodes (3, 5, 7) for proper majority consensus. A 3-node cluster can tolerate 1 failure.</li>
+                            <li><strong>myid File:</strong> Each ZooKeeper instance needs a unique <code>/data/myid</code> file containing its server ID (1, 2, or 3 for a 3-node cluster).</li>
+                            <li><strong>zoo.cfg Parameters:</strong> The <code>zoo.cfg</code> file must contain <code>server.X</code> entries for each ensemble member.</li>
+                        </ul>
+                    </div>
+
+                    <h4>Deploy StatefulSet:</h4>
+                    <pre><code>kubectl apply -f yaml/zlzookeeper-statefulset.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlzookeeper-statefulset.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlzookeeper-statefulset')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlzookeeper-statefulset.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlzookeeper-statefulset" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlzookeeper-statefulset.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlzookeeper-statefulset')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlzookeeper-statefulset">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📚 Understanding ZooKeeper Ensemble Identity</h4>
+                        <p>The init container automatically creates the <code>myid</code> file based on the pod ordinal:</p>
+                        <pre><code># myid file (automatically created by init container)
+# zlzookeeper-0: echo 1 > /data/myid
+# zlzookeeper-1: echo 2 > /data/myid
+# zlzookeeper-2: echo 3 > /data/myid</code></pre>
+                        
+                        <strong>💡 Port Explanation:</strong>
+                        <ul>
+                            <li><strong>2181:</strong> Client port for application connections</li>
+                            <li><strong>2888:</strong> Follower port for replicating data to followers</li>
+                            <li><strong>3888:</strong> Election port for leader election process</li>
+                        </ul>
+                    </div>
+
+                    <h4>Monitor Deployment:</h4>
+                    <pre><code># Watch pods come up
+kubectl get pods -l app=zlzookeeper -w
+
+# Check StatefulSet status
+kubectl get statefulset zlzookeeper</code></pre>
+                `
+            },
+            7: {
+                title: "Run ZooKeeper Config Seed Job",
+                content: `
+                    <h3>Step 43: Run ZooKeeper Config Seed Job</h3>
+                    <p>Run the one-time Bootstrap Job to seed ZooKeeper configuration to EFS.</p>
+                    
+                    <div class="warning-section">
+                        <h4>🔴 NEW - Bootstrap Job Architecture</h4>
+                        <p>This is a one-time job that initializes ZooKeeper configuration. It runs only during initial setup, not on every pod restart. This prevents repeated initialization issues.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Seeds ZooKeeper config files from Docker image to EFS</li>
+                            <li>Generates authentication keys using <code>zkutil.sh -g</code></li>
+                            <li>Updates quorum configuration file</li>
+                            <li>Runs only once during initial deployment</li>
+                            <li>ZK, ZLServer, and Bootstrap Job share same EFS volume</li>
+                        </ul>
+                    </div>
+
+                    <h4>Run ZK Config Seed Job:</h4>
+                    <pre><code>kubectl apply -f yaml/zl-zk-config-seed.yaml</code></pre>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zl-zk-config-seed.yaml</code> Bootstrap Job configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zl-zk-config-seed')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zl-zk-config-seed.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zl-zk-config-seed" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zl-zk-config-seed.yaml (Bootstrap Job)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zl-zk-config-seed')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zl-zk-config-seed">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Wait for Job Completion:</h4>
+                    <pre><code># Watch job status
+kubectl get job zl-zk-config-seed -w
+
+# Check job logs
+kubectl logs job/zl-zk-config-seed</code></pre>
+                    <div class="output-block">
+                        <pre><code>NAME                COMPLETIONS   DURATION   AGE
+zl-zk-config-seed   1/1           15s        30s</code></pre>
+                    </div>
+
+                    <h4>Verify Config on EFS:</h4>
+                    <pre><code># Verify config files exist on EFS
+kubectl exec -it zlzookeeper-0 -- ls -la /opt/ZipLip/ZLZooKeeper/config/</code></pre>
+                    <div class="output-block">
+                        <pre><code>total 24
+drwxr-xr-x 2 root root 4096 Dec 23 12:00 .
+drwxr-xr-x 3 root root 4096 Dec 23 12:00 ..
+-rw-r--r-- 1 root root  512 Dec 23 12:00 tc.cfg
+-rw-r--r-- 1 root root  384 Dec 23 12:00 tcdb.cfg
+-rw-r--r-- 1 root root  256 Dec 23 12:00 zkClient.cfg
+-rw-r--r-- 1 root root  512 Dec 23 12:00 zkQuorum.cfg</code></pre>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Bootstrap Job Benefits:</strong>
+                        <ul>
+                            <li><strong>One-time Only:</strong> Runs once, no re-initialization on restarts</li>
+                            <li><strong>Persistent Config:</strong> Config survives pod restarts</li>
+                            <li><strong>Shared Storage:</strong> Same config available to all components</li>
+                            <li><strong>Clean Separation:</strong> Init logic separated from runtime startup</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Important Notes</h4>
+                        <ul>
+                            <li>This job runs ONLY ONCE during initial deployment</li>
+                            <li>Do NOT re-run unless you want to reset the configuration</li>
+                            <li>If you need to re-run, delete the job first: <code>kubectl delete job zl-zk-config-seed</code></li>
+                        </ul>
+                    </div>
+                `
+            },
+            8: {
+                title: "Verify ZooKeeper Deployment",
+                content: `
+                    <h3>Step 44: Verify ZooKeeper Deployment</h3>
+                    <p>Verify that the ZooKeeper ensemble is running correctly and quorum is established.</p>
+                    
+                    <h4>Check Pod Status:</h4>
+                    <pre><code># Verify all 3 pods are running
+kubectl get pods -l app=zlzookeeper
+
+# Expected output:
+# NAME            READY   STATUS    RESTARTS   AGE
+# zlzookeeper-0   1/1     Running   0          5m
+# zlzookeeper-1   1/1     Running   0          4m
+# zlzookeeper-2   1/1     Running   0          3m</code></pre>
+
+                    <h4>Verify Persistent Volumes:</h4>
+                    <pre><code># Check PVCs are bound
+kubectl get pvc -l app=zlzookeeper
+
+# Expected output shows 3 Bound PVCs:
+# NAME                     STATUS   VOLUME                                     CAPACITY
+# datadir-zlzookeeper-0    Bound    pvc-xxxxx                                  10Gi
+# datadir-zlzookeeper-1    Bound    pvc-yyyyy                                  10Gi
+# datadir-zlzookeeper-2    Bound    pvc-zzzzz                                  10Gi</code></pre>
+
+                    <h4>Verify myid Files:</h4>
+                    <pre><code># Check myid file in each pod
+kubectl exec -it zlzookeeper-0 -- cat /data/myid  # Should show: 1
+kubectl exec -it zlzookeeper-1 -- cat /data/myid  # Should show: 2
+kubectl exec -it zlzookeeper-2 -- cat /data/myid  # Should show: 3</code></pre>
+
+                    <h4>Test ZooKeeper Connectivity:</h4>
+                    <pre><code># Connect to ZooKeeper pod
+kubectl exec -it zlzookeeper-0 -- /opt/zookeeper/bin/zkCli.sh -server localhost:2181
+
+# Inside zkCli.sh, check cluster status
+ls /
+get /zookeeper/config
+quit</code></pre>
+
+                    <h4>Check ZooKeeper Logs:</h4>
+                    <pre><code># View logs from first pod
+kubectl logs zlzookeeper-0
+
+# Look for "LEADING" or "FOLLOWING" to confirm quorum
+kubectl logs zlzookeeper-0 | grep -i "leader\\|follow"</code></pre>
+
+                    <div class="info-section">
+                        <strong>💡 Quorum Information:</strong>
+                        <ul>
+                            <li><strong>Quorum Calculation:</strong> Majority = (N/2) + 1, where N is the number of nodes. For 3 nodes: (3/2) + 1 = 2 nodes required for quorum.</li>
+                            <li><strong>Dynamic Reconfiguration:</strong> ZooKeeper 3.5+ supports dynamic membership changes without full cluster restart.</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>✅ Successful Deployment Indicators:</strong>
+                        <ul>
+                            <li>All 3 pods in Running state</li>
+                            <li>Each pod has unique myid (1, 2, 3)</li>
+                            <li>PVCs bound to persistent volumes</li>
+                            <li>Logs show "LEADING" on one pod, "FOLLOWING" on others</li>
+                            <li>zkCli.sh can connect and list /zookeeper/config</li>
+                        </ul>
+                    </div>
+                `
+            },
+            9: {
+                title: 'Phase 7 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 7 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 8, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> ZooKeeper headless service (zk-hs) created</label><br>
+                            <label><input type="checkbox"> ZooKeeper client service (zk-cs) created</label><br>
+                            <label><input type="checkbox"> ZooKeeper EFS PV/PVC created and bound</label><br>
+                            <label><input type="checkbox"> ZooKeeper ConfigMaps deployed (zlapp-config, zkclient-config)</label><br>
+                            <label><input type="checkbox"> ZOO_SERVERS variable confirmed NOT present in ConfigMaps</label><br>
+                            <label><input type="checkbox"> Full DNS names configured in zkQuorum</label><br>
+                            <label><input type="checkbox"> ZooKeeper StatefulSet deployed (3 replicas)</label><br>
+                            <label><input type="checkbox"> ZK Config Seed Job completed successfully</label><br>
+                            <label><input type="checkbox"> All 3 ZooKeeper pods running (zlzookeeper-0, zlzookeeper-1, zlzookeeper-2)</label><br>
+                            <label><input type="checkbox"> Persistent volumes bound for each ZooKeeper pod</label><br>
+                            <label><input type="checkbox"> ZooKeeper quorum established successfully</label><br>
+                            <label><input type="checkbox"> Config files present on EFS volume</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 8:</strong> Once all items are checked, you can proceed to Phase 8 (Application Deployment).
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'zk-hs.yaml': `apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zlzookeeper
+  name: zk-hs
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zlzookeeper`,
+            'zk-cs.yaml': `apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zlzookeeper`,
+            'zk-config-pv.yaml': `# ZooKeeper Config PersistentVolume - EFS-backed
+# Last Updated: December 23, 2025
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zk-config-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-xxxxxxxxx:/zookeeper/config
+    # Replace fs-xxxxxxxxx with your EFS filesystem ID`,
+            'zk-config-pvc.yaml': `# ZooKeeper Config PersistentVolumeClaim
+# Last Updated: December 23, 2025
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zk-config-efs
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: zk-config-pv`,
+            'zl-zk-config-seed.yaml': `# ZooKeeper Config Seed Job (Bootstrap Job)
+# Last Updated: December 23, 2025
+# This job runs ONCE to seed ZK config from image to EFS
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zl-zk-config-seed
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: zk-config-seed
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlzookeeper:11.1.0-b1140
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: zk-config
+              mountPath: /mnt/efs/zk-config
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "===== ZK CONFIG SEED JOB ====="
+              echo "Seeding ZooKeeper config to EFS..."
+              
+              # Copy config from image to EFS
+              cp -v /opt/ZipLip/ZLZooKeeper/config/* /mnt/efs/zk-config/
+              
+              # Generate new auth key
+              echo "Generating authentication key..."
+              /opt/ZipLip/bin/zkutil.sh -g
+              
+              # List seeded config
+              echo "Config files on EFS:"
+              ls -la /mnt/efs/zk-config/
+              
+              echo "===== ZK CONFIG SEED COMPLETE ====="
+      volumes:
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs`,
+            'zlapp-config.yaml': `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config
+  namespace: default
+data:
+  # CRITICAL: ZOO_SERVERS is NOT included - it corrupts zkQuorum.cfg
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"
+  __tika.ZLTikaService.Host: zltika
+  __tika.ZLTikaService.Port: "9972"`,
+            'zlzookeeper-statefulset.yaml': `# ZL ZooKeeper StatefulSet - us-east-1
+# Last Updated: December 22, 2025
+# 3-node ZooKeeper ensemble with EBS storage
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      initContainers:
+        - name: init-myid
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              ORDINAL=$(echo $HOSTNAME | sed 's/.*-//')
+              MYID=$((ORDINAL + 1))
+              echo "Creating myid=$MYID for $HOSTNAME"
+              mkdir -p /data
+              echo $MYID > /data/myid
+              cat /data/myid
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /data
+      containers:
+        - name: zlzookeeper
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper11.1.0-b1140
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: client
+              containerPort: 2181
+            - name: server
+              containerPort: 2888
+            - name: leader-election
+              containerPort: 3888
+          env:
+            - name: ZOO_SERVERS
+              value: "zlzookeeper-0 zlzookeeper-1 zlzookeeper-2"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            tcpSocket:
+              port: 2181
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 2181
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zk.cfg
+              subPath: zk.cfg
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zk-config
+          configMap:
+            name: zk-config
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ebs-sc
+        resources:
+          requests:
+            storage: 10Gi`,
+            'zkclient-config.yaml': `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zkclient-config
+data:
+  tc.cfg: |
+    // Machine/Site Configuration for ZooKeeper
+    _cfg.machine=tc/K8S
+    _cfg.param.pmApp.site.name  = K8S
+    _cfg.param.coord.cluster.default.name  = DEFAULT
+    _cfg.param.coord.cluster.initial.executors = 5
+    _cfg.param.coord.cluster.service.executors = 3
+    _cfg.param.coord.cluster.managed.executors = 3
+    acv.mach=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_cfg.param.
+    _tc = #com.zlti.zlzookeeper.ZKConfigFactory~~@_cfg.machine@~~@acv.mach@
+  tcdb.cfg: |
+    // Database Protected Key Configuration for ZooKeeper
+    #define DB_MSSQL_DEFAULT    = true
+    _db.param.user  = pfuser
+    _db.password    = LJZ-wkVv@t_!d*PiM2tbx3TZ4h
+    #if DB_MSSQL_DEFAULT
+    _db.param.jdbcUrl=jdbc:sqlserver://use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com:1433;TrustServerCertificate=true
+    _db.param.DatabaseName=ZLDB
+    #endif
+    acv.db=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_db.param.
+    _db.KeyName = zltc/db
+    _tcdb = #com.zlti.zlzookeeper.ZKProtectedKeyFactory~~@_db.KeyName@~~@_db.password@~~@acv.db@
+  zkClient.cfg: |
+    _zkCluster = /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+    __zk.main=#com.zlti.zlzookeeper.ZLZooKeeper~~@_zkCluster@~~3000~~true
+  zkQuorum.cfg: |
+    #if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED
+    #define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true
+    _zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~Zh2CX0aZm7f+tRNic77CKvCtYwrxz8Nt7QY1y1T6B5AV4tcMVWGBf4J2Lei/JSDU9KKPspAK2nYPUJF7mQmIVg==
+    zkQuorum.0=0~~zlzookeeper-0.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0
+    zkQuorum.1=1~~zlzookeeper-1.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1
+    zkQuorum.2=2~~zlzookeeper-2.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2
+    acv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.
+    #endif`
+        };
+
+        // Download YAML file
+        function downloadYamlFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'text/yaml' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Toggle YAML content visibility (standard format)
+        function toggleYamlContent(id) {
+            const contentDiv = document.getElementById(`yaml-content-${id}`);
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            
+            if (contentDiv.style.display === 'none') {
+                // Load content from fileContents if not already loaded
+                if (codeElement.textContent === '// Loading YAML content...') {
+                    const filename = id.replace(/-/g, '') + '.yaml';
+                    // Try various filename formats
+                    const possibleFilenames = [
+                        id + '.yaml',
+                        id.replace(/-/g, '') + '.yaml',
+                        id.replace(/_/g, '-') + '.yaml'
+                    ];
+                    
+                    let content = null;
+                    for (const fn of possibleFilenames) {
+                        if (fileContents[fn]) {
+                            content = fileContents[fn];
+                            break;
+                        }
+                    }
+                    
+                    if (content) {
+                        codeElement.textContent = content;
+                    } else {
+                        codeElement.textContent = `// Error: Content for ${id} not found`;
+                    }
+                }
+                contentDiv.style.display = 'block';
+            } else {
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy YAML content to clipboard (standard format)
+        function copyYamlContent(id) {
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            if (codeElement) {
+                navigator.clipboard.writeText(codeElement.textContent).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        const totalSteps = 9;
+        let currentStep = 1;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+
+            // Update URL hash
+            window.location.hash = `step-${stepNum}`;
+
+            // Save to localStorage
+            localStorage.setItem('zl-phase7-current-step', stepNum);
+
+            // Update step content
+            const stepContainer = document.getElementById('step-container');
+            stepContainer.innerHTML = stepData[stepNum].content;
+
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+
+            // Update step title
+            document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+            // Update progress bar
+            const progressPercent = ((stepNum - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Update step counter
+            document.getElementById('current-step').textContent = stepNum;
+
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === stepNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < stepNum) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(stepNum)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = stepNum === 1;
+            nextBtn.disabled = stepNum === totalSteps;
+
+            if (stepNum === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+            
+            // Update bottom navigation buttons
+            document.getElementById('prev-btn-bottom').disabled = stepNum === 1;
+            if (stepNum === totalSteps) {
+                document.getElementById('next-btn-bottom').innerHTML = '<a href="ZL_DG_PHASE_8.html" style="color: inherit; text-decoration: none;">Next Phase →</a>';
+            } else {
+                document.getElementById('next-btn-bottom').innerHTML = 'Next Step →';
+                document.getElementById('next-btn-bottom').disabled = false;
+            }
+            document.getElementById('bottom-step-title').textContent = 'Step ' + stepNum + ' of ' + totalSteps;
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved progress
+            const savedStep = localStorage.getItem('zl-phase7-current-step');
+            if (savedStep && savedStep >= 1 && savedStep <= totalSteps) {
+                currentStep = parseInt(savedStep);
+            }
+
+            // Show initial step
+            showStep(currentStep);
+
+            // Initialize copy buttons
+            initializeCopyButtons();
+
+            // Add event listeners
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+
+            // Add step dot click listeners
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => showStep(index + 1));
+            });
+
+            // Handle URL hash for direct linking
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#step-')) {
+                const stepNum = parseInt(hash.replace('#step-', ''));
+                if (stepNum >= 1 && stepNum <= totalSteps) {
+                    showStep(stepNum);
+                }
+            }
+        });
+
+        // Copy to clipboard functionality
+        function copyToClipboard(buttonOrText) {
+            let text, button;
+            
+            // Handle both static button calls (with text string) and dynamic button calls (with button element)
+            if (typeof buttonOrText === 'string') {
+                // Static button: parameter is the text to copy, button is event.target
+                text = buttonOrText;
+                button = event.target;
+            } else {
+                // Dynamic button: parameter is the button element
+                button = buttonOrText;
+                const wrapper = button.closest('.pre-wrapper');
+                const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+                text = codeBlock.textContent || codeBlock.innerText;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopied(button);
+                }).catch(function() {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+        
+        // Fallback copy method for older browsers or non-HTTPS
+        function fallbackCopy(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                btn.textContent = 'FAILED';
+                setTimeout(() => {
+                    btn.textContent = 'COPY';
+                }, 2000);
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopied(btn) {
+            btn.textContent = 'COPIED';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Add copy buttons to code blocks
+        function initializeCopyButtons() {
+            console.log('Phase 7: Initializing copy buttons...');
+            const pres = document.querySelectorAll('pre');
+            console.log('Phase 7: Found', pres.length, 'pre elements');
+            
+            pres.forEach((pre, index) => {
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('pre-wrapper')) {
+                    console.log('Pre', index, 'already wrapped');
+                    return;
+                }
+                if (pre.closest('.yaml-panel')) {
+                    console.log('Pre', index, 'inside yaml-panel, skipping');
+                    return;
+                }
+                // Skip if parent already has a copy button as a direct child (static HTML)
+                const parentDirectChildren = Array.from(pre.parentElement.children);
+                if (parentDirectChildren.some(child => child.classList.contains('copy-btn'))) {
+                    console.log('Pre', index, 'parent has direct child copy button, skipping');
+                    return;
+                }
+                
+                console.log('Wrapping pre', index);
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+                
+                console.log('Added copy button to pre', index);
+            });
+            console.log('Phase 7: Copy buttons initialization complete');
+        }
+
+        // YAML panel toggle
+        function toggleYaml(btn) {
+            const panel = btn.nextElementSibling;
+            if (panel && panel.classList.contains('yaml-panel')) {
+                panel.classList.toggle('show');
+                btn.classList.toggle('active');
+                btn.textContent = panel.classList.contains('show') ? 'Hide YAML' : 'View YAML';
+            }
+        }
+
+        // Copy YAML/JSON content from panel
+        function copyYamlContent(btn) {
+            const panel = btn.closest('.yaml-panel');
+            const code = panel.querySelector('pre code') || panel.querySelector('pre');
+            const text = code.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+

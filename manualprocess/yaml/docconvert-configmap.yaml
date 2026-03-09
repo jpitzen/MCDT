@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docconvert-config
+  namespace: default
+data:
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"
+  DocumentConversion.xml: |
+    <Sheet>
+    <SheetName>DocumentConversion</SheetName>
+    <SheetDisplayName>Document Conversion</SheetDisplayName>
+    <SheetDesc><![CDATA[Document conversion settings]]></SheetDesc>
+
+    <!-- Global Conversion Settings -->
+    <Group>
+       <GroupName>Global Document Conversion Settings</GroupName>
+       <GroupDisplayName>Global Document Conversion Settings</GroupDisplayName>
+       <GroupDesc><![CDATA[Settings for Document Conversion. These settings apply to all types document conversions]]></GroupDesc>
+
+    	<Bean>
+         <BeanName>DOCCONVERSION_FILEDETECT_ON</BeanName>
+         <BeanDisplayName>Enable file type detection for document conversion</BeanDisplayName>
+         <BeanValue>false</BeanValue>
+         <BeanType>PreprocessDefine</BeanType>
+         <BeanInputType caption="true">CHECKBOX</BeanInputType>
+         <BeanChoices>
+           <Choice value="true"></Choice>
+         </BeanChoices>
+         <BeanHelp><![CDATA[Enable best-effort file type detection for documents. This setting will force detection of file type based on the file magic headers to determine whether the files are what their extensions or mime-types declare them to be. Enable this setting if the environment has files/attachments with incorrect extensions or mimetypes. Enabling this setting has a minor performance impact.]]></BeanHelp>
+       </Bean>
+
+    </Group>
+
+    <!-- //Tika Service Manager -->
+    <Group>
+    	<GroupName>ZLTika Service Settings</GroupName>
+    	<GroupDisplayName>ZLTika Service Settings</GroupDisplayName>
+    	<GroupDesc><![CDATA[Setting related to the ZLTika Doc Conversion Service.]]></GroupDesc>
+
+
+
+    	<Bean>
+    		<BeanName>__tika.ZLTikaService.Host</BeanName>
+    		<BeanDisplayName>Tika Service Host</BeanDisplayName>
+    		<BeanValue>zltika</BeanValue>
+    		<BeanType>String</BeanType>
+    		<BeanInputType>TEXT</BeanInputType>
+    		<BeanHelp><![CDATA[Location of Tika doc conversion service/process.]]></BeanHelp>
+    	</Bean>
+
+    	<Bean>
+    		<BeanName>__tika.ZLTikaService.Port</BeanName>
+    		<BeanDisplayName>ZL Tika  Port</BeanDisplayName>
+    		<BeanValue>9972</BeanValue>
+    		<BeanType>Integer</BeanType>
+    		<BeanInputType size="6">TEXT</BeanInputType>
+    		<BeanHelp><![CDATA[Port number where the Tika Doc Conversion server is listening.]]></BeanHelp>
+    	</Bean>

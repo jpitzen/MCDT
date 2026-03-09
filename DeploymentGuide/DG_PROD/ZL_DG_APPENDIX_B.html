@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix B: Kubernetes Manifests</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix B: Kubernetes Manifests Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides complete, working Kubernetes manifests from the <strong>us-east-1</strong> deployment. All manifests have been tested and verified.</p>
+
+                <div class="warning-section">
+                    <h3>🔴 IMPORTANT: December 22, 2025 Update</h3>
+                    <p>These manifests reflect the actual working deployment. Key changes from previous versions:</p>
+                    <ul>
+                        <li>K8s-optimized images with Java 21 pre-installed</li>
+                        <li>TIKA_HOST environment variable for Tika connectivity</li>
+                        <li>Critical Tika command override with <code>sleep infinity</code></li>
+                        <li>TrustServerCertificate=true in JDBC URL for RDS</li>
+                    </ul>
+                </div>
+
+                <div class="phase-objectives">
+                    <h3>📋 Manifest Categories</h3>
+                    <ul>
+                        <li><a href="#configmaps">ConfigMaps</a> - Application and database configuration</li>
+                        <li><a href="#secrets">Secrets</a> - Database credentials</li>
+                        <li><a href="#storage">Storage</a> - PVCs and StorageClasses</li>
+                        <li><a href="#services">Services</a> - Service definitions</li>
+                        <li><a href="#deployments">Deployments</a> - Application deployments</li>
+                        <li><a href="#zookeeper">ZooKeeper</a> - StatefulSet configuration</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <!-- ======================= CONFIGMAPS ======================= -->
+                <h2 id="configmaps">🔐 ConfigMaps</h2>
+
+                <div class="info-section">
+                  <p>The repository ships a consolidated file at <code>aws/clean/configmaps.yaml</code> that contains every ConfigMap summarized here. Applying that single file keeps your deployment and the guide in sync; use <code>kubectl apply -f aws/clean/configmaps.yaml</code> when you reach this section.</p>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>Database Configuration</h3>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  DB_HOST: <YOUR_RDS_ENDPOINT>
+  DB_PORT: "1433"
+  DB_NAME: ZLDB
+  DB_TYPE: mssql
+  DB_USER: pfuser</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZooKeeper Client Configuration</h3>
+                    <div class="info-section">
+                        <strong>⚠️ Critical:</strong> The <code>tcdb.cfg</code> MUST include <code>TrustServerCertificate=true</code> in the JDBC URL for RDS connectivity.
+                    </div>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zkclient-config
+data:
+  # zkQuorum.cfg - ZooKeeper Quorum Configuration
+  zkQuorum.cfg: |
+    #if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED
+    #define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true
+
+    // ZooKeeper Authentication Key
+    _zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~<YOUR_ZOOKEEPER_AUTH_KEY>
+
+    // ZooKeeper Quorum for Kubernetes
+    zkQuorum.0=0~~zlzookeeper-0.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0
+    zkQuorum.1=1~~zlzookeeper-1.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1
+    zkQuorum.2=2~~zlzookeeper-2.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2
+    acv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.
+    #endif
+
+  # tcdb.cfg - Database Protected Key Configuration
+  tcdb.cfg: |
+    // Database Configuration
+    #define DB_MSSQL_DEFAULT = true
+
+    _db.param.user = pfuser
+    _db.password = <YOUR_DB_PASSWORD>
+
+    // CRITICAL: TrustServerCertificate=true is REQUIRED for RDS
+    #if DB_MSSQL_DEFAULT
+    _db.param.jdbcUrl=jdbc:sqlserver://<YOUR_RDS_ENDPOINT>:1433;TrustServerCertificate=true
+    _db.param.DatabaseName=ZLDB
+    #endif
+
+    acv.db=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_db.param.
+    _db.KeyName = zltc/db
+    _tcdb = #com.zlti.zlzookeeper.ZKProtectedKeyFactory~~@_db.KeyName@~~@_db.password@~~@acv.db@
+
+  # zkClient.cfg
+  zkClient.cfg: |
+    _zkCluster = /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+    __zk.main=#com.zlti.zlzookeeper.ZLZooKeeper~~@_zkCluster@~~3000~~true
+
+  # tc.cfg - Site Configuration
+  tc.cfg: |
+    _cfg.machine=tc/K8S
+    _cfg.param.pmApp.site.name = K8S
+    _cfg.param.coord.cluster.default.name = DEFAULT
+    _cfg.param.coord.cluster.initial.executors = 5
+    _cfg.param.coord.cluster.service.executors = 3
+    _cfg.param.coord.cluster.managed.executors = 3
+    acv.mach=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_cfg.param.
+    _tc = #com.zlti.zlzookeeper.ZKConfigFactory~~@_cfg.machine@~~@acv.mach@</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>Document Conversion Configuration</h3>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docconvert-config
+data:
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"</code></pre>
+                </div>
+
+                <!-- ======================= SECRETS ======================= -->
+                <h2 id="secrets">🔑 Secrets</h2>
+
+                <div class="manifest-section">
+                    <h3>Database Secret</h3>
+                    <div class="warning-section">
+                        <strong>⚠️ Security:</strong> Never commit actual passwords to source control. Use AWS Secrets Manager in production.
+                    </div>
+                    <pre><code>apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+stringData:
+  DB_PASSWORD: "YOUR_PASSWORD_HERE"</code></pre>
+                </div>
+
+                <!-- ======================= STORAGE ======================= -->
+                <h2 id="storage">💾 Storage Classes & PVCs</h2>
+
+                <div class="manifest-section">
+                    <h3>EFS Storage Class</h3>
+                    <pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: <YOUR_EFS_FILE_SYSTEM_ID>
+  directoryPerms: "700"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>EBS Storage Class</h3>
+                    <pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3
+  fsType: ext4
+  encrypted: "true"</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>EFS PVCs for ZL Server</h3>
+                    <pre><code># PVC for ZLServer Logs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-zlserverlogs
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 50Gi
+---
+# PVC for ZLServer Vault
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-zlservervault
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 100Gi</code></pre>
+                </div>
+
+                <!-- ======================= SERVICES ======================= -->
+                <h2 id="services">🌐 Services</h2>
+
+                <div class="manifest-section">
+                    <h3>ZooKeeper Headless Service (for StatefulSet DNS)</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  labels:
+    app: zk
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zk</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZooKeeper Client Service</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zk
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zk</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL Server Service</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zlserver-service
+  labels:
+    app: zlserver
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: zlserver
+  type: ClusterIP</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL UI Service (LoadBalancer)</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zlui-service
+  labels:
+    app: zlui
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: zlui
+  type: LoadBalancer</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>Tika Service</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zltika-service
+  labels:
+    app: zltika
+spec:
+  ports:
+  - port: 9972
+    targetPort: 9972
+    name: tika
+  selector:
+    app: zltika
+  type: ClusterIP</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL Search Service</h3>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: zlsearch-service
+  labels:
+    app: zlsearch
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: zlsearch
+  type: ClusterIP</code></pre>
+                </div>
+
+                <!-- ======================= DEPLOYMENTS ======================= -->
+                <h2 id="deployments">🚀 Deployments</h2>
+
+                <div class="manifest-section">
+                    <h3>Tika Deployment</h3>
+                    <div class="warning-section">
+                        <strong>🔴 CRITICAL:</strong> The <code>command</code> override with <code>sleep infinity</code> is REQUIRED. Without it, the Tika Java process exits before the listener binds to port 9972.
+                    </div>
+                    <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zltika
+  labels:
+    app: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      containers:
+      - name: zltika
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140
+        # CRITICAL: This command is REQUIRED - prevents container exit
+        command:
+          - /bin/sh
+          - -c
+          - cd /opt/ZipLip/ZLTikaConvertor/bin && ./zltikadiag.sh ZLTika /tmp/ZLTika & sleep infinity
+        ports:
+        - containerPort: 9972
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL Server Deployment</h3>
+                    <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlserver
+  labels:
+    app: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      containers:
+      - name: zlserver
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CLUSTER_NAME
+          value: "MP"
+        - name: TIKA_HOST
+          value: "zltika-service"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_HOST
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_NAME
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_PORT
+        - name: DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_TYPE
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+        volumeMounts:
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config
+        - name: logs-volume
+          mountPath: /var/opt/zlserverlogs
+        - name: vault-volume
+          mountPath: /var/opt/zlvault
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zkclient-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: efs-zlserverlogs
+      - name: vault-volume
+        persistentVolumeClaim:
+          claimName: efs-zlservervault</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL UI Deployment</h3>
+                    <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlui
+  labels:
+    app: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      containers:
+      - name: zlui
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui-k8s-20251222
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CLUSTER_NAME
+          value: "UI"
+        - name: TIKA_HOST
+          value: "zltika-service"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_HOST
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_NAME
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_PORT
+        - name: DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_TYPE
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+        volumeMounts:
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config
+        - name: logs-volume
+          mountPath: /var/opt/zlserverlogs
+        - name: vault-volume
+          mountPath: /var/opt/zlvault
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zkclient-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: efs-zlserverlogs
+      - name: vault-volume
+        persistentVolumeClaim:
+          claimName: efs-zlservervault</code></pre>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>ZL Search Deployment</h3>
+                    <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlsearch
+  labels:
+    app: zlsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlsearch
+  template:
+    metadata:
+      labels:
+        app: zlsearch
+    spec:
+      containers:
+      - name: zlsearch
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlsearch-k8s-20251222
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CLUSTER_NAME
+          value: "SEARCH"
+        - name: TIKA_HOST
+          value: "zltika-service"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_HOST
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_NAME
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_PORT
+        - name: DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_TYPE
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+        volumeMounts:
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config
+        - name: logs-volume
+          mountPath: /var/opt/zlserverlogs
+        - name: vault-volume
+          mountPath: /var/opt/zlvault
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zkclient-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: efs-zlserverlogs
+      - name: vault-volume
+        persistentVolumeClaim:
+          claimName: efs-zlservervault</code></pre>
+                </div>
+
+                <!-- ======================= ZOOKEEPER ======================= -->
+                <h2 id="zookeeper">🐘 ZooKeeper StatefulSet</h2>
+
+                <div class="manifest-section">
+                    <h3>ZooKeeper StatefulSet</h3>
+                    <pre><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zk
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: zk
+  template:
+    metadata:
+      labels:
+        app: zk
+    spec:
+      initContainers:
+      - name: init-myid
+        image: busybox:1.28
+        command: ['sh', '-c', 'echo ${HOSTNAME##*-} > /var/ZipLip/DATA/ZooKeeper/myid']
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/ZipLip/DATA/ZooKeeper
+      containers:
+      - name: zlzookeeper
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper11.1.0-b1140
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        env:
+        - name: ZK_REPLICAS
+          value: "3"
+        - name: ZK_HEAP_SIZE
+          value: "512M"
+        - name: ZK_TICK_TIME
+          value: "2000"
+        - name: ZK_INIT_LIMIT
+          value: "10"
+        - name: ZK_SYNC_LIMIT
+          value: "5"
+        - name: ZK_MAX_CLIENT_CNXNS
+          value: "60"
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/ZipLip/DATA/ZooKeeper
+        - name: zk-config
+          mountPath: /opt/ZipLip/ZLZooKeeper/config
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zkclient-config
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ebs-sc
+      resources:
+        requests:
+          storage: 10Gi</code></pre>
+                </div>
+
+                <!-- ======================= DEPLOYMENT ORDER ======================= -->
+                <h2>📋 Deployment Order</h2>
+                
+                <div class="info-section">
+                    <h3>Apply Manifests in This Order:</h3>
+                    <ol>
+                        <li><strong>Storage Classes & PVCs</strong> - <code>kubectl apply -f storage.yaml</code></li>
+                        <li><strong>Secrets</strong> - <code>kubectl apply -f secrets.yaml</code></li>
+                        <li><strong>ConfigMaps</strong> - <code>kubectl apply -f configmaps.yaml</code></li>
+                        <li><strong>Services</strong> - <code>kubectl apply -f services.yaml</code></li>
+                        <li><strong>ZooKeeper</strong> - <code>kubectl apply -f zlzookeeper-statefulset.yaml</code>
+                            <br><em>Wait for all 3 pods to be Running before continuing</em></li>
+                        <li><strong>Tika</strong> - <code>kubectl apply -f zltika-deployment.yaml</code>
+                            <br><em>Wait for Tika to be Running and listening on port 9972</em></li>
+                        <li><strong>ZL Server</strong> - <code>kubectl apply -f zlserver-deployment.yaml</code>
+                            <br><em>Wait for "Done initializing ZLServer" in logs</em></li>
+                        <li><strong>ZL UI</strong> - <code>kubectl apply -f zlui-deployment.yaml</code></li>
+                        <li><strong>ZL Search</strong> - <code>kubectl apply -f zlsearch-deployment.yaml</code></li>
+                    </ol>
+                </div>
+
+                <!-- ======================= REFERENCE INFO ======================= -->
+                <h2>📊 Reference Information</h2>
+
+                <div class="manifest-section">
+                    <h3>Current us-east-1 Deployment</h3>
+                    <table class="info-table">
+                        <tr><th>Resource</th><th>Value</th></tr>
+                        <tr><td>EKS Cluster</td><td><code>use1-zlps-eks-01</code></td></tr>
+                        <tr><td>ECR Repository</td><td><code><YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01</code></td></tr>
+                        <tr><td>RDS Endpoint</td><td><code><YOUR_RDS_ENDPOINT>:1433</code></td></tr>
+                        <tr><td>Database</td><td><code>ZLDB</code></td></tr>
+                        <tr><td>EFS File System</td><td><code><YOUR_EFS_FILE_SYSTEM_ID></code></td></tr>
+                        <tr><td>LoadBalancer URL</td><td><code>a0f6d05f1097a42ca83536c53a1b9e35-458982103.us-east-1.elb.amazonaws.com:8080</code></td></tr>
+                    </table>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>Container Images</h3>
+                    <table class="info-table">
+                        <tr><th>Component</th><th>Image Tag</th></tr>
+                        <tr><td>ZL Server</td><td><code>zlserver-k8s-20251222</code></td></tr>
+                        <tr><td>ZL UI</td><td><code>zlui-k8s-20251222</code></td></tr>
+                        <tr><td>ZL Search</td><td><code>zlsearch-k8s-20251222</code></td></tr>
+                        <tr><td>ZL Tika</td><td><code>zltika11.1.0-b1140</code></td></tr>
+                        <tr><td>ZL ZooKeeper</td><td><code>zlzookeeper11.1.0-b1140</code></td></tr>
+                    </table>
+                </div>
+
+                <div class="manifest-section">
+                    <h3>CLUSTER_NAME Values</h3>
+                    <table class="info-table">
+                        <tr><th>Deployment</th><th>CLUSTER_NAME</th><th>Purpose</th></tr>
+                        <tr><td>zlserver</td><td><code>MP</code></td><td>Main Processing</td></tr>
+                        <tr><td>zlui</td><td><code>UI</code></td><td>User Interface</td></tr>
+                        <tr><td>zlsearch</td><td><code>SEARCH</code></td><td>Search Service</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="nav-footer">
+            <a href="ZL_DG_APPENDIX_A.html" class="phase-nav-link">
+                ← Appendix A: AWS CLI
+            </a>
+            <a href="ZL_DG_202512162115.html" class="home-link">
+                🏠 Home
+            </a>
+            <a href="ZL_DG_APPENDIX_C.html" class="phase-nav-link">
+                Appendix C: IAM Policies →
+            </a>
+        </div>
+    </div>
+</main>
+
+<style>
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+.info-table th, .info-table td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+}
+.info-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+.info-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.info-table code {
+    background-color: #e8e8e8;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+</style>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

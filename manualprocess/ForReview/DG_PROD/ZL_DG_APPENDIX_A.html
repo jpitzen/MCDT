@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix A: AWS CLI Commands</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix A: AWS CLI Commands Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides a comprehensive reference of AWS CLI commands used throughout the ZL application deployment process.</p>
+
+                <div class="phase-objectives">
+                    <h3>📋 Command Categories</h3>
+                    <ul>
+                        <li>EKS cluster management commands</li>
+                        <li>IAM and security commands</li>
+                        <li>EC2 and networking commands</li>
+                        <li>ECR and container commands</li>
+                        <li>RDS database commands</li>
+                        <li>CloudFormation stack commands</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <h2>🔐 IAM & Security Commands</h2>
+
+                <div class="command-section">
+                    <h3>Configure AWS CLI</h3>
+                    <pre><code># Configure AWS CLI with access keys
+aws configure
+
+# Set default region
+aws configure set default.region us-east-1
+
+# Verify credentials
+aws sts get-caller-identity</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>Create IAM User</h3>
+                    <pre><code># Create IAM user for EKS operations
+aws iam create-user --user-name zl-eks-user
+
+# Create access key for the user
+aws iam create-access-key --user-name zl-eks-user
+
+# Attach managed policies
+aws iam attach-user-policy --user-name zl-eks-user --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+aws iam attach-user-policy --user-name zl-eks-user --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>Create IAM Role for Service Accounts (IRSA)</h3>
+                    <pre><code># Create OIDC provider for EKS cluster
+aws eks describe-cluster --name zl-eks-cluster --query "cluster.identity.oidc.issuer" --output text
+aws iam create-open-id-connect-provider --url [OIDC_URL] --thumbprint-list [THUMBPRINT] --client-id-list sts.amazonaws.com
+
+# Create IAM role for ALB controller
+aws iam create-role --role-name zl-alb-controller-role --assume-role-policy-document file://alb-trust-policy.json
+aws iam attach-role-policy --role-name zl-alb-controller-role --policy-arn arn:aws:iam::aws:policy/AmazonEKSLoadBalancerControllerPolicy</code></pre>
+                </div>
+
+                <h2>☸️ EKS Cluster Commands</h2>
+
+                <div class="command-section">
+                    <h3>Create EKS Cluster</h3>
+                    <pre><code># Create EKS cluster using eksctl
+eksctl create cluster --name zl-eks-cluster --region us-east-1 --nodegroup-name zl-nodes --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 5
+
+# Update kubeconfig
+aws eks update-kubeconfig --name zl-eks-cluster --region us-east-1
+
+# Verify cluster
+kubectl get nodes
+kubectl get pods -n kube-system</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>Cluster Information</h3>
+                    <pre><code># Get cluster details
+aws eks describe-cluster --name zl-eks-cluster --region us-east-1
+
+# List all clusters
+aws eks list-clusters --region us-east-1
+
+# Get cluster endpoint
+aws eks describe-cluster --name zl-eks-cluster --query "cluster.endpoint" --output text</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>Node Group Management</h3>
+                    <pre><code># List node groups
+aws eks list-nodegroups --cluster-name zl-eks-cluster --region us-east-1
+
+# Describe node group
+aws eks describe-nodegroup --cluster-name zl-eks-cluster --nodegroup-name zl-nodes --region us-east-1
+
+# Update node group
+aws eks update-nodegroup-config --cluster-name zl-eks-cluster --nodegroup-name zl-nodes --scaling-config minSize=2,maxSize=10,desiredSize=3 --region us-east-1</code></pre>
+                </div>
+
+                <h2>🐳 ECR Commands</h2>
+
+                <div class="command-section">
+                    <h3>Create ECR Repository</h3>
+                    <pre><code># Create ECR repository
+aws ecr create-repository --repository-name ue1-zlps-ecr-01 --region us-east-1
+
+# List repositories
+aws ecr describe-repositories --region us-east-1
+
+# Get repository URI
+aws ecr describe-repositories --repository-names ue1-zlps-ecr-01 --query "repositories[0].repositoryUri" --output text</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>ECR Authentication & Push</h3>
+                    <pre><code># Login to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin [ACCOUNT_ID].dkr.ecr.us-east-1.amazonaws.com
+
+# Build and tag image
+docker build -t zl-server:latest .
+docker tag zl-server:latest [ACCOUNT_ID].dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-1.0.0
+
+# Push image
+docker push [ACCOUNT_ID].dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-1.0.0</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>List ECR Images</h3>
+                    <pre><code># List images in repository
+aws ecr list-images --repository-name ue1-zlps-ecr-01 --region us-east-1
+
+# Get image details
+aws ecr describe-images --repository-name ue1-zlps-ecr-01 --image-ids imageTag=zlserver-1.0.0 --region us-east-1
+
+# Delete image
+aws ecr batch-delete-image --repository-name ue1-zlps-ecr-01 --image-ids imageTag=zlserver-1.0.0 --region us-east-1</code></pre>
+                </div>
+
+                <h2>🗄️ RDS Commands</h2>
+
+                <div class="command-section">
+                    <h3>Create RDS PostgreSQL</h3>
+                    <pre><code># Create RDS instance
+aws rds create-db-instance --db-instance-identifier zl-postgres-db --db-instance-class db.t3.micro --engine postgres --master-username zladmin --master-user-password [PASSWORD] --allocated-storage 20 --vpc-security-group-ids sg-12345678 --db-subnet-group-name zl-db-subnet-group --region us-east-1
+
+# Get RDS endpoint
+aws rds describe-db-instances --db-instance-identifier zl-postgres-db --query "DBInstances[0].Endpoint.Address" --output text</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>RDS Management</h3>
+                    <pre><code># List DB instances
+aws rds describe-db-instances --region us-east-1
+
+# Modify DB instance
+aws rds modify-db-instance --db-instance-identifier zl-postgres-db --apply-immediately --backup-retention-period 7 --region us-east-1
+
+# Create DB snapshot
+aws rds create-db-snapshot --db-instance-identifier zl-postgres-db --db-snapshot-identifier zl-postgres-snapshot --region us-east-1</code></pre>
+                </div>
+
+                <h2>🌐 VPC & Networking</h2>
+
+                <div class="command-section">
+                    <h3>VPC Information</h3>
+                    <pre><code># List VPCs
+aws ec2 describe-vpcs --region us-east-1
+
+# Get VPC details
+aws ec2 describe-vpcs --vpc-ids vpc-12345678 --region us-east-1
+
+# List subnets
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-12345678" --region us-east-1</code></pre>
+                </div>
+
+                <div class="command-section">
+                    <h3>Security Groups</h3>
+                    <pre><code># List security groups
+aws ec2 describe-security-groups --region us-east-1
+
+# Create security group
+aws ec2 create-security-group --group-name zl-eks-sg --description "Security group for ZL EKS cluster" --vpc-id vpc-12345678 --region us-east-1
+
+# Add inbound rule
+aws ec2 authorize-security-group-ingress --group-id sg-12345678 --protocol tcp --port 443 --cidr 0.0.0.0/0 --region us-east-1</code></pre>
+                </div>
+
+                <h2>☁️ CloudFormation</h2>
+
+                <div class="command-section">
+                    <h3>Stack Operations</h3>
+                    <pre><code># List stacks
+aws cloudformation list-stacks --region us-east-1
+
+# Describe stack
+aws cloudformation describe-stacks --stack-name zl-eks-stack --region us-east-1
+
+# Get stack outputs
+aws cloudformation describe-stacks --stack-name zl-eks-stack --query "Stacks[0].Outputs" --region us-east-1
+
+# Delete stack
+aws cloudformation delete-stack --stack-name zl-eks-stack --region us-east-1</code></pre>
+                </div>
+
+                <h2>🔍 Monitoring & Inspector</h2>
+
+                <div class="command-section">
+                    <h3>AWS Inspector</h3>
+                    <pre><code># Enable Inspector for ECR
+aws inspector2 enable --resource-types ECR --region us-east-1
+
+# List coverage (scan status)
+aws inspector2 list-coverage --region us-east-1 --filter-criteria '{"resourceType":[{"comparison":"EQUALS","value":"AWS_ECR_CONTAINER_IMAGE"}]}'
+
+# Get findings
+aws inspector2 list-findings --region us-east-1 --filter-criteria '{"resourceType":[{"comparison":"EQUALS","value":"AWS_ECR_CONTAINER_IMAGE"}],"ecrImageRepositoryName":[{"comparison":"EQUALS","value":"ue1-zlps-ecr-01"}]}'</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

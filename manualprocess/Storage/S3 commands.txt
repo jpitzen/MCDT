@@ -1,0 +1,63 @@
+ami-07d1169edc703a15b
+
+192.168.65.145
+
+aws ssm start-session --target i-0fe71ec041d485452 --document-name AWS-StartPortForwardingSession --parameters "portNumber=3389,localPortNumber=3389" --region us-west-1
+
+aws ssm start-session --target i-0fe71ec041d485452 --document-name AWS-StartPortForwardingSession --parameters "portNumber=445,localPortNumber=13389" --region us-west-1
+
+# Get the Administrator password (wait ~4-5 minutes after launch)
+aws ec2 get-password-data --instance-id i-0b21439fad0e0508f --priv-launch-key "C:\Projects\aws-zl\usw1-zlps-winserver-key.pem" --region us-west-1
+
+# RDP tunnel through bastion
+aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{`"host`":[`"192.168.94.152`"],`"portNumber`":[`"3389`"],`"localPortNumber`":[`"3389`"]}" --region us-west-1
+
+
+Property	Value
+Instance ID	i-0b21439fad0e0508f
+Private IP	192.168.94.152
+Username	zladmin-local
+Password	)qcUyoxQMv$MNts)cYYWby-MK)Tkqp71
+
+# From your local machine - upload to S3
+aws s3 cp "C:\path\to\file.zip" s3://usw1-zlps-app-storage/uploads/ --region us-west-1
+
+# From the Windows Server (via RDP) - download from S3
+aws s3 cp s3://usw1-zlps-app-storage/uploads/file.zip C:\Temp\ --region us-west-1
+
+
+# Upload a single file
+aws s3 cp "E:\builds\ZLServerSetup_x64-V11.0.1-b123.zip" s3://usw1-zlps-datasets/ --region us-west-1
+
+# Upload a folder recursively
+aws s3 cp "D:\DATASETS\DNC Emails" s3://usw1-zlps-datasets/emails/ --recursive --region us-west-1
+aws s3 cp "D:\DATASETS\EastAnglia_FOI2009" s3://usw1-zlps-datasets/emails/EA2009/ --recursive --region us-west-1
+aws s3 cp ""D:\DATASETS\jfkfiles"" s3://usw1-zlps-datasets/jfk/ --recursive --region us-west-1
+aws s3 cp "D:\DATASETS\mlkfiles" s3://usw1-zlps-datasets/mlk/ --recursive --region us-west-1
+
+
+
+# Sync a local directory (only uploads changed files)
+aws s3 sync "C:\path\to\folder" s3://usw1-zlps-datasets/folder-name/ --region us-west-1
+
+# List available files
+aws s3 ls s3://usw1-zlps-datasets/ --region us-west-1
+
+# Download to D: drive (500GB volume)
+aws s3 sync s3://usw1-zlps-datasets/ D:\Datasets\ --region us-west-1
+
+# Download AWS CLI MSI installer
+Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "C:\Temp\AWSCLIV2.msi"
+
+# Install silently
+Start-Process msiexec.exe -ArgumentList '/i C:\Temp\AWSCLIV2.msi /quiet' -Wait
+
+# Verify installation (may need to restart PowerShell)
+aws --version
+
+aws s3 sync s3://usw1-zlps-datasets/ C:\Datasets\ --region us-west-1
+
+aws s3 sync s3://usw1-zlps-datasets/ C:\Datasets\ --region us-west-1
+
+# Download a single file
+aws s3 cp s3://usw1-zlps-datasets/ZLServerSetup_x64-V11.0.1-b123.zip D:\software\ZLServerSetup_x64-V11.0.1-b123.zip --region us-west-1

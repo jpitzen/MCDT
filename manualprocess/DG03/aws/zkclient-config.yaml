@@ -1,0 +1,74 @@
+apiVersion: v1
+data:
+  tc.cfg: |
+    // Machine/Site Configuration for ZooKeeper
+    // This config loads site parameters into ZooKeeper at tc/K8S
+
+    _cfg.machine=tc/K8S
+
+    _cfg.param.pmApp.site.name  = K8S
+    _cfg.param.coord.cluster.default.name  = DEFAULT
+    _cfg.param.coord.cluster.initial.executors = 5
+    _cfg.param.coord.cluster.service.executors = 3
+    _cfg.param.coord.cluster.managed.executors = 3
+
+    acv.mach=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_cfg.param.
+
+    _tc = #com.zlti.zlzookeeper.ZKConfigFactory~~@_cfg.machine@~~@acv.mach@
+  tcdb.cfg: |
+    // Database Protected Key Configuration for ZooKeeper
+    // EDIT THIS SECTION
+
+    #define DB_ORACLE_DEFAULT   = false
+    #define DB_MSSQL_DEFAULT    = true
+    #define DB_PGSQL_DEFAULT    = false
+    #define DB_SYBASE_DEFAULT   = false
+    #define DB_DB2_DEFAULT      = false
+    #define DB_MYSQL_DEFAULT    = false
+    #define DB_HSQLDB_DEFAULT   = false
+
+    _db.param.user  = pfuser
+    _db.password    = LJZ-wkVv@t_!d*PiM2tbx3TZ4h
+
+    //Default MSSQL URL
+    // *** FIX: Added TrustServerCertificate=true for JDBC driver compatibility ***
+    #if DB_MSSQL_DEFAULT
+    _db.param.jdbcUrl=jdbc:sqlserver://use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com:1433;TrustServerCertificate=true
+    _db.param.DatabaseName=ZLDB
+    #endif
+
+    // DO NOT EDIT BELOW THIS LINE
+    acv.db=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_db.param.
+    _db.KeyName = zltc/db
+    _tcdb = #com.zlti.zlzookeeper.ZKProtectedKeyFactory~~@_db.KeyName@~~@_db.password@~~@acv.db@
+  zkClient.cfg: |
+    // ZooKeeper Client Configuration for zkutil commands
+    // This file tells zkutil where to find the quorum config and how to connect
+
+    _zkCluster = /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+
+    __zk.main=#com.zlti.zlzookeeper.ZLZooKeeper~~@_zkCluster@~~3000~~true
+  zkQuorum.cfg: |
+    #if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED
+    #define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true
+
+    // ZooKeeper Authentication Key - Generated via zkutil -g
+    _zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~Zh2CX0aZm7f+tRNic77CKvCtYwrxz8Nt7QY1y1T6B5AV4tcMVWGBf4J2Lei/JSDU9KKPspAK2nYPUJF7mQmIVg==
+
+    // ZooKeeper Quorum Configuration for Kubernetes
+    // Format: id,machine,clientPort,peerPort,electionPort,dataDir,[hostname]
+    zkQuorum.0=0~~zlzookeeper-0.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0
+    zkQuorum.1=1~~zlzookeeper-1.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1
+    zkQuorum.2=2~~zlzookeeper-2.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2
+    acv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.
+    #endif
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"tc.cfg":"// Machine/Site Configuration for ZooKeeper\n// This config loads site parameters into ZooKeeper at tc/K8S\n\n_cfg.machine=tc/K8S\n\n_cfg.param.pmApp.site.name  = K8S\n_cfg.param.coord.cluster.default.name  = DEFAULT\n_cfg.param.coord.cluster.initial.executors = 5\n_cfg.param.coord.cluster.service.executors = 3\n_cfg.param.coord.cluster.managed.executors = 3\n\nacv.mach=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_cfg.param.\n\n_tc = #com.zlti.zlzookeeper.ZKConfigFactory~~@_cfg.machine@~~@acv.mach@\n","tcdb.cfg":"// Database Protected Key Configuration for ZooKeeper\n// EDIT THIS SECTION\n\n#define DB_ORACLE_DEFAULT   = false\n#define DB_MSSQL_DEFAULT    = true\n#define DB_PGSQL_DEFAULT    = false\n#define DB_SYBASE_DEFAULT   = false\n#define DB_DB2_DEFAULT      = false\n#define DB_MYSQL_DEFAULT    = false\n#define DB_HSQLDB_DEFAULT   = false\n\n_db.param.user  = pfuser\n_db.password    = LJZ-wkVv@t_!d*PiM2tbx3TZ4h\n\n//Default MSSQL URL\n// *** FIX: Added TrustServerCertificate=true for JDBC driver compatibility ***\n#if DB_MSSQL_DEFAULT\n_db.param.jdbcUrl=jdbc:sqlserver://use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com:1433;TrustServerCertificate=true\n_db.param.DatabaseName=ZLDB\n#endif\n\n// DO NOT EDIT BELOW THIS LINE\nacv.db=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~_db.param.\n_db.KeyName = zltc/db\n_tcdb = #com.zlti.zlzookeeper.ZKProtectedKeyFactory~~@_db.KeyName@~~@_db.password@~~@acv.db@\n","zkClient.cfg":"// ZooKeeper Client Configuration for zkutil commands\n// This file tells zkutil where to find the quorum config and how to connect\n\n_zkCluster = /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg\n\n__zk.main=#com.zlti.zlzookeeper.ZLZooKeeper~~@_zkCluster@~~3000~~true\n","zkQuorum.cfg":"#if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED\n#define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true\n\n// ZooKeeper Authentication Key - Generated via zkutil -g\n_zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~Zh2CX0aZm7f+tRNic77CKvCtYwrxz8Nt7QY1y1T6B5AV4tcMVWGBf4J2Lei/JSDU9KKPspAK2nYPUJF7mQmIVg==\n\n// ZooKeeper Quorum Configuration for Kubernetes\n// Format: id,machine,clientPort,peerPort,electionPort,dataDir,[hostname]\nzkQuorum.0=0~~zlzookeeper-0.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0\nzkQuorum.1=1~~zlzookeeper-1.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1\nzkQuorum.2=2~~zlzookeeper-2.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2\nacv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.\n#endif\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"zkclient-config","namespace":"default"}}
+  creationTimestamp: "2025-12-22T18:01:14Z"
+  name: zkclient-config
+  namespace: default
+  resourceVersion: "2117510"
+  uid: 5ff9a2e8-64bd-47b1-9b36-4e4a4d4b693b

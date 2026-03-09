@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zltika
+  name: zltika
+spec:
+  ports:
+    - name: "9972"
+      port: 9972
+      targetPort: 9972
+  selector:
+    app: zltika
+status:
+  loadBalancer: {}

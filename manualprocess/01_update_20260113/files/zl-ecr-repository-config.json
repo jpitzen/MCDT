@@ -1,0 +1,16 @@
+{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:us-west-1:995553364920:repository/uw1-zlps-ecr-01",
+        "registryId": "995553364920",
+        "repositoryName": "uw1-zlps-ecr-01",
+        "repositoryUri": "995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01",
+        "createdAt": "2025-12-16T21:15:00.000Z",
+        "imageScanningConfiguration": {
+            "scanOnPush": true
+        },
+        "imageTagMutability": "MUTABLE",
+        "encryptionConfiguration": {
+            "encryptionType": "AES256"
+        }
+    }
+}

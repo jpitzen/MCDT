@@ -1,0 +1,9 @@
+{
+  "commands": [
+    "net use V: /delete /y",
+    "net use L: /delete /y",
+    "net use V: \\\\192.168.53.179\\zlvault /persistent:yes",
+    "net use L: \\\\192.168.53.179\\zlserverlogs /persistent:yes",
+    "net use"
+  ]
+}

@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          image: zlui:20251220
+          imagePullPolicy: Never
+          workingDir: /opt/ZipLip
+          #imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"  
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /opt/var/zlvault
+              name: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+            - mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              name: zkclient-config
+              subPath: zkQuorum.cfg
+            - mountPath: /opt/ZipLip/bin/zk/tc.cfg
+              name: zkclient-config
+              subPath: tc.cfg
+            - mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              name: zkclient-config
+              subPath: tcdb.cfg
+            - mountPath: /opt/ZipLip/bin/zk/zkClient.cfg
+              name: zkclient-config
+              subPath: zkClient.cfg
+            - mountPath: /opt/ZipLip/config/pmapp.cfg
+              name: pmapp-config
+              subPath: pmapp.cfg
+            - mountPath: /opt/ZipLip/config/pmappIncludes.cfg
+              name: pmapp-config
+              subPath: pmappIncludes.cfg
+            - mountPath: /opt/ZipLip/config/pmappURL.cfg
+              name: pmapp-config
+              subPath: pmappURL.cfg
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/runnable/pmapp/pmapp.cfg
+              name: pmapp-runnable-config
+              subPath: pmapp.cfg
+      imagePullSecrets:
+        - name: docker-secret
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-pvc
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-pvc
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-pvc
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: pmapp-config
+          configMap:
+            name: pmapp-config
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config
+        - name: pmapp-runnable-config
+          configMap:
+            name: pmapp-runnable-config

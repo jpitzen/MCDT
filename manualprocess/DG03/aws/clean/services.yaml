@@ -1,0 +1,107 @@
+# ZL Services - us-east-1
+# Last Updated: December 22, 2025
+---
+# ZooKeeper Headless Service (for internal pod communication)
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-hs
+  labels:
+    app: zlzookeeper
+spec:
+  clusterIP: None
+  selector:
+    app: zlzookeeper
+  ports:
+    - name: client
+      port: 2181
+      targetPort: 2181
+    - name: server
+      port: 2888
+      targetPort: 2888
+    - name: leader-election
+      port: 3888
+      targetPort: 3888
+---
+# ZooKeeper Client Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  type: ClusterIP
+  selector:
+    app: zlzookeeper
+  ports:
+    - name: client
+      port: 2181
+      targetPort: 2181
+---
+# ZL Server Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlserver-service
+  labels:
+    app: zlserver
+spec:
+  type: ClusterIP
+  selector:
+    app: zlserver
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 80
+---
+# ZL UI Service (LoadBalancer for external access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui-service
+  labels:
+    app: zlui
+spec:
+  type: LoadBalancer
+  selector:
+    app: zlui
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 80
+    - name: https
+      port: 8443
+      targetPort: 8443
+---
+# ZL Search Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlsearch-service
+  labels:
+    app: zlsearch
+spec:
+  type: ClusterIP
+  selector:
+    app: zlsearch
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 80
+---
+# ZL Tika Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: zltika-service
+  labels:
+    app: zltika
+spec:
+  type: ClusterIP
+  selector:
+    app: zltika
+  ports:
+    - name: tika
+      port: 9972
+      targetPort: 9972

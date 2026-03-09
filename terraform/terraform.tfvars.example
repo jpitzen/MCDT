@@ -1,0 +1,58 @@
+# Example Terraform variables for multi-cloud deployment
+# Copy this file and customize for your environment
+
+# Cloud provider selection
+cloud_provider = "aws"
+cluster_name   = "production-cluster"
+
+# Kubernetes configuration
+kubernetes_version  = "1.27"
+node_count          = 3
+min_node_count      = 1
+max_node_count      = 5
+enable_autoscaling  = true
+node_instance_type  = "t3.medium"
+
+# Features
+enable_monitoring = true
+enable_logging    = true
+
+# Common tags applied to all resources
+common_tags = {
+  Project     = "Automated EKS Deployer"
+  Environment = "Production"
+  ManagedBy   = "Terraform"
+  CreatedBy   = "ZLAWS"
+}
+
+# AWS-specific (uncomment and modify for AWS deployments)
+# aws_region              = "us-east-1"
+# aws_vpc_cidr            = "10.0.0.0/16"
+# aws_availability_zones  = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# Azure-specific (uncomment and modify for Azure deployments)
+# azure_location          = "eastus"
+# azure_resource_group    = "rg-kubernetes"
+# azure_network_policy    = "azure"
+# azure_pod_cidr          = "10.244.0.0/16"
+# azure_service_cidr      = "10.0.0.0/16"
+
+# GCP-specific (uncomment and modify for GCP deployments)
+# gcp_project_id         = "my-project"
+# gcp_region             = "us-central1"
+# gcp_zone               = "us-central1-a"
+
+# DigitalOcean-specific (uncomment and modify for DigitalOcean)
+# do_region             = "nyc3"
+# do_surge_upgrade      = true
+# digitalocean_token    = var.digitalocean_token  # From environment variable
+
+# Linode-specific (uncomment and modify for Linode)
+# linode_region         = "us-east"
+# linode_token          = var.linode_token  # From environment variable
+# linode_node_pools = [
+#   {
+#     type  = "g6-standard-2"
+#     count = 3
+#   }
+# ]

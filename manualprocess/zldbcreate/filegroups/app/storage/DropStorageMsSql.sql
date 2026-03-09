@@ -1,0 +1,34 @@
+DROP TABLE pfuser01.InPlaceFileItemStaticTag
+DROP SEQUENCE pfuser01.InPlaceTag_seq
+DROP TABLE pfuser01.InPlaceTag
+DROP TABLE pfuser01.InPlaceFileScheduledRuns
+DROP SEQUENCE pfuser01.InPlaceFileDispRuns_sequence
+DROP TABLE pfuser01.InPlaceFileDispositionRuns
+DROP TABLE pfuser01.InPlaceFileAuditTrail
+DROP SEQUENCE pfuser01.InPlaceFileItem_sequence
+DROP TABLE pfuser01.InPlaceFileItem
+DROP TABLE pfuser01.StorageItemLink
+-- OPTIONAL
+DROP SEQUENCE pfuser01.StorItemRelationship_sequence
+DROP TABLE pfuser01.StorageItemRelationship
+DROP TABLE pfuser01.StorageItemStats
+DROP TABLE pfuser01.FileSingleInstanceDigest
+DROP TABLE pfuser01.StorageViolation
+DROP SEQUENCE pfuser01.StorViolTranscript_sequence
+DROP TABLE pfuser01.StorageViolationTranscript
+DROP TABLE pfuser01.StorageUserSubscription
+DROP TABLE pfuser01.StorageAuditTrail
+DROP TABLE pfuser01.StorageItemPart
+DROP TABLE pfuser01.StorageItemSisHeader
+DROP SEQUENCE pfuser01.StorageItemVersion_sequence
+DROP TABLE pfuser01.StorageItemVersion
+DROP SEQUENCE pfuser01.StorageItem_sequence
+DROP TABLE pfuser01.StorageItem
+DROP TABLE pfuser01.StorageFolderProp
+DROP SEQUENCE pfuser01.StorageFolder_sequence
+DROP TABLE pfuser01.StorageFolder
+DROP TABLE pfuser01.StorageProjectPrivileges
+-- OPTIONAL
+DROP SEQUENCE pfuser01.StorageProject_sequence
+DROP TABLE pfuser01.StorageProject
+

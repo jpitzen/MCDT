@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"zltika","name":"zltika"},"name":"zltika","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"zltika"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"app":"zltika"}},"spec":{"containers":[{"image":"995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140","imagePullPolicy":"IfNotPresent","livenessProbe":{"failureThreshold":3,"initialDelaySeconds":60,"periodSeconds":10,"tcpSocket":{"port":9972},"timeoutSeconds":5},"name":"zltika","ports":[{"containerPort":9972,"name":"tika"}],"readinessProbe":{"failureThreshold":3,"initialDelaySeconds":10,"periodSeconds":5,"tcpSocket":{"port":9972},"timeoutSeconds":3},"resources":{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"512Mi"}}}],"imagePullSecrets":[{"name":"docker-secret"}],"serviceAccountName":"zlapp-sa"}}}}
+  creationTimestamp: "2025-12-22T18:15:32Z"
+  generation: 2
+  labels:
+    app: zltika
+    name: zltika
+  name: zltika
+  namespace: default
+  resourceVersion: "2143684"
+  uid: d0ed0d95-b115-48fe-bc4d-b90c99d3f43c
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - cd /opt/ZipLip/ZLTikaConvertor/bin && ./zltikadiag.sh ZLTika /tmp/ZLTika
+          & sleep infinity
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 9972
+          timeoutSeconds: 5
+        name: zltika
+        ports:
+        - containerPort: 9972
+          name: tika
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9972
+          timeoutSeconds: 3
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 250m
+            memory: 512Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: docker-secret
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: zlapp-sa
+      serviceAccountName: zlapp-sa
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2025-12-22T20:34:14Z"
+    lastUpdateTime: "2025-12-22T20:34:14Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2025-12-22T18:15:32Z"
+    lastUpdateTime: "2025-12-22T20:34:14Z"
+    message: ReplicaSet "zltika-6584688648" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

@@ -1,0 +1,13 @@
+TRUNCATE TABLE pfuser.FileTag
+TRUNCATE TABLE pfuser.FileTagAction
+TRUNCATE TABLE pfuser.FileTreeDataCollect
+TRUNCATE TABLE pfuser.FileTreeSearch
+TRUNCATE TABLE pfuser.FileTreeEntry
+TRUNCATE TABLE pfuser.FileTreePrivileges
+TRUNCATE TABLE pfuser.FileTreeRemediation
+TRUNCATE TABLE pfuser.FileTreeRemediationRuns
+TRUNCATE TABLE pfuser.FileTreeDashboard
+TRUNCATE TABLE pfuser.FileTreeAuditTrail
+TRUNCATE TABLE pfuser.FileTreeScheduledRuns
+TRUNCATE TABLE pfuser.FileTreeDispositionRuns
+TRUNCATE TABLE pfuser.FileTreeEntrySyncAction

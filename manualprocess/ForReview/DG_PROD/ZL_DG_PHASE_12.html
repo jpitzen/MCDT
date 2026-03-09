@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 12</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 12: EC2 Configuration</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 12</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 12: EC2 Configuration</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">5</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button type="button" class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">EC2 Configuration Overview</div>
+                <button type="button" class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 12</strong> configures EC2 instances for integration with the EKS cluster, including EFS mounting and network connectivity for hybrid deployments.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Verify EC2 instance VPC and subnet configuration</li>
+                    <li data-steps="2">Configure security groups for EKS and EFS connectivity</li>
+                    <li data-steps="3">Mount EFS file systems on EC2 instances with TLS encryption</li>
+                    <li data-steps="4">Configure automatic EFS mounting via /etc/fstab</li>
+                    <li data-steps="5">Verify network connectivity between EC2 and EKS resources</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-content">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+        // Step definitions
+        const steps = {
+            1: {
+                title: "Step 64: Verify EC2 VPC and Subnet Configuration",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 64: Verify EC2 Instance VPC and Subnet Configuration</h3>
+                        <p>Ensure EC2 instances are deployed in the same VPC as the EKS cluster for direct network connectivity.</p>
+                        
+                        <h4>📋 What to Verify</h4>
+                        <ul>
+                            <li>EC2 instances are in the same VPC as EKS cluster</li>
+                            <li>Instances are in private subnets with appropriate route tables</li>
+                            <li>IAM instance profile has EFS permissions</li>
+                        </ul>
+
+                        <h4>Check EC2 Instance Details</h4>
+                        <pre><code># Get EC2 instance VPC and subnet details
+aws ec2 describe-instances --instance-ids <YOUR_INSTANCE_ID> \\
+  --query 'Instances[0].[VpcId,SubnetId,SecurityGroups[*].GroupId,IamInstanceProfile.Arn]' \\
+  --output table
+
+# Verify VPC matches EKS cluster
+aws eks describe-cluster --name use1-zlps-eks-01 \\
+  --query 'cluster.resourcesVpcConfig.vpcId' \\
+  --output text</code></pre>
+
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <p><strong>Expected:</strong> Both commands should return the same VPC ID (e.g., vpc-0abc123def456789)</p>
+                        </div>
+
+                        <div class="warning-section">
+                            <h4>⚠️ Common Issues</h4>
+                            <ul>
+                                <li><strong>VPC Mismatch:</strong> EC2 and EKS must be in the same VPC for direct communication</li>
+                                <li><strong>Subnet Routing:</strong> Private subnets must have NAT gateway or VPC endpoints for internet access (if needed)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)" disabled>
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 64: Verify VPC and Subnet Configuration</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            2: {
+                title: "Step 65: Configure Security Groups",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 65: Configure Security Groups for EKS and EFS Connectivity</h3>
+                        <p>Security groups must allow NFS traffic (TCP port 2049) from EC2 instances to EFS mount targets.</p>
+                        
+                        <h4>Verify Security Group Rules for EFS</h4>
+                        <pre><code># Check EC2 security group allows outbound to port 2049
+aws ec2 describe-security-groups --group-ids <YOUR_EC2_SECURITY_GROUP_ID> \\
+  --query 'SecurityGroups[0].IpPermissionsEgress[?ToPort==\`2049\`]' \\
+  --output json
+
+# Verify EFS mount target security group allows inbound from EC2
+aws ec2 describe-security-groups --group-ids <YOUR_EFS_SECURITY_GROUP_ID> \\
+  --query 'SecurityGroups[0].IpPermissions[?ToPort==\`2049\`]' \\
+  --output json</code></pre>
+
+                        <h4>Add Security Group Rule (if needed)</h4>
+                        <pre><code># Add inbound rule to EFS security group allowing NFS from EC2 security group
+aws ec2 authorize-security-group-ingress \\
+  --group-id <YOUR_EFS_SECURITY_GROUP_ID> \\
+  --protocol tcp \\
+  --port 2049 \\
+  --source-group <YOUR_EC2_SECURITY_GROUP_ID></code></pre>
+
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <p><strong>Expected:</strong> Security group rules show TCP 2049 allowed from EC2 security group to EFS mount target security group</p>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>📌 Note:</strong> If using EKS node security groups, ensure they also allow NFS traffic to EFS.
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 65: Configure Security Groups</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            3: {
+                title: "Step 66: Mount EFS with TLS Encryption",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 66: Mount EFS File Systems on EC2 with TLS Encryption</h3>
+                        <p>Install the EFS mount helper and mount the file system using TLS for encryption in transit.</p>
+                        
+                        <h4>Step 66a: Install amazon-efs-utils (Amazon Linux 2/2023)</h4>
+                        <pre><code># Update package manager
+sudo yum update -y
+
+# Install EFS utils
+sudo yum install -y amazon-efs-utils
+
+# Verify installation
+mount.efs --version</code></pre>
+
+                        <h4>Step 66b: Create Mount Point</h4>
+                        <pre><code># Create mount directory
+sudo mkdir -p /mnt/efs
+
+# Verify directory created
+ls -ld /mnt/efs</code></pre>
+
+                        <h4>Step 66c: Mount EFS with TLS</h4>
+                        <pre><code># Mount using EFS mount helper with TLS encryption
+sudo mount -t efs -o tls <YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs
+
+# Verify mount
+df -h | grep efs
+mount | grep efs</code></pre>
+
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Should show EFS mounted at /mnt/efs
+df -h /mnt/efs
+
+# Test write access
+sudo touch /mnt/efs/test-file.txt
+ls -la /mnt/efs/
+sudo rm /mnt/efs/test-file.txt</code></pre>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>💡 For Ubuntu/Debian or cross-region mounting:</strong>
+                            See <a href="ZL_DG_PHASE_4.html">Phase 4: EFS CSI Driver, Step 8</a> for complete instructions.
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 66: Mount EFS with TLS Encryption</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            4: {
+                title: "Step 67: Configure Automatic Mounting",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 67: Configure Automatic EFS Mounting via /etc/fstab</h3>
+                        <p>Configure the system to automatically mount EFS on boot using /etc/fstab.</p>
+                        
+                        <h4>Add EFS to /etc/fstab</h4>
+                        <pre><code># Backup current fstab
+sudo cp /etc/fstab /etc/fstab.backup
+
+# Add EFS mount entry with TLS
+echo "<YOUR_EFS_FILE_SYSTEM_ID>:/ /mnt/efs efs defaults,_netdev,tls 0 0" | sudo tee -a /etc/fstab
+
+# View updated fstab
+cat /etc/fstab</code></pre>
+
+                        <h4>Test Automatic Mount</h4>
+                        <pre><code># Unmount EFS
+sudo umount /mnt/efs
+
+# Test mount all from fstab
+sudo mount -a
+
+# Verify EFS mounted
+df -h | grep efs</code></pre>
+
+                        <div class="verification">
+                            <h4>🔍 Verification</h4>
+                            <pre><code># Simulate reboot test (optional)
+sudo systemctl daemon-reload
+sudo mount -a
+df -h /mnt/efs</code></pre>
+                            <p><strong>Expected:</strong> EFS should mount automatically from /etc/fstab entry</p>
+                        </div>
+
+                        <div class="warning-section">
+                            <h4>⚠️ Important fstab Options</h4>
+                            <ul>
+                                <li><strong>_netdev:</strong> Ensures mount waits for network to be available</li>
+                                <li><strong>tls:</strong> Enables encryption in transit</li>
+                                <li><strong>defaults:</strong> Uses default mount options</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 67: Configure Automatic Mounting</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            5: {
+                title: "Step 68: Phase 12 Completion",
+                content: `
+                    <div class="step-section">
+                        <h3>Step 68: Verify Network Connectivity and Complete Phase 12</h3>
+                        
+                        <h4>Final Network Connectivity Tests</h4>
+                        <pre><code># Test EFS connectivity
+sudo mount | grep efs
+df -h /mnt/efs
+
+# Verify write/read operations
+sudo bash -c "echo 'test' > /mnt/efs/connectivity-test.txt"
+cat /mnt/efs/connectivity-test.txt
+sudo rm /mnt/efs/connectivity-test.txt
+
+# Check network connectivity to EFS endpoints
+nslookup <YOUR_EFS_FILE_SYSTEM_ID>.efs.<REGION>.amazonaws.com
+
+# Test from EKS (if applicable)
+kubectl exec deployment/zlserver -- df -h | grep efs</code></pre>
+
+                        <div class="completion-checklist" style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; border: 2px solid #4caf50; margin: 30px 0;">
+                            <h4 style="color: #2e7d32; margin-top: 0;">📋 Phase 12 Completion Checklist</h4>
+                            <p style="margin-bottom: 15px;">Ensure all items are verified before moving to the next phase:</p>
+                            <div style="margin: 15px 0;">
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    EC2 instances in same VPC as EKS cluster - Network connectivity verified
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Security groups configured - TCP 2049 allowed for NFS traffic
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    amazon-efs-utils installed - Mount helper available on instances
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    EFS mounted with TLS - File system accessible at /mnt/efs
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    /etc/fstab configured - Automatic mount on reboot enabled
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    IAM instance profile attached - EC2 has EFS permissions
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Write test successful - File creation and deletion verified
+                                </label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 10px; transform: scale(1.2);">
+                                    Network connectivity verified - DNS and mount point accessible
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="success-box" style="margin-top: 30px;">
+                            <h4>🎉 Phase 12 Complete!</h4>
+                            <p>EC2 instances are now configured with EFS mounts and network connectivity to EKS resources.</p>
+                            <p style="margin-top: 15px;"><strong>Next:</strong> Proceed to <a href="ZL_DG_PHASE_13.html">Phase 13: Security Scanning</a></p>
+                        </div>
+
+                        <!-- Bottom Pagination Controls -->
+                        <div class="pagination-controls bottom-controls">
+                            <button type="button" class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                                ← Previous Step
+                            </button>
+                            <div class="step-title">Phase 12 Completion Checklist</div>
+                            <a href="ZL_DG_PHASE_13.html" class="nav-btn next-btn" style="text-decoration: none; display: inline-block; text-align: center; background: var(--success-color);">
+                                Next Phase →
+                            </a>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 5;
+        const phaseSteps = [1, 2, 3];
+
+        function updatePagination() {
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                const step = parseInt(dot.dataset.step);
+                dot.classList.toggle('active', step === currentStep);
+                dot.classList.toggle('completed', step < currentStep);
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentStep === 1;
+            document.getElementById('next-btn').disabled = currentStep === totalSteps;
+
+            // Update progress bar
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Update step counter
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('total-steps').textContent = totalSteps;
+
+            // Update step title
+            document.getElementById('step-title').textContent = steps[currentStep].title;
+
+            // Update content
+            document.getElementById('step-content').innerHTML = steps[currentStep].content;
+
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                currentStep = newStep;
+                updatePagination();
+            }
+        }
+
+        // Initialize copy buttons for dynamically loaded content
+        function initializeCopyButtons() {
+            document.querySelectorAll('#step-content pre').forEach(pre => {
+                // Skip if already wrapped or inside yaml-panel or output-block
+                if (pre.parentElement.classList.contains('pre-wrapper')) return;
+                if (pre.closest('.yaml-panel')) return;
+                if (pre.closest('.output-block')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('prev-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentStep > 1) {
+                    currentStep--;
+                    updatePagination();
+                }
+            });
+
+            document.getElementById('next-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updatePagination();
+                }
+            });
+
+            // Allow clicking on step dots
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    currentStep = parseInt(dot.dataset.step);
+                    updatePagination();
+                });
+            });
+
+            // Initialize
+            updatePagination();
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(button) {
+            const wrapper = button.closest('.pre-wrapper');
+            const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+            const text = codeBlock.textContent || codeBlock.innerText;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopied(button);
+                }).catch(() => {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                btn.textContent = 'FAILED';
+                setTimeout(() => {
+                    btn.textContent = 'COPY';
+                }, 2000);
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function showCopied(btn) {
+            btn.textContent = 'COPIED';
+            btn.style.background = '#28a745';
+
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
+
+
+
+

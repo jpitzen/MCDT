@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  DocumentConversion.xml: "<Sheet>\n<SheetName>DocumentConversion</SheetName>\n<SheetDisplayName>Document
+    Conversion</SheetDisplayName>\n<SheetDesc><![CDATA[Document conversion settings]]></SheetDesc>\n\n<!--
+    Global Conversion Settings -->\n<Group>\n   <GroupName>Global Document Conversion
+    Settings</GroupName>\n   <GroupDisplayName>Global Document Conversion Settings</GroupDisplayName>\n
+    \  <GroupDesc><![CDATA[Settings for Document Conversion. These settings apply
+    to all types document conversions]]></GroupDesc>\n\n\t<Bean>\n     <BeanName>DOCCONVERSION_FILEDETECT_ON</BeanName>\n
+    \    <BeanDisplayName>Enable file type detection for document conversion</BeanDisplayName>\n
+    \    <BeanValue>false</BeanValue>\n     <BeanType>PreprocessDefine</BeanType>\n
+    \    <BeanInputType caption=\"true\">CHECKBOX</BeanInputType>\n     <BeanChoices>\n
+    \      <Choice value=\"true\"></Choice>\n     </BeanChoices>\n     <BeanHelp><![CDATA[Enable
+    best-effort file type detection for documents. This setting will force detection
+    of file type based on the file magic headers to determine whether the files are
+    what their extensions or mime-types declare them to be. Enable this setting if
+    the environment has files/attachments with incorrect extensions or mimetypes.
+    Enabling this setting has a minor performance impact.]]></BeanHelp>\n   </Bean>\n\n</Group>\n\n<!--
+    //Tika Service Manager -->\n<Group>\n\t<GroupName>ZLTika Service Settings</GroupName>\n\t<GroupDisplayName>ZLTika
+    Service Settings</GroupDisplayName>\n\t<GroupDesc><![CDATA[Setting related to
+    the ZLTika Doc Conversion Service.]]></GroupDesc>\n\n\n\n\t<Bean>\n\t\t<BeanName>__tika.ZLTikaService.Host</BeanName>\n\t\t<BeanDisplayName>Tika
+    Service Host</BeanDisplayName>\n\t\t<BeanValue>zltika</BeanValue>\n\t\t<BeanType>String</BeanType>\n\t\t<BeanInputType>TEXT</BeanInputType>\n\t\t<BeanHelp><![CDATA[Location
+    of Tika doc conversion service/process.]]></BeanHelp>\n\t</Bean>\n\n\t<Bean>\n\t\t<BeanName>__tika.ZLTikaService.Port</BeanName>\n\t\t<BeanDisplayName>ZL
+    Tika  Port</BeanDisplayName>\n\t\t<BeanValue>9972</BeanValue>\n\t\t<BeanType>Integer</BeanType>\n\t\t<BeanInputType
+    size=\"6\">TEXT</BeanInputType>\n\t\t<BeanHelp><![CDATA[Port number where the
+    Tika Doc Conversion server is listening.]]></BeanHelp>\n\t</Bean>\n"
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"DocumentConversion.xml":"\u003cSheet\u003e\n\u003cSheetName\u003eDocumentConversion\u003c/SheetName\u003e\n\u003cSheetDisplayName\u003eDocument Conversion\u003c/SheetDisplayName\u003e\n\u003cSheetDesc\u003e\u003c![CDATA[Document conversion settings]]\u003e\u003c/SheetDesc\u003e\n\n\u003c!-- Global Conversion Settings --\u003e\n\u003cGroup\u003e\n   \u003cGroupName\u003eGlobal Document Conversion Settings\u003c/GroupName\u003e\n   \u003cGroupDisplayName\u003eGlobal Document Conversion Settings\u003c/GroupDisplayName\u003e\n   \u003cGroupDesc\u003e\u003c![CDATA[Settings for Document Conversion. These settings apply to all types document conversions]]\u003e\u003c/GroupDesc\u003e\n\n\t\u003cBean\u003e\n     \u003cBeanName\u003eDOCCONVERSION_FILEDETECT_ON\u003c/BeanName\u003e\n     \u003cBeanDisplayName\u003eEnable file type detection for document conversion\u003c/BeanDisplayName\u003e\n     \u003cBeanValue\u003efalse\u003c/BeanValue\u003e\n     \u003cBeanType\u003ePreprocessDefine\u003c/BeanType\u003e\n     \u003cBeanInputType caption=\"true\"\u003eCHECKBOX\u003c/BeanInputType\u003e\n     \u003cBeanChoices\u003e\n       \u003cChoice value=\"true\"\u003e\u003c/Choice\u003e\n     \u003c/BeanChoices\u003e\n     \u003cBeanHelp\u003e\u003c![CDATA[Enable best-effort file type detection for documents. This setting will force detection of file type based on the file magic headers to determine whether the files are what their extensions or mime-types declare them to be. Enable this setting if the environment has files/attachments with incorrect extensions or mimetypes. Enabling this setting has a minor performance impact.]]\u003e\u003c/BeanHelp\u003e\n   \u003c/Bean\u003e\n\n\u003c/Group\u003e\n\n\u003c!-- //Tika Service Manager --\u003e\n\u003cGroup\u003e\n\t\u003cGroupName\u003eZLTika Service Settings\u003c/GroupName\u003e\n\t\u003cGroupDisplayName\u003eZLTika Service Settings\u003c/GroupDisplayName\u003e\n\t\u003cGroupDesc\u003e\u003c![CDATA[Setting related to the ZLTika Doc Conversion Service.]]\u003e\u003c/GroupDesc\u003e\n\n\n\n\t\u003cBean\u003e\n\t\t\u003cBeanName\u003e__tika.ZLTikaService.Host\u003c/BeanName\u003e\n\t\t\u003cBeanDisplayName\u003eTika Service Host\u003c/BeanDisplayName\u003e\n\t\t\u003cBeanValue\u003ezltika\u003c/BeanValue\u003e\n\t\t\u003cBeanType\u003eString\u003c/BeanType\u003e\n\t\t\u003cBeanInputType\u003eTEXT\u003c/BeanInputType\u003e\n\t\t\u003cBeanHelp\u003e\u003c![CDATA[Location of Tika doc conversion service/process.]]\u003e\u003c/BeanHelp\u003e\n\t\u003c/Bean\u003e\n\n\t\u003cBean\u003e\n\t\t\u003cBeanName\u003e__tika.ZLTikaService.Port\u003c/BeanName\u003e\n\t\t\u003cBeanDisplayName\u003eZL Tika  Port\u003c/BeanDisplayName\u003e\n\t\t\u003cBeanValue\u003e9972\u003c/BeanValue\u003e\n\t\t\u003cBeanType\u003eInteger\u003c/BeanType\u003e\n\t\t\u003cBeanInputType size=\"6\"\u003eTEXT\u003c/BeanInputType\u003e\n\t\t\u003cBeanHelp\u003e\u003c![CDATA[Port number where the Tika Doc Conversion server is listening.]]\u003e\u003c/BeanHelp\u003e\n\t\u003c/Bean\u003e\n","TIKA_HOST":"zltika","TIKA_PORT":"9972"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"docconvert-config","namespace":"default"}}
+  creationTimestamp: "2025-12-17T17:23:35Z"
+  name: docconvert-config
+  namespace: default
+  resourceVersion: "476371"
+  uid: 96c2c876-4082-48ec-bd30-d44d5c6c7a00

@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: db-config
+data:
+  DB_HOST: "mssql-service"
+  DB_NAME: ZLDB
+  DB_PORT: '1433'
+  DB_TYPE: mssql
+  DB_USER: pfuser

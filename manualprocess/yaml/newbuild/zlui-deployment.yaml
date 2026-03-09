@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"  
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+      imagePullSecrets:
+        - name: docker-secret
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config

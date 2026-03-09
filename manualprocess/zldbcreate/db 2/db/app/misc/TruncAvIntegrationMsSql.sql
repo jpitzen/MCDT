@@ -1,0 +1,2 @@
+TRUNCATE TABLE pfuser.ZLAV3MigVaultItem
+

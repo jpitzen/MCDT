@@ -1,0 +1,56 @@
+apiVersion: v1
+items:
+- allowVolumeExpansion: true
+  apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"allowVolumeExpansion":true,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"},"name":"ebs-sc"},"parameters":{"fsType":"ext4","type":"gp3"},"provisioner":"ebs.csi.aws.com","reclaimPolicy":"Delete","volumeBindingMode":"WaitForFirstConsumer"}
+      storageclass.kubernetes.io/is-default-class: "true"
+    creationTimestamp: "2025-12-17T17:08:50Z"
+    name: ebs-sc
+    resourceVersion: "467493"
+    uid: 42c3bb81-a5c9-43ac-80dc-3e985c8d0b65
+  parameters:
+    fsType: ext4
+    type: gp3
+  provisioner: ebs.csi.aws.com
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+- apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"efs-sc"},"parameters":{"directoryPerms":"700","fileSystemId":"fs-0a2b69e49fe46c1f6","provisioningMode":"efs-ap"},"provisioner":"efs.csi.aws.com","reclaimPolicy":"Retain","volumeBindingMode":"Immediate"}
+    creationTimestamp: "2025-12-17T17:33:49Z"
+    name: efs-sc
+    resourceVersion: "474089"
+    uid: b5ce9703-f5a3-4538-9a40-934871522874
+  parameters:
+    directoryPerms: "700"
+    fileSystemId: fs-0a2b69e49fe46c1f6
+    provisioningMode: efs-ap
+  provisioner: efs.csi.aws.com
+  reclaimPolicy: Retain
+  volumeBindingMode: Immediate
+- apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"gp2"},"parameters":{"fsType":"ext4","type":"gp2"},"provisioner":"kubernetes.io/aws-ebs","volumeBindingMode":"WaitForFirstConsumer"}
+    creationTimestamp: "2025-12-15T19:30:23Z"
+    name: gp2
+    resourceVersion: "266"
+    uid: 6b51558f-423a-4107-9a53-dfebfd7b63be
+  parameters:
+    fsType: ext4
+    type: gp2
+  provisioner: kubernetes.io/aws-ebs
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+kind: List
+metadata:
+  resourceVersion: ""

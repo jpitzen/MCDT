@@ -1,0 +1,5 @@
+{
+  "host": ["internal-abc67fb83272c4084a030b610f4a79bd-306399535.us-west-1.elb.amazonaws.com"],
+  "portNumber": ["80"],
+  "localPortNumber": ["8080"]
+}

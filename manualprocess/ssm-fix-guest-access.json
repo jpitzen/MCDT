@@ -1,0 +1,16 @@
+{
+  "commands": [
+    "# Enable insecure guest logons (required for anonymous SMB shares)",
+    "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'AllowInsecureGuestAuth' -Value 1 -Type DWord -Force",
+    "Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'AllowInsecureGuestAuth'",
+    "Write-Host 'Registry updated. Testing connection...'",
+    "# Reconnect the shares",
+    "net use V: /delete /y",
+    "net use L: /delete /y",
+    "net use V: \\\\192.168.53.179\\zlvault /persistent:yes",
+    "net use L: \\\\192.168.53.179\\zlserverlogs /persistent:yes",
+    "net use",
+    "# Test access",
+    "Get-ChildItem V:\\ | Select-Object Name"
+  ]
+}

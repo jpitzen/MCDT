@@ -1,0 +1,83 @@
+# ZLTika Deployment - Kubernetes-Optimized Image
+# Uses: zltika:11.1.0-b1140-k8s
+# Improvements:
+#   - HTTP health endpoint on port 9973
+#   - Better Kubernetes integration
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zltika
+  labels:
+    app: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      containers:
+      - name: zltika
+        # Use Kubernetes-optimized image with -k8s suffix
+        image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika-11.1.0-b1140-k8s
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9972
+          name: tika
+        - containerPort: 9973
+          name: health
+        env:
+        - name: TIKA_PORT
+          value: "9972"
+        - name: HEALTH_PORT
+          value: "9973"
+        volumeMounts:
+        - mountPath: /opt/ZipLip/zltikatemp
+          name: zltikatemp-efs
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        # Use HTTP health endpoint instead of TCP socket
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9973
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9973
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: zltikatemp-efs
+        persistentVolumeClaim:
+          claimName: zltikatemp-efs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zltika
+  labels:
+    app: zltika
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9972
+    targetPort: 9972
+    name: tika
+  - port: 9973
+    targetPort: 9973
+    name: health
+  selector:
+    app: zltika

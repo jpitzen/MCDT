@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlsearch
+  labels:
+    name: zlsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlsearch
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlsearch
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlsearch
+          image: zlserver:k8s-20251222
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLUSTER_NAME
+              value: "SEARCH"
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: PATH
+              value: "/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumeMounts:
+            - name: zltikatemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+            - name: zlsearchlogs
+              mountPath: /opt/ZipLip/logs
+            - name: zlvault
+              mountPath: /var/ZipLip/Vault
+            - name: docconvert-config
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              subPath: DocumentConversion.xml
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-pvc
+        - name: zlsearchlogs
+          emptyDir: {}
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-pvc
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlsearch
+  labels:
+    app: zlsearch
+spec:
+  selector:
+    app: zlsearch
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP

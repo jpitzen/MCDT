@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zlserver-binzk-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  claimRef:
+    namespace: default
+    name: zlserver-binzk-efs
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0b79b2884a64affed

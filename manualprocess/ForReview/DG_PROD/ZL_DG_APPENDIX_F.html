@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix F: Performance Tuning</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix F: Performance Tuning Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides performance tuning recommendations and configurations for optimizing the ZL application deployment on AWS EKS.</p>
+
+                <div class="phase-objectives">
+                    <h3>📋 Performance Categories</h3>
+                    <ul>
+                        <li>Cluster and node optimization</li>
+                        <li>Application container tuning</li>
+                        <li>Database performance optimization</li>
+                        <li>Network and load balancer tuning</li>
+                        <li>Storage performance considerations</li>
+                        <li>Auto-scaling configurations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <h2>☸️ EKS Cluster Optimization</h2>
+
+                <div class="performance-section">
+                    <h3>Node Instance Types</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Workload Type</th><th>Recommended Instance Types</th><th>CPU:Memory Ratio</th><th>Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>General Purpose</strong></td>
+                                <td>m6i.large, m6i.xlarge</td>
+                                <td>1:4, 1:8</td>
+                                <td>Most applications</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Compute Optimized</strong></td>
+                                <td>c6i.large, c6i.xlarge</td>
+                                <td>1:2, 1:4</td>
+                                <td>CPU-intensive workloads</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Memory Optimized</strong></td>
+                                <td>r6i.large, r6i.xlarge</td>
+                                <td>1:8, 1:16</td>
+                                <td>Memory-intensive workloads</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storage Optimized</strong></td>
+                                <td>i4i.large, i4i.xlarge</td>
+                                <td>1:8, 1:16</td>
+                                <td>High I/O workloads</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="performance-section">
+                    <h3>Cluster Autoscaler Configuration</h3>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-autoscaler-config
+  namespace: kube-system
+data:
+  # Scale down nodes after 10 minutes of low utilization
+  scale-down-delay-after-add: "10m"
+  scale-down-delay-after-delete: "10m"
+  scale-down-delay-after-failure: "3m"
+  scale-down-unneeded-time: "10m"
+  scale-down-utilization-threshold: "0.5"
+  scan-interval: "10s"
+  # Prevent scale-in during business hours
+  skip-nodes-with-local-storage: "false"
+  skip-nodes-with-system-pods: "true"</code></pre>
+                </div>
+
+                <h2>🐳 Container Optimization</h2>
+
+                <div class="performance-section">
+                    <h3>Resource Limits and Requests</h3>
+                    <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zl-server-optimized
+  namespace: zl-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: zl-server
+        image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-1.0.0
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=200"</code></pre>
+                </div>
+
+                <div class="performance-section">
+                    <h3>Vertical Pod Autoscaler</h3>
+                    <pre><code>apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: zl-server-vpa
+  namespace: zl-app
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: zl-server
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 100m
+        memory: 512Mi
+      maxAllowed:
+        cpu: 4
+        memory: 8Gi
+      controlledResources: ["cpu", "memory"]</code></pre>
+                </div>
+
+                <h2>🐘 Database Performance Tuning</h2>
+
+                <div class="performance-section">
+                    <h3>RDS Parameter Groups</h3>
+                    <pre><code># Create custom parameter group
+aws rds create-db-parameter-group \
+  --db-parameter-group-name zl-postgres-params \
+  --db-parameter-group-family postgres14 \
+  --description "Optimized parameters for ZL application"
+
+# Set performance parameters
+aws rds modify-db-parameter-group \
+  --db-parameter-group-name zl-postgres-params \
+  --parameters "ParameterName=shared_buffers,ParameterValue={DBInstanceClassMemory/4096*256},ApplyMethod=pending-reboot"
+
+aws rds modify-db-parameter-group \
+  --db-parameter-group-name zl-postgres-params \
+  --parameters "ParameterName=effective_cache_size,ParameterValue={DBInstanceClassMemory/4096*3/4*1024},ApplyMethod=immediate"
+
+aws rds modify-db-parameter-group \
+  --db-parameter-group-name zl-postgres-params \
+  --parameters "ParameterName=work_mem,ParameterValue=8388608,ApplyMethod=immediate"
+
+aws rds modify-db-parameter-group \
+  --db-parameter-group-name zl-postgres-params \
+  --parameters "ParameterName=maintenance_work_mem,ParameterValue=134217728,ApplyMethod=immediate"</code></pre>
+                </div>
+
+                <div class="performance-section">
+                    <h3>Connection Pooling</h3>
+                    <pre><code># Application connection pool settings
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+
+# PgBouncer configuration (if used)
+[databases]
+zl_db = host=zl-postgres-db.cluster-xyz.us-east-1.rds.amazonaws.com port=5432 dbname=zldb
+
+[pgbouncer]
+listen_port = 6432
+listen_addr = *
+auth_type = md5
+auth_file = /etc/pgbouncer/userlist.txt
+pool_mode = transaction
+max_client_conn = 1000
+default_pool_size = 20
+reserve_pool_size = 5</code></pre>
+                </div>
+
+                <h2>⚖️ Load Balancer Optimization</h2>
+
+                <div class="performance-section">
+                    <h3>ALB Target Group Settings</h3>
+                    <pre><code># Create optimized target group
+aws elbv2 create-target-group \
+  --name zl-app-tg \
+  --protocol HTTP \
+  --port 80 \
+  --vpc-id vpc-12345678 \
+  --target-type ip \
+  --health-check-path /health \
+  --health-check-interval-seconds 30 \
+  --health-check-timeout-seconds 5 \
+  --healthy-threshold-count 2 \
+  --unhealthy-threshold-count 2 \
+  --matcher HttpCode=200-399
+
+# Configure ALB attributes for performance
+aws elbv2 modify-load-balancer-attributes \
+  --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:<YOUR_ACCOUNT_ID>:loadbalancer/app/zl-alb/1234567890abcdef \
+  --attributes Key=idle_timeout.timeout_seconds,Value=60
+
+aws elbv2 set-ip-address-type \
+  --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:<YOUR_ACCOUNT_ID>:loadbalancer/app/zl-alb/1234567890abcdef \
+  --ip-address-type dualstack</code></pre>
+                </div>
+
+                <div class="performance-section">
+                    <h3>Ingress Controller Tuning</h3>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-load-balancer-controller-config
+  namespace: kube-system
+data:
+  # Increase worker threads
+  worker-threads: "16"
+  # Enable access logging
+  access-log-enabled: "true"
+  # Set log level
+  log-level: "info"
+  # Configure health check settings
+  health-check-path: "/healthz"
+  health-check-port: "traffic-port"
+  # Enable IP target mode for better performance
+  target-type: "ip"</code></pre>
+                </div>
+
+                <h2>💾 Storage Performance</h2>
+
+                <div class="performance-section">
+                    <h3>EBS Volume Types</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Volume Type</th><th>Use Case</th><th>IOPS</th><th>Throughput</th><th>Latency</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>gp3</strong></td>
+                                <td>General purpose</td>
+                                <td>3,000-16,000</td>
+                                <td>125-1,000 MB/s</td>
+                                <td>~1ms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>io2</strong></td>
+                                <td>High-performance DB</td>
+                                <td>256,000</td>
+                                <td>4,000 MB/s</td>
+                                <td>~0.1ms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>st1</strong></td>
+                                <td>Throughput optimized</td>
+                                <td>500</td>
+                                <td>500 MB/s</td>
+                                <td>~10ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="performance-section">
+                    <h3>EFS Performance Modes</h3>
+                    <pre><code># Create EFS with Max I/O performance mode
+aws efs create-file-system \
+  --performance-mode maxIO \
+  --throughput-mode bursting \
+  --encrypted \
+  --backup \
+  --region us-east-1
+
+# Mount options for performance
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv
+spec:
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - iam
+    - tls
+    - hard
+    - rsize=1048576
+    - wsize=1048576
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-12345678</code></pre>
+                </div>
+
+                <h2>📊 Horizontal Pod Autoscaling</h2>
+
+                <div class="performance-section">
+                    <h3>HPA Configuration</h3>
+                    <pre><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: zl-server-hpa
+  namespace: zl-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: zl-server
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 60
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Max</code></pre>
+                </div>
+
+                <h2>🌐 Network Optimization</h2>
+
+                <div class="performance-section">
+                    <h3>Service Mesh Considerations</h3>
+                    <p>For high-performance service-to-service communication:</p>
+                    <ul>
+                        <li><strong>Istio:</strong> Advanced traffic management, security, and observability</li>
+                        <li><strong>Linkerd:</strong> Lightweight service mesh with minimal resource overhead</li>
+                        <li><strong>AWS App Mesh:</strong> Managed service mesh integrated with AWS services</li>
+                    </ul>
+                    <pre><code># Istio performance tuning
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: zl-server-dr
+  namespace: zl-app
+spec:
+  host: zl-server.zl-app.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 10
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 10
+        maxRetries: 3</code></pre>
+                </div>
+
+                <h2>🔍 Performance Monitoring</h2>
+
+                <div class="performance-section">
+                    <h3>Key Performance Metrics</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Component</th><th>Key Metrics</th><th>Target Values</th><th>Alert Threshold</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Application</strong></td>
+                                <td>Response Time (P95)</td>
+                                <td>&lt; 500ms</td>
+                                <td>&gt; 2000ms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Database</strong></td>
+                                <td>Connection Pool Usage</td>
+                                <td>&lt; 80%</td>
+                                <td>&gt; 95%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Load Balancer</strong></td>
+                                <td>Target Response Time</td>
+                                <td>&lt; 100ms</td>
+                                <td>&gt; 500ms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kubernetes</strong></td>
+                                <td>Pod Restarts/Hour</td>
+                                <td>&lt; 1</td>
+                                <td>&gt; 5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

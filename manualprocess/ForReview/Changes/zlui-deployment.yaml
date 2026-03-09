@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlui
+  labels:
+    name: zlui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+
+      containers:
+        - name: zlserver
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlserver:11.1.0-b1140
+          imagePullPolicy: Always
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+
+          volumeMounts:
+            - name: zltikatemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              subPath: zltikatemp
+
+            - name: zluilogs
+              mountPath: /opt/ZipLip/logs
+              subPath: zluilogs
+
+            - name: zlvault
+              mountPath: /var/ZipLip/Vault
+              subPath: zlvault
+
+            - name: config
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/config
+              subPath: config
+
+            # ZK client binaries & configs (EFS)
+            - name: zlserver-zk
+              mountPath: /opt/ZipLip/bin/zk
+              subPath: ZipLip/bin/zk
+
+            # ZooKeeper CONFIG (READ-ONLY)
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config
+              readOnly: true
+
+      restartPolicy: Always
+
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-efs
+
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs
+
+        - name: zlserver-zk
+          persistentVolumeClaim:
+            claimName: zlserver-binzk-efs
+

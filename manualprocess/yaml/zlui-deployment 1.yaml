@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+          imagePullPolicy: Always
+          #imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"  
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+              subPath: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+              subPath: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+              subPath: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config
+              name: config
+              subPath: config
+      imagePullSecrets:
+        - name: docker-secret
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-efs
+status: {}

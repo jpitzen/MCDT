@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-config
+data:
+  zk.cfg: |
+    cfg.dir = @zlTs.root@/config
+    log.dir = @zlTs.root@/logs
+
+    // Log4J WIP feature: Change to true ONLY for Log4J2 related testing.
+    log.enableLog4j=false
+    log.output=#wsi.util.Log4JFactory~~@log.enableLog4j@
+
+    #include @cfg.dir@/common/Constants.cfg
+
+
+
+    //SET THIS PORT if a multiple ZK servers are set on a single Node.
+    zk.clientPort=2181
+
+    //EDIT THIS TO Quorum file location.
+    #include /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+
+    zkParam.tickTime=2000
+    zkParam.initLimit=10
+    zkParam.syncLimit=5
+    zkParam.autopurge.snapRetainCount=3
+    // Purge task interval in hours
+    // Set to "0" to disable auto purge feature
+    zkParam.autopurge.purgeInterval=1
+
+
+    // Parameter Set: stName,domainId,stDevice,stLang,idApp,stAcctType,AllConfigVariables,fAddToCache
+    acv.zkParam=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkParam.
+
+    //***************LOGS***************
+    log.level = 24
+    log.flush = 20
+    log.rollOver=86400
+
+    te.logs=#wsi.util.TimedErrands~~Logs Errand_Runner~~true
+    te.misc=#wsi.util.TimedErrands~~Misc Errand_Runner~~true
+    te.services=#wsi.util.TimedErrands~~Services Errand_Runner~~true
+
+    zlTs.log.main =#wsi.util.WebLog~~@log.dir@~~main~~@log.level@~~@te.logs@~~@log.flush@~~@log.rollOver@~~false
+
+    app.zk.name=ZLZK
+    app.zk.id=17
+
+    #include @cfg.dir@/zkChild.cfg
+
+
+    __zk.main=#com.zlti.zlzookeeper.server.ZLZooKeeperServer~~@acv.zkParam@~~@acv.zkQuorum@
+  zkQuorum.cfg: |
+    #if !_ZK_SERVER_CONFIG_FILE_IS_INCLUDED
+    #define _ZK_SERVER_CONFIG_FILE_IS_INCLUDED = true
+    //Replace below commented sample auth configuration with output from the command "zkauth -g" on the command line
+    _zlzk.auth=#com.zlti.zlzookeeper.ZLZKAuth~~u/ilWNU+Rf47UjzKUlDrxnYhA+Wa9+OMMHhPVSIkieIoptrR4Vkf9dqsDt8letWgvL4GrI6IXG1B5A5m2H/TJQ==
+
+    // id,machine,clientPort,peerPort,electionPort,dataDir,[hostname]
+    zkQuorum.0=0~~zlzookeeper-0~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0
+    zkQuorum.1=1~~zlzookeeper-1~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1
+    zkQuorum.2=2~~zlzookeeper-2~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2
+    acv.zkQuorum=#wsi.config.AllConfigVariables~~@NAMES_THAT_START_WITH@~~zkQuorum.
+    #endif
+    server.zlzookeeper-1=zlzookeeper-1:2888:3888
+    server.zlzookeeper-2=zlzookeeper-2:2888:3888

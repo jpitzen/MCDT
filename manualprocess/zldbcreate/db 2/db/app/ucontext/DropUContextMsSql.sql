@@ -1,0 +1,19 @@
+DROP SEQUENCE pfuser.UContext_Sequence
+DROP TABLE pfuser.UContext
+DROP SEQUENCE pfuser.UTag_Sequence
+DROP TABLE pfuser.UTag
+-- OPTIONAL
+DROP SEQUENCE pfuser.UContextDataSource_sequence
+DROP TABLE pfuser.UContextDataSource
+DROP SEQUENCE pfuser.UCtxDataSrcRuns_seq
+DROP TABLE pfuser.UContextDataSourceRuns
+DROP TABLE pfuser.UCItem
+DROP SEQUENCE pfuser.UContextSearch_sequence
+DROP TABLE pfuser.UContextSearch
+DROP TABLE pfuser.UContextAuditTrail
+DROP SEQUENCE pfuser.UContextDataSourceIndexRuns_sequence
+DROP TABLE pfuser.UContextDataSourceIndexRuns
+DROP SEQUENCE pfuser.UContextLiteSearch_sequence
+DROP TABLE pfuser.UContextLiteSearch
+DROP SEQUENCE pfuser.UContextLiteSearchRuns_sequence
+DROP TABLE pfuser.UContextLiteSearchRuns

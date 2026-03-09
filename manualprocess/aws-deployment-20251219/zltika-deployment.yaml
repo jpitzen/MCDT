@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zltika
+  name: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: zltika
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika20251219
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          volumeMounts:
+            - name: zltikatemp
+              mountPath: /tmp
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs

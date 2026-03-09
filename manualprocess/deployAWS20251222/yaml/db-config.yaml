@@ -1,0 +1,24 @@
+# Database ConfigMap - Database connection configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  # Database settings loaded via environment or config files
+  DB_TYPE: "mssql"
+  DB_HOST: "mssql-service"
+  DB_PORT: "1433"
+  DB_NAME: "ZLDB"
+  DB_USER: "pfuser"
+  # Note: Password should be stored in a Secret, not ConfigMap
+---
+# Database Secret - Contains sensitive database credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+stringData:
+  DB_PASSWORD: "Passw0rd2024"
+  # Connection string with TrustServerCertificate for SQL Server JDBC
+  JDBC_URL: "jdbc:sqlserver://mssql-service:1433;TrustServerCertificate=true;DatabaseName=ZLDB"

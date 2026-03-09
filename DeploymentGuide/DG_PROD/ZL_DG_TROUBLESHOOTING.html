@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Troubleshooting</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item active" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Troubleshooting Guide</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This troubleshooting guide provides solutions for common issues encountered during ZL application deployment on AWS EKS.</p>
+
+                <div class="phase-objectives">
+                    <h3>🔍 Common Issues & Solutions</h3>
+                    <ul>
+                        <li>EKS cluster connectivity problems</li>
+                        <li>CSI driver installation failures</li>
+                        <li>Application deployment issues</li>
+                        <li>Network and ingress configuration</li>
+                        <li>Database connectivity problems</li>
+                        <li>Security and permissions issues</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="troubleshooting-content">
+                <h2>🚨 EKS Cluster Issues</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>Cluster Not Accessible</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Cannot connect to EKS cluster after creation
+                        <br><strong>Symptoms:</strong> kubectl commands fail with connection errors
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify AWS credentials: <code>aws sts get-caller-identity</code></li>
+                            <li>Update kubeconfig: <code>aws eks update-kubeconfig --name your-cluster-name --region us-east-1</code></li>
+                            <li>Check cluster status: <code>aws eks describe-cluster --name your-cluster-name --region us-east-1</code></li>
+                            <li>Verify IAM permissions for EKS access</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>Nodes Not Joining Cluster</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> EC2 instances created but not appearing in kubectl get nodes
+                        <br><strong>Symptoms:</strong> Cluster shows 0 nodes
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Check node group status: <code>aws eks describe-nodegroup --cluster-name your-cluster-name --nodegroup-name your-nodegroup --region us-east-1</code></li>
+                            <li>Verify VPC configuration and security groups</li>
+                            <li>Check CloudFormation stack events for node group</li>
+                            <li>Review IAM roles for node instances</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h2>💾 CSI Driver Issues</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>EBS Volumes Not Attaching</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> PersistentVolumeClaims remain in Pending state
+                        <br><strong>Symptoms:</strong> PVC events show "waiting for volume to be created"
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify EBS CSI driver installation: <code>kubectl get pods -n kube-system | grep ebs</code></li>
+                            <li>Check IAM permissions for EBS access</li>
+                            <li>Verify storage class: <code>kubectl get storageclass</code></li>
+                            <li>Check PVC events: <code>kubectl describe pvc your-pvc-name</code></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>EFS Mount Issues</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Pods cannot mount EFS volumes
+                        <br><strong>Symptoms:</strong> Mount errors in pod logs
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify EFS CSI driver: <code>kubectl get pods -n kube-system | grep efs</code></li>
+                            <li>Check EFS security groups allow NFS traffic</li>
+                            <li>Verify VPC configuration for EFS mount targets</li>
+                            <li>Check IAM permissions for EFS access</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h2>🌐 Network & Ingress Issues</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>ALB Not Created</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Ingress resources don't create Application Load Balancers
+                        <br><strong>Symptoms:</strong> Ingress shows ADDRESS as &lt;pending&gt;
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify ALB controller installation: <code>kubectl get deployment -n kube-system aws-load-balancer-controller</code></li>
+                            <li>Check IAM permissions for ALB controller</li>
+                            <li>Verify ingress class annotation</li>
+                            <li>Check CloudFormation stack for ALB controller</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>Service Not Accessible</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Application not reachable via ALB DNS
+                        <br><strong>Symptoms:</strong> Connection timeouts or 404 errors
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Check service endpoints: <code>kubectl get endpoints</code></li>
+                            <li>Verify pod health: <code>kubectl get pods</code></li>
+                            <li>Check ingress rules and paths</li>
+                            <li>Verify security groups allow traffic</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h2>🗄️ Database Issues</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>Database Connection Failures</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Application cannot connect to RDS PostgreSQL
+                        <br><strong>Symptoms:</strong> Connection timeout or authentication errors
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify RDS endpoint and port</li>
+                            <li>Check security groups allow database traffic</li>
+                            <li>Verify database credentials in secrets</li>
+                            <li>Test connection from bastion host</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h2>🔒 Security & Permissions</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>IAM Permission Errors</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> AWS API calls fail with AccessDenied
+                        <br><strong>Symptoms:</strong> Operations fail with IAM errors
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Check IAM user/role policies</li>
+                            <li>Verify correct region and account</li>
+                            <li>Check for policy conditions or restrictions</li>
+                            <li>Use IAM policy simulator to test permissions</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>ECR Pull Errors</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Pods cannot pull images from ECR
+                        <br><strong>Symptoms:</strong> ImagePullBackOff status
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify ECR repository exists and is accessible</li>
+                            <li>Check IAM permissions for ECR access</li>
+                            <li>Verify image tags and digests</li>
+                            <li>Check VPC endpoints for ECR</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h2>🦓 ZL Application Issues</h2>
+                <p class="section-intro">These issues are specific to the ZL application deployment and were discovered during deployment testing.</p>
+
+                <div class="troubleshoot-section">
+                    <h3>🚨 CRITICAL: ZOO_SERVERS Corrupts zkQuorum.cfg</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> ZLServer fails to connect to ZooKeeper cluster
+                        <br><strong>Symptoms:</strong> "Unable to resolve address: zlzookeeper" or "ZLZKAuth is not initialized"
+                        <br><strong>Root Cause:</strong> The ZOO_SERVERS environment variable triggers sed commands in zlserver-startup.sh that corrupt the zkQuorum.cfg file
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li><strong>REMOVE</strong> the <code>ZOO_SERVERS</code> key from <code>zlapp-config</code> ConfigMap</li>
+                            <li>Provide ZooKeeper configuration via <code>zkclient-config</code> ConfigMap with proper <code>zkQuorum.cfg</code></li>
+                            <li>Use the <code>aws/zlapp-config.yaml</code> template which does NOT include ZOO_SERVERS</li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># CORRECT zlapp-config.yaml - NO ZOO_SERVERS
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config
+data:
+  # ZOO_SERVERS: DO NOT ADD THIS - it corrupts zkQuorum.cfg
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>zkQuorum.cfg Requires Full DNS Names</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> ZLServer cannot reach ZooKeeper pods
+                        <br><strong>Symptoms:</strong> "Unable to resolve address: zlzookeeper-0" or connection timeouts
+                        <br><strong>Root Cause:</strong> Short hostnames (zlzookeeper-0) are used instead of full Kubernetes DNS names
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Use full DNS names in zkQuorum.cfg: <code>zlzookeeper-0.zk-hs.default.svc.cluster.local</code></li>
+                            <li>The headless service (zk-hs) must exist for DNS resolution to work</li>
+                            <li>Verify with: <code>kubectl run test --rm -it --image=busybox -- nslookup zlzookeeper-0.zk-hs.default.svc.cluster.local</code></li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># CORRECT zkQuorum.cfg format
+zkQuorum.0=0~~zlzookeeper-0.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk0
+zkQuorum.1=1~~zlzookeeper-1.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk1
+zkQuorum.2=2~~zlzookeeper-2.zk-hs.default.svc.cluster.local~~2181~~2888~~3888~~/var/ZipLip/DATA/ZooKeeper/zk2</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>ConfigMap Files Are Read-Only</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Startup script fails with "sed: cannot rename ... Device or resource busy"
+                        <br><strong>Symptoms:</strong> ZLServer pod crashes during startup, sed errors in logs
+                        <br><strong>Root Cause:</strong> Kubernetes mounts ConfigMap volumes as read-only; startup scripts try to modify files in-place
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Mount ConfigMap files to a templates directory (e.g., <code>/opt/ZipLip/config-templates/</code>)</li>
+                            <li>Copy files to writable locations in the container startup command</li>
+                            <li>See the <code>aws/zlserver-deployment.yaml</code> for the correct pattern</li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># Startup command must copy config files
+args:
+  - |
+    # Copy from read-only ConfigMap to writable location
+    cp /opt/ZipLip/config-templates/tcdb.cfg /opt/ZipLip/bin/zk/tcdb.cfg
+    cp /opt/ZipLip/config-templates/zkQuorum.cfg /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+    /opt/ZipLip/bin/zlserver-startup.sh</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>Database SSL Certificate Error</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Database connection fails with SSL certificate error
+                        <br><strong>Symptoms:</strong> "The driver could not establish a secure connection... trustServerCertificate property is set to false"
+                        <br><strong>Root Cause:</strong> JDBC connection requires trusted certificate or explicit trust configuration
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>For development/self-signed certs: Add <code>TrustServerCertificate=true</code> to JDBC URL</li>
+                            <li>For production: Use proper SSL certificates from a trusted CA</li>
+                            <li>For AWS RDS: Usually not needed as RDS uses trusted certificates</li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># tcdb.cfg with TrustServerCertificate (for self-signed certs only)
+_db.param.jdbcUrl=jdbc:sqlserver://your-host:1433;TrustServerCertificate=true
+_db.param.DatabaseName=ZLDB</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>Tika Connection Failed</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Document conversion fails during ZLServer Phase3 initialization
+                        <br><strong>Symptoms:</strong> "Thread has already exited; Possibly unable to connect!" in BatchRemoteInvoker
+                        <br><strong>Root Cause:</strong> Tika service not running or environment variables not configured correctly
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>Verify Tika deployment is running: <code>kubectl get pods -l app=zltika</code></li>
+                            <li>Verify Tika service exists: <code>kubectl get svc zltika</code></li>
+                            <li>Verify zlapp-config contains Tika environment variables</li>
+                            <li>Ensure zltika deployment is running BEFORE zlserver starts</li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># Verify Tika is running
+kubectl get pods -l app=zltika
+kubectl get svc zltika
+
+# Verify environment variables
+kubectl get configmap zlapp-config -o yaml | Select-String -Pattern "TIKA|tika"
+# Expected output should include:
+#   TIKA_HOST: zltika
+#   TIKA_PORT: "9972"
+#   __tika.ZLTikaService.Host: zltika
+#   __tika.ZLTikaService.Port: "9972"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>🔴 CRITICAL: Tika Container Exits Before Listener Starts</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Tika container exits immediately after starting
+                        <br><strong>Symptoms:</strong> 
+                        <ul>
+                            <li>Pod shows Running but Tika not listening on port 9972</li>
+                            <li>zlserver Phase3 fails with "Connection refused" to Tika</li>
+                            <li><code>netstat -tlnp | grep 9972</code> shows nothing</li>
+                        </ul>
+                        <br><strong>Root Cause:</strong> The zltikadiag.sh script runs the Java process in background and shell exits before the listener binds to the port
+                    </div>
+                    <div class="solution">
+                        <strong>🔴 CRITICAL FIX:</strong> Override the container command with <code>sleep infinity</code>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># REQUIRED command override in zltika deployment
+containers:
+- name: zltika
+  image: <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140
+  # This command is CRITICAL - without sleep infinity, the container exits
+  command:
+    - /bin/sh
+    - -c
+    - cd /opt/ZipLip/ZLTikaConvertor/bin && ./zltikadiag.sh ZLTika /tmp/ZLTika & sleep infinity
+  ports:
+  - containerPort: 9972</code></pre>
+                        </div>
+                        <p><strong>Explanation:</strong> The <code>& sleep infinity</code> runs the Tika script in background and keeps the shell alive, allowing the Java process time to bind to port 9972.</p>
+                        <p><strong>Verify Fix:</strong></p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># Check Tika is listening
+kubectl exec $(kubectl get pods -l app=zltika -o name) -- netstat -tlnp | grep 9972
+# Expected: tcp 0 0 0.0.0.0:9972 0.0.0.0:* LISTEN</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>Superadmin Login Failing - AliasLookup NullPointerException</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Cannot login to ZLUI with superadmin credentials
+                        <br><strong>Symptoms:</strong>
+                        <ul>
+                            <li>Login page loads but authentication fails</li>
+                            <li>Logs show: <code>java.lang.NullPointerException: Cannot invoke "com.zlti.pm.acct.AliasLookup.findAlias..." because the return value of "AliasLookup.getInstance()" is null</code></li>
+                        </ul>
+                        <br><strong>Root Cause:</strong> ZLUI pod started before ZLServer finished initializing, aliasSync not completed
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong> Restart the ZLUI deployment after ZLServer shows "Done initializing"
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># First verify zlserver is initialized
+kubectl logs deployment/zlserver | grep -i "done init"
+# Should show: Done initalizing ZLServer
+
+# Then restart zlui
+kubectl rollout restart deployment zlui
+
+# Wait for new pod
+kubectl get pods -l app=zlui -w
+
+# Verify aliasSync completed
+kubectl logs deployment/zlui | grep -i "alias"
+# Should show: Creating New Version pm_alias_...</code></pre>
+                        </div>
+                        <p><strong>Prevention:</strong> In Phase 8, always wait for ZLServer to show "Done initializing" in logs before deploying ZLUI.</p>
+                    </div>
+                </div>
+
+                <div class="troubleshoot-section">
+                    <h3>PVC Not Found - Name Mismatch</h3>
+                    <div class="issue">
+                        <strong>Problem:</strong> Pods stuck in Pending state
+                        <br><strong>Symptoms:</strong> Events show "persistentvolumeclaim not found"
+                        <br><strong>Root Cause:</strong> PVC names in deployment don't match actual PVC resources
+                    </div>
+                    <div class="solution">
+                        <strong>Solution:</strong>
+                        <ol>
+                            <li>For AWS EFS: Use <code>-efs</code> suffix (e.g., <code>zlservertemp-efs</code>)</li>
+                            <li>Verify PVC exists: <code>kubectl get pvc</code></li>
+                            <li>Ensure deployment references match exactly</li>
+                        </ol>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                            <pre><code># List all PVCs and their status
+kubectl get pvc
+# Check deployment PVC references
+kubectl get deployment zlserver -o yaml | grep claimName</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>✅ ZLServer Initialization Verification</h2>
+
+                <div class="troubleshoot-section">
+                    <h3>Verifying Successful Deployment</h3>
+                    <div class="info-section">
+                        <p>After deployment, verify that ZLServer has fully initialized:</p>
+                        <ol>
+                            <li>All pods should be in Running state</li>
+                            <li>ZLServer logs should show "Done initalizing ZLServer"</li>
+                            <li>No exceptions should appear during the initialization phases</li>
+                        </ol>
+                    </div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">📋 Copy</button>
+                        <pre><code># Check all pods
+kubectl get pods
+
+# Verify ZLServer initialized successfully
+kubectl logs deployment/zlserver | grep -i "done init"
+# Expected: "Done initalizing ZLServer"
+
+# Check for errors
+kubectl logs deployment/zlserver | grep -i "exception\|error\|failed"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

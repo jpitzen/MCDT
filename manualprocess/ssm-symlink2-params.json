@@ -1,0 +1,8 @@
+{
+  "commands": [
+    "if (Test-Path 'E:\\var\\opt\\zlvault') { Remove-Item 'E:\\var\\opt\\zlvault' -Recurse -Force -ErrorAction SilentlyContinue }",
+    "cmd /c mklink /D E:\\var\\opt\\zlvault V:\\",
+    "dir E:\\var\\opt",
+    "dir E:\\var\\opt\\zlvault"
+  ]
+}

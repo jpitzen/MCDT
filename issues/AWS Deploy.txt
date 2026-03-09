@@ -1,0 +1,1474 @@
+2025-12-01 08:12:30 [error]: Unhandled error {
+  "error": "Failed to create IAM role: Command failed: aws iam create-role --role-name us1-zlps-k8s-01-node-role --assume-role-policy-document '{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}' --description \"Allows EC2 worker nodes to call AWS APIs (includes SSM for secure access)\"\n\r\nAn error occurred (MalformedPolicyDocument) when calling the CreateRole operation: This policy contains invalid Json\r\n",
+  "stack": "Error: Failed to create IAM role: Command failed: aws iam create-role --role-name us1-zlps-k8s-01-node-role --assume-role-policy-document '{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}' --description \"Allows EC2 worker nodes to call AWS APIs (includes SSM for secure access)\"\n\r\nAn error occurred (MalformedPolicyDocument) when calling the CreateRole operation: This policy contains invalid Json\r\n\n    at ContainerDeploymentService.createEksIamRole (C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\services\\containerDeploymentService.js:3192:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\routes\\containerDeployments.js:89:20",
+  "method": "POST",
+  "path": "/api/container-deployments/prerequisites/iam/12296ec4-48b4-437c-9ae8-4285a4696f10/create",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"# AWS EKS Deployment Guide
+
+## Table of Contents
+
+### Phase 1: Prerequisites & Initial Setup
+1. [Prerequisites Setup](#prerequisites-setup)
+2. [Security Groups](#security-groups)
+
+### Phase 2: Cluster Configuration
+3. [EKS Private Cluster Configuration](#eks-private-cluster-configuration)
+
+### Phase 3: Storage Setup
+4. [Storage Setup](#storage-setup)
+
+### Phase 4: Application Deployment
+5. [Application Deployment](#application-deployment)
+6. [NIST & ZL Model Upload](#nist--zl-model-upload)
+
+### Phase 5: Operations
+7. [Cluster Autoscaling](#cluster-autoscaling)
+8. [Monitoring & Troubleshooting](#monitoring--troubleshooting)
+
+### Reference
+9. [Additional Resources](#additional-resources)
+10. [Best Practices](#best-practices)
+11. [Cleanup Commands](#cleanup-commands)
+
+---
+
+## Document Overview
+
+This document is a comprehensive AWS EKS deployment guide organized in logical deployment order. Follow the phases sequentially for a complete cluster setup.
+
+### Deployment Flow
+
+```
+Phase 1: Prerequisites     Phase 2: Cluster        Phase 3: Storage
+┌─────────────────────┐   ┌─────────────────────┐   ┌─────────────────────┐
+│ • AWS CLI & kubectl │   │ • Create cluster    │   │ • EBS CSI driver    │
+│ • IAM roles/policies│──▶│ • Private endpoint  │──▶│ • EFS CSI driver    │
+│ • Security groups   │   │ • SSM access setup  │   │ • StorageClasses    │
+│ • Secrets setup     │   │ • Subnet tagging    │   │ • PVCs              │
+└─────────────────────┘   └─────────────────────┘   └─────────────────────┘
+                                                              │
+                                                              ▼
+Phase 5: Operations        Phase 4: Application
+┌─────────────────────┐   ┌─────────────────────┐
+│ • Autoscaling       │   │ • Deploy apps       │
+│ • Monitoring        │◀──│ • DB scripts (SSM)  │
+│ • Troubleshooting   │   │ • Verify services   │
+└─────────────────────┘   └─────────────────────┘
+```
+
+### Phase Summary
+
+| Phase | Purpose |
+|-------|---------|
+| **Phase 1: Prerequisites** | Install tools, create IAM roles/policies, set up security groups, configure secrets |
+| **Phase 2: Cluster Configuration** | Create cluster, enable private endpoint, set up SSM access, configure subnets |
+| **Phase 3: Storage** | Install CSI drivers, create StorageClasses and PVCs for stateful workloads |
+| **Phase 4: Application Deployment** | Deploy applications, run DB scripts via SSM, verify services |
+| **Phase 5: Operations** | Configure autoscaling, monitor cluster health, troubleshoot issues |
+
+---
+
+### Phase 1 Checklist
+
+Before proceeding to Phase 2, ensure all prerequisites are complete:
+
+| Item | Status | Notes |
+|------|--------|-------|
+| AWS CLI installed | ☐ | `aws --version` |
+| kubectl installed | ☐ | `kubectl version --client` |
+| eksctl installed | ☐ | `eksctl version` |
+| SSM plugin installed | ☐ | `session-manager-plugin --version` |
+| EKS Cluster Role created | ☐ | IAM role for EKS control plane |
+| EKS Node Role created | ☐ | IAM role for worker nodes (includes SSM) |
+| EBS CSI Policy created | ☐ | Policy for EBS volume provisioning |
+| Autoscaler Policy created | ☐ | Policy for cluster autoscaler |
+| Security groups planned | ☐ | SSM endpoints, nodes, ELB |
+| Secrets created | ☐ | Database credentials, API keys |
+
+---
+
+# Phase 1: Prerequisites & Initial Setup
+
+---
+
+## Prerequisites Setup
+
+> **Section Purpose:** Install and configure all required tools before working with EKS. This must be completed first as all subsequent steps depend on these tools.
+
+### Install Required Tools
+
+**AWS CLI:**
+- Download and install from [AWS CLI](https://aws.amazon.com/cli/)
+- Run `aws configure` (requires IAM access keys)
+
+**kubectl & eksctl:**
+- Install kubectl: [Kubernetes docs](https://kubernetes.io/docs/tasks/tools/)
+- Install eksctl: [eksctl docs](https://eksctl.io/installation/)
+
+**Session Manager Plugin (for SSM access):**
+```bash
+# Windows (PowerShell as Admin)
+Invoke-WebRequest -Uri https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe -OutFile SessionManagerPluginSetup.exe
+.\SessionManagerPluginSetup.exe
+```
+
+### Verify Tools
+
+```bash
+aws --version
+kubectl version --client
+eksctl version
+session-manager-plugin --version
+```
+
+---
+
+## IAM Roles & Policies
+
+> **Section Purpose:** Create the IAM roles and policies required for EKS cluster operation, node groups, and add-ons BEFORE creating the cluster. These are foundational prerequisites.
+
+### Required IAM Roles
+
+| Role | Purpose | When Created |
+|------|---------|--------------|
+| **EKS Cluster Role** | Allows EKS to manage AWS resources | Before cluster creation |
+| **EKS Node Role** | Allows EC2 nodes to call AWS APIs | Before node group creation |
+| **EBS CSI Driver Role** | Allows EBS volume provisioning | Before installing EBS CSI |
+| **EFS CSI Driver Role** | Allows EFS mount operations | Before installing EFS CSI |
+| **Cluster Autoscaler Role** | Allows scaling node groups | Before autoscaler deployment |
+
+### Step 1: Create EKS Cluster Role
+
+```bash
+# Create trust policy
+cat > eks-cluster-trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+# Create role
+aws iam create-role \
+  --role-name EKSClusterRole \
+  --assume-role-policy-document file://eks-cluster-trust-policy.json
+
+# Attach required policies
+aws iam attach-role-policy \
+  --role-name EKSClusterRole \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+```
+
+### Step 2: Create EKS Node Role
+
+```bash
+# Create trust policy for EC2
+cat > eks-node-trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+# Create role
+aws iam create-role \
+  --role-name EKSNodeRole \
+  --assume-role-policy-document file://eks-node-trust-policy.json
+
+# Attach required policies
+aws iam attach-role-policy --role-name EKSNodeRole --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+aws iam attach-role-policy --role-name EKSNodeRole --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+aws iam attach-role-policy --role-name EKSNodeRole --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+aws iam attach-role-policy --role-name EKSNodeRole --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+```
+
+> **Note:** `AmazonSSMManagedInstanceCore` enables SSM Session Manager on nodes.
+
+### Step 3: Create EBS CSI Driver Role (IRSA)
+
+```bash
+# Get OIDC provider (after cluster exists, but create policy now)
+# Create the policy first
+cat > ebs-csi-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSnapshot",
+        "ec2:AttachVolume",
+        "ec2:DetachVolume",
+        "ec2:ModifyVolume",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstances",
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeTags",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeVolumesModifications",
+        "ec2:CreateVolume",
+        "ec2:DeleteVolume",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+
+aws iam create-policy \
+  --policy-name AmazonEBSCSIDriverPolicy \
+  --policy-document file://ebs-csi-policy.json
+```
+
+### Step 4: Create Cluster Autoscaler Policy
+
+```bash
+cat > cluster-autoscaler-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLaunchConfigurations",
+        "autoscaling:DescribeScalingActivities",
+        "autoscaling:DescribeTags",
+        "autoscaling:SetDesiredCapacity",
+        "autoscaling:TerminateInstanceInAutoScalingGroup",
+        "ec2:DescribeImages",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DescribeLaunchTemplateVersions",
+        "ec2:GetInstanceTypesFromInstanceRequirements",
+        "eks:DescribeNodegroup"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+
+aws iam create-policy \
+  --policy-name AmazonEKSClusterAutoscalerPolicy \
+  --policy-document file://cluster-autoscaler-policy.json
+```
+
+---
+
+## Security Groups
+
+> **Section Purpose:** Define network security rules before configuring the cluster. With SSM Session Manager, minimal inbound rules are required since SSM uses outbound HTTPS connections.
+
+### Security Group Summary
+
+| Security Group | Purpose | Create When |
+|----------------|---------|-------------|
+| **EKS Cluster SG** | Control plane communication | Auto-created by EKS |
+| **Node SG** | Worker node communication | Before/during node group |
+| **SSM Endpoints SG** | VPC endpoints for SSM | Before private cluster |
+| **Internal ELB SG** | Internal load balancers | Before deploying services |
+
+### SSM VPC Endpoints Security Group
+
+```bash
+# Create security group for SSM VPC endpoints
+aws ec2 create-security-group \
+  --group-name ssm-endpoints-sg \
+  --description "Security group for SSM VPC endpoints" \
+  --vpc-id <vpc-id>
+
+# Allow HTTPS from VPC CIDR
+aws ec2 authorize-security-group-ingress \
+  --group-id <sg-id> \
+  --protocol tcp \
+  --port 443 \
+  --cidr <vpc-cidr>
+```
+
+**Inbound:**
+- TCP 443 from VPC CIDR (HTTPS for SSM endpoints)
+
+**Outbound:**
+- Allow all (default)
+
+> **Note:** When using SSM, you do NOT need to open inbound RDP (3389) or SSH (22) ports.
+
+### Node Security Group
+
+**Inbound:**
+- TCP 30000-32767 from VPC CIDR (NodePort range)
+- TCP 10250 from control plane SG (kubelet)
+- TCP 443 from control plane SG (API server)
+
+**Outbound:**
+- Allow all (for pulling images, SSM agent, etc.)
+
+### ELB Security Group
+
+Edit inbound rules to restrict access to VPC CIDR only (internal load balancers).
+
+---
+
+## Secrets Management
+
+> **Section Purpose:** Configure secrets storage for sensitive data (database passwords, API keys, certificates) before deploying applications.
+
+### Option 1: AWS Secrets Manager (Recommended)
+
+```bash
+# Create a secret for database credentials
+aws secretsmanager create-secret \
+  --name <cluster-name>/database/postgres \
+  --description "PostgreSQL credentials for EKS cluster" \
+  --secret-string '{"username":"postgres","password":"<secure-password>","host":"postgres.default.svc.cluster.local","port":"5432","database":"appdb"}'
+
+# Create a secret for application API keys
+aws secretsmanager create-secret \
+  --name <cluster-name>/app/api-keys \
+  --description "API keys for application" \
+  --secret-string '{"api_key":"<your-api-key>","secret_key":"<your-secret-key>"}'
+```
+
+### Option 2: Kubernetes Secrets (For Development)
+
+```bash
+# Create namespace first
+kubectl create namespace <app-namespace>
+
+# Create secret from literal values
+kubectl create secret generic db-credentials \
+  --namespace <app-namespace> \
+  --from-literal=username=postgres \
+  --from-literal=password=<secure-password>
+
+# Create secret from file
+kubectl create secret generic tls-certs \
+  --namespace <app-namespace> \
+  --from-file=tls.crt=./server.crt \
+  --from-file=tls.key=./server.key
+```
+
+### Install AWS Secrets CSI Driver (Optional)
+
+To sync AWS Secrets Manager with Kubernetes:
+
+```bash
+# Install via Helm
+helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --namespace kube-system
+
+# Install AWS provider
+kubectl apply -f https://raw.githubusercontent.com/aws/secrets-store-csi-driver-provider-aws/main/deployment/aws-provider-installer.yaml
+```
+
+---
+
+## Configure kubectl for EKS
+
+```bash
+aws eks --region <region> update-kubeconfig --name <ekscluster-name>
+```
+
+This retrieves cluster credentials and merges them into `~/.kube/config`.
+
+### Verify Connection
+
+```bash
+kubectl get nodes
+kubectl get namespaces
+```
+
+---
+
+# Phase 2: Cluster Configuration
+
+---
+
+## EKS Private Cluster Configuration
+
+> **Section Purpose:** This section covers converting a standard EKS cluster to a fully private configuration for enhanced security. After conversion, the Kubernetes API is only accessible from within the VPC, all load balancers are internal-only, and cluster management uses SSM Session Manager for secure, audited access. This is the recommended setup for production workloads handling sensitive data.
+
+### Overview
+
+Convert a public+private EKS cluster to private-only with internal load balancers accessible via AWS Systems Manager (SSM) Session Manager.
+
+### Architecture Components
+
+| Component | Description |
+|-----------|-------------|
+| **Public Endpoint** | API accessible over internet (less secure) |
+| **Private Endpoint** | API accessible only within VPC (secure) |
+| **SSM Session Manager** | Secure shell and port forwarding without bastion (recommended) |
+| **Classic ELB (CLB)** | Older load balancer type |
+| **ALB/NLB** | Modern load balancer types |
+| **Internet-facing LB** | Accessible via public IP |
+| **Internal LB** | Accessible only within VPC |
+
+### Key Subnet Tags
+
+- `kubernetes.io/role/elb=1` → Public/internet-facing ELBs
+- `kubernetes.io/role/internal-elb=1` → Internal ELBs
+
+---
+
+### Step-by-Step Configuration
+
+> **Subsection Purpose:** This 5-step process walks through converting an EKS cluster to private mode: (1) disable public API endpoint, (2) set up SSM Session Manager for secure access, (3) tag subnets for internal load balancers, (4) configure services with internal LB annotations, (5) verify the configuration.
+
+#### Step 1: Make EKS Control Plane Private
+
+> Disables public internet access to the Kubernetes API. After this change, `kubectl` commands will only work from within the VPC (via SSM port forwarding or from an EC2 instance in the VPC).
+
+```bash
+aws eks update-cluster-config \
+  --region <region-name> \
+  --name <ekscluster-name> \
+  --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
+```
+
+**Verify:**
+
+```bash
+aws eks describe-cluster \
+  --name <ekscluster-name> \
+  --region <region-name> \
+  --query "cluster.resourcesVpcConfig.{Public:endpointPublicAccess,Private:endpointPrivateAccess}"
+```
+
+> **Note:** After this, kubectl only works from inside the VPC (via SSM or EC2 instance).
+
+---
+
+#### Step 2: Configure SSM Session Manager Access (Recommended over Bastion)
+
+> **Why SSM instead of Bastion?**
+> - No EC2 bastion cost (~$30+/month saved)
+> - No inbound security group rules needed (RDP/SSH ports)
+> - No public IP required
+> - IAM-based access control
+> - Full audit logging in CloudTrail
+> - Port forwarding for DB, K8s API, any internal service
+
+**Prerequisites:**
+
+1. AWS CLI v2 with Session Manager plugin installed
+2. IAM permissions for SSM
+
+**Install Session Manager Plugin:**
+
+```bash
+# Windows (PowerShell as Admin)
+Invoke-WebRequest -Uri https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe -OutFile SessionManagerPluginSetup.exe
+.\SessionManagerPluginSetup.exe
+
+# macOS
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip" -o "sessionmanager-bundle.zip"
+unzip sessionmanager-bundle.zip
+sudo ./sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin
+
+# Linux
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+sudo dpkg -i session-manager-plugin.deb
+```
+
+**Create VPC Endpoints for SSM (Required for Private Subnets):**
+
+```bash
+# Get VPC ID
+VPC_ID=$(aws eks describe-cluster --name <ekscluster-name> --region <region-name> --query "cluster.resourcesVpcConfig.vpcId" --output text)
+
+# Get private subnet IDs
+SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:kubernetes.io/role/internal-elb,Values=1" --query "Subnets[].SubnetId" --output text)
+
+# Create security group for VPC endpoints
+ENDPOINT_SG=$(aws ec2 create-security-group --group-name ssm-endpoints-sg --description "Security group for SSM VPC endpoints" --vpc-id $VPC_ID --query "GroupId" --output text)
+
+# Allow HTTPS from VPC CIDR
+VPC_CIDR=$(aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[0].CidrBlock" --output text)
+aws ec2 authorize-security-group-ingress --group-id $ENDPOINT_SG --protocol tcp --port 443 --cidr $VPC_CIDR
+
+# Create VPC endpoints for SSM
+for SERVICE in ssm ssmmessages ec2messages; do
+  aws ec2 create-vpc-endpoint \
+    --vpc-id $VPC_ID \
+    --service-name com.amazonaws.<region-name>.${SERVICE} \
+    --vpc-endpoint-type Interface \
+    --subnet-ids $SUBNET_IDS \
+    --security-group-ids $ENDPOINT_SG \
+    --private-dns-enabled
+done
+```
+
+**Port Forwarding to Access Private Resources:**
+
+```bash
+# Forward PostgreSQL (pod in private cluster) to localhost:5433
+# First, get an EKS node instance ID
+INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=<ekscluster-name>" "Name=instance-state-name,Values=running" --query "Reservations[0].Instances[0].InstanceId" --output text)
+
+# Start SSM session with port forwarding
+aws ssm start-session \
+  --target $INSTANCE_ID \
+  --document-name AWS-StartPortForwardingSession \
+  --parameters '{"portNumber":["5432"],"localPortNumber":["5433"]}'
+
+# Now connect to PostgreSQL locally
+psql -h localhost -p 5433 -U postgres
+```
+
+**Execute SQL Scripts via SSM:**
+
+```bash
+# Option 1: Port forward to RDS/Pod and run psql locally
+aws ssm start-session --target $INSTANCE_ID --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["5432"],"localPortNumber":["5433"]}'
+# In another terminal:
+psql -h localhost -p 5433 -U postgres -d mydb -f create_tables.sql
+
+# Option 2: Use kubectl from within the cluster via SSM
+aws ssm start-session --target $INSTANCE_ID
+# Then inside the session:
+kubectl exec -it postgres-pod -- psql -U postgres -d mydb -c "SELECT * FROM users;"
+```
+
+> **Legacy Option:** If SSM is not available, see Appendix A for Windows Bastion setup.
+
+---
+
+#### Step 3: Configure Subnets for Internal Load Balancers
+
+**Check Cluster Subnets:**
+
+```bash
+aws eks describe-cluster \
+  --name <ekscluster-name> \
+  --region <region-name> \
+  --query "cluster.resourcesVpcConfig.subnetIds" \
+  --output text
+```
+
+**Check Subnet Tags:**
+
+```bash
+aws ec2 describe-subnets \
+  --subnet-ids <subnet-id> \
+  --region <region-name> \
+  --query "Subnets[].Tags" \
+  --output table
+```
+
+**Tag Private Subnets:**
+
+```bash
+aws ec2 create-tags \
+  --resources <private-subnet-1> <private-subnet-2> <private-subnet-3> \
+  --tags Key=kubernetes.io/role/internal-elb,Value=1 \
+  --region <region-name>
+```
+
+**Remove ELB Tags from Public Subnets:**
+
+```bash
+aws ec2 delete-tags \
+  --resources <public-subnet-1> <public-subnet-2> <public-subnet-3> \
+  --tags Key=kubernetes.io/role/elb \
+  --region <region-name>
+```
+
+**Verify Subnet Configuration:**
+
+```bash
+aws ec2 describe-subnets \
+  --filters "Name=vpc-id,Values=<vpc-id>" \
+  --region <region-name> \
+  --query "Subnets[].{SubnetId:SubnetId,AZ:AvailabilityZone,Tags:Tags}" \
+  --output table
+```
+
+---
+
+#### Step 4: Configure Internal Load Balancer
+
+**Service YAML Example (`zlui-service.yaml`):**
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui
+  labels:
+    app: zlui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # Optional: Force specific subnets
+    # service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-1,subnet-2,subnet-3"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: "8000"
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    - name: "fileconnector"
+      port: 9975
+      protocol: TCP
+      targetPort: 9975
+    - name: "sharepoint"
+      port: 9970
+      protocol: TCP
+      targetPort: 9970
+  selector:
+    app: zlui
+```
+
+**Deploy Service:**
+
+```bash
+kubectl delete svc zlui  # Delete existing service
+kubectl apply -f zlui-service.yaml
+kubectl get svc zlui -w
+```
+
+---
+
+#### Step 5: Verify Load Balancer Configuration
+
+**Check Classic ELB:**
+
+```bash
+aws elb describe-load-balancers \
+  --region <region-name> \
+  --query "LoadBalancerDescriptions[].{Name:LoadBalancerName,DNS:DNSName,Scheme:Scheme}" \
+  --output table
+```
+
+**Check ALB/NLB:**
+
+```bash
+aws elbv2 describe-load-balancers \
+  --region <region-name> \
+  --query "LoadBalancers[].{Name:LoadBalancerName,DNS:DNSName,Scheme:Scheme}" \
+  --output table
+```
+
+**Verify Reachability:**
+
+- From outside VPC: Should NOT be accessible
+- From bastion VM: Should resolve and be accessible via internal DNS
+
+---
+
+### Common Issues & Solutions
+
+> **Subsection Purpose:** Quick reference for diagnosing and fixing common problems encountered during private cluster setup. Most issues relate to subnet tagging, load balancer configuration, or routing.
+
+| Issue | Root Cause | Fix |
+|-------|------------|-----|
+| LB still internet-facing | Wrong subnet tags or missing annotation | Correct tags and redeploy service |
+| ELB name too long | AWS Classic ELB limit (32 chars) | Use shorter service names |
+| Subnets not recognized | EKS may not detect new tags | Restart EKS controller or reapply service |
+| RouteTable misconfigured | Private subnets routing through IGW | Update route tables to use NAT Gateway |
+
+---
+
+# Phase 3: Storage Setup
+
+---
+
+## Storage Setup
+
+> **Section Purpose:** Configures persistent storage backends (EBS and EFS) for Kubernetes workloads, enabling stateful applications and shared file access across pods. Storage must be configured before deploying stateful applications.
+
+### EBS for Stateful Applications (Zookeeper)
+
+> **Subsection Purpose:** Configures Amazon Elastic Block Store (EBS) as persistent block storage for single-pod stateful workloads like Zookeeper that need fast, persistent disk with `ReadWriteOnce` access mode.
+
+**Purpose:** Provides block storage for stateful applications like Zookeeper.
+
+#### 1. Create IAM Role for EBS CSI Driver
+
+```bash
+eksctl create iamserviceaccount \
+  --name ebs-csi-controller-sa \
+  --namespace kube-system \
+  --cluster $CLUSTER_NAME \
+  --attach-policy-arn arn:aws:iam::$AWS_ACCOUNT_ID:policy/AmazonEBSCSIDriverPolicy \
+  --approve \
+  --role-name AmazonEKS_EBS_CSI_DriverRole
+```
+
+**Single-line version:**
+
+```bash
+eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster $CLUSTER_NAME --attach-policy-arn arn:aws:iam::$AWS_ACCOUNT_ID:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole
+```
+
+#### 2. Install EBS CSI Driver Add-On
+
+```bash
+aws eks create-addon \
+  --cluster-name $CLUSTER_NAME \
+  --addon-name aws-ebs-csi-driver \
+  --service-account-role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/AmazonEKS_EBS_CSI_DriverRole \
+  --region $REGION
+```
+
+#### 3. Create StorageClass (`ebs-sc.yaml`)
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+```
+
+```bash
+kubectl apply -f ebs-sc.yaml
+```
+
+#### 4. Create PersistentVolumeClaim (`zk-pvc.yaml`)
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zk-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ebs-sc
+  resources:
+    requests:
+      storage: 20Gi
+```
+
+```bash
+kubectl apply -f zk-pvc.yaml
+kubectl get pvc
+kubectl describe pvc zk-pvc
+```
+
+#### 5. Deploy Zookeeper StatefulSet
+
+```bash
+kubectl apply -f zlzookeeper.yaml
+kubectl get statefulsets
+kubectl describe pod zlzookeeper-0
+```
+
+#### 6. Verification
+
+```bash
+kubectl get pvc
+kubectl describe pvc zk-pvc
+aws ebs describe-volumes --filters "Name=tag:Name,Values=zlzookeeper"
+```
+
+---
+
+### EFS for Shared Workloads
+
+> **Subsection Purpose:** Configures Amazon Elastic File System (EFS) for shared network storage. Unlike EBS, EFS supports `ReadWriteMany` access mode, allowing multiple pods to read and write to the same file system simultaneously. Ideal for shared config files, uploads, or any data that needs to be accessed by multiple replicas.
+
+**Purpose:** Provides shared, network-mounted storage for multiple pods.
+
+#### 1. Create EFS File System
+
+```bash
+aws efs create-file-system --region <region> --performance-mode generalPurpose
+```
+
+#### 2. Create Access Point
+
+```bash
+aws efs create-access-point \
+  --file-system-id <fs-id> \
+  --posix-user Uid=1000,Gid=1000 \
+  --root-directory '{"Path":"/","CreationInfo":{"OwnerUid":1000,"OwnerGid":1000,"Permissions":"755"}}'
+```
+
+#### 3. Install EFS CSI Driver
+
+```bash
+helm repo add aws-efs-csi-driver https://kubernetes-sigs.github.io/aws-efs-csi-driver/
+helm repo update
+
+helm install aws-efs-csi-driver aws-efs-csi-driver/aws-efs-csi-driver \
+  --namespace kube-system \
+  --set controller.serviceAccount.create=true \
+  --set controller.serviceAccount.name=efs-csi-controller-sa
+```
+
+#### 4. Create StorageClass (`efs-sc.yaml`)
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+```
+
+```bash
+kubectl apply -f efs-sc.yaml
+```
+
+#### 5. Create PVC (`efs-pvc.yaml`)
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+```bash
+kubectl apply -f efs-pvc.yaml
+kubectl get pvc
+kubectl describe pvc efs-pvc
+```
+
+---
+
+# Phase 4: Application Deployment
+
+---
+
+## Application Deployment
+
+> **Section Purpose:** Deploy applications to the configured cluster. This phase assumes storage and cluster configuration are complete.
+
+### Deploy Application with EFS
+
+Example deployment using EFS shared storage:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-app-repo:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: efs-storage
+          mountPath: /mnt/data
+      volumes:
+      - name: efs-storage
+        persistentVolumeClaim:
+          claimName: efs-pvc
+```
+
+```bash
+kubectl apply -f app.yaml
+kubectl get deployments
+kubectl get pods
+```
+
+### Verify Deployment
+
+```bash
+kubectl get pods -o wide
+kubectl describe pod <pod-name>
+kubectl logs -f <pod-name>
+```
+
+---
+
+## NIST & ZL Model Upload
+
+> **Section Purpose:** This section documents the workflow for uploading machine learning and analytics models (NIST and ZL models) to running application pods. These models are required for the application's data processing capabilities. The process involves copying files to pods and triggering model loading via application endpoints.
+
+### Prerequisites
+
+```bash
+kubectl get pods  # List all pods
+```
+
+### Upload Process
+
+#### 1. Login to Pod
+
+```bash
+kubectl exec -it <pod-name> -- /bin/bash
+```
+
+#### 2. Copy Files to Pod
+
+```bash
+kubectl cp <local-folder-path> <pod-name>:<pod-folder-path>
+```
+
+#### 3. Open Gate
+
+```bash
+./nextpage.sh -slocalhost:80 /app/util/gate.jsp open=true
+```
+
+#### 4. Upload NIST Model
+
+```bash
+nextpage.sh -slocalhost:80 /app/util/zldataset.jsp type="nist" dir=<nist-model-path>
+```
+
+#### 5. Upload ZL Model
+
+```bash
+nextpage.sh -slocalhost:80 /app/util/zldataset.jsp type="zlmodel" dir=<zl-model-path>
+```
+
+#### 6. Verify Upload
+
+Check application logs or run verification commands to confirm successful upload.
+
+---
+
+# Phase 5: Operations
+
+---
+
+## Cluster Autoscaling
+
+> **Section Purpose:** Enables automatic horizontal scaling of EKS worker nodes. When pods are pending due to insufficient resources, the Cluster Autoscaler provisions new EC2 instances. When nodes are underutilized, it scales down to reduce costs. Requires IAM permissions to modify Auto Scaling Groups.
+
+**Purpose:** Automatically adjusts node counts based on workload demand.
+
+| Component | Description |
+|-----------|-------------|
+| Cluster Autoscaler | Monitors pending pods and scales node groups |
+| Node Groups/ASGs | EC2 instances forming worker nodes |
+| IAM Role & Policy | Grants permissions to modify AWS resources |
+| Scaling Limits | Defines min/max nodes per group |
+
+### Setup Commands
+
+```bash
+# Create IAM policy
+aws iam create-policy --policy-name AmazonEKSClusterAutoscalerPolicy ...
+
+# Create IAM service account
+eksctl create iamserviceaccount --name cluster-autoscaler ...
+
+# Update node group configuration
+aws eks update-nodegroup-config ...
+
+# Deploy autoscaler
+kubectl apply -f cluster-autoscaler.yaml
+
+# Validate
+kubectl logs -n kube-system -f deployment/cluster-autoscaler
+```
+
+---
+
+## Monitoring & Troubleshooting
+
+> **Section Purpose:** This section provides a comprehensive reference for monitoring cluster health, debugging issues, and troubleshooting common problems. It covers essential kubectl commands for inspecting namespaces, nodes, pods, services, storage, and network connectivity. Use this as a quick reference when diagnosing deployment issues or validating cluster state.
+
+---
+
+### Essential Monitoring Commands
+
+> **Subsection Purpose:** A comprehensive catalog of kubectl commands for day-to-day cluster monitoring. Organized by resource type: cluster overview, storage, applications, configuration, resource utilization, health checks, and network troubleshooting.
+
+#### Cluster Overview
+
+**List Namespaces:**
+
+```bash
+kubectl get namespaces
+kubectl describe namespace <namespace-name>
+```
+
+**Default Namespaces:**
+
+- `default` - Default workspace
+- `kube-system` - System pods and services
+- `kube-public` - Publicly accessible resources
+- `kube-node-lease` - Node heartbeat leases
+
+---
+
+**Check Nodes:**
+
+```bash
+kubectl get nodes
+kubectl get nodes -o wide
+kubectl describe node <node-name>
+```
+
+**Key Information:**
+
+- Node status (Ready/NotReady)
+- Internal/External IPs
+- OS image and kernel version
+- Container runtime
+- Resource capacity and allocation
+
+---
+
+**Check Pods:**
+
+```bash
+kubectl get pods
+kubectl get pods -o wide
+kubectl get pods -A  # All namespaces
+kubectl describe pod <pod-name>
+```
+
+**Pod Status Values:**
+
+- `Running` - Pod is active
+- `Pending` - Waiting for resources
+- `CrashLoopBackOff` - Repeatedly failing
+- `ImagePullBackOff` - Cannot pull image
+- `Error` - Container error
+
+---
+
+**Check Services:**
+
+```bash
+kubectl get services
+kubectl get svc -A
+kubectl describe service <service-name>
+```
+
+**Service Types:**
+
+- `ClusterIP` - Internal cluster access only
+- `NodePort` - Accessible via node IP:port
+- `LoadBalancer` - External load balancer
+- `ExternalName` - DNS CNAME record
+
+---
+
+#### Storage Resources
+
+**Check Persistent Volumes:**
+
+```bash
+kubectl get pv
+```
+
+**PV Fields:**
+
+- **CAPACITY** - Storage size (e.g., 5Gi, 100Gi)
+- **ACCESS MODES** - RWO (ReadWriteOnce), ROX (ReadOnlyMany), RWX (ReadWriteMany)
+- **RECLAIM POLICY** - Retain, Delete, Recycle
+- **STATUS** - Available, Bound, Released, Failed
+- **STORAGECLASS** - Backend storage type (gp2, gp3, ebs-sc, efs-sc)
+
+---
+
+**Check Persistent Volume Claims:**
+
+```bash
+kubectl get pvc -A
+kubectl describe pvc <pvc-name>
+```
+
+---
+
+**Check StorageClass:**
+
+```bash
+kubectl get storageclass
+```
+
+**Key Fields:**
+
+- **PROVISIONER** - CSI driver (ebs.csi.aws.com, efs.csi.aws.com)
+- **RECLAIMPOLICY** - Delete or Retain
+- **VOLUMEBINDINGMODE** - Immediate or WaitForFirstConsumer
+- **ALLOWVOLUMEEXPANSION** - Can resize after creation
+
+---
+
+#### Application Monitoring
+
+**Check Deployments:**
+
+```bash
+kubectl get deployments
+kubectl describe deployment <deployment-name>
+```
+
+**Deployment Status:**
+
+- **READY** - Running pods vs desired
+- **UP-TO-DATE** - Pods with latest spec
+- **AVAILABLE** - Pods ready to serve
+
+---
+
+**Check ReplicaSets:**
+
+```bash
+kubectl get replicasets
+kubectl describe replicaset <replicaset-name>
+```
+
+---
+
+**View Logs:**
+
+```bash
+kubectl logs -f <pod-name>
+kubectl logs -f <pod-name> -c <container-name>  # Multi-container pods
+```
+
+---
+
+**Access Pod Shell:**
+
+```bash
+kubectl exec -it <pod-name> -- /bin/bash
+```
+
+---
+
+**Delete Pods in Error/CrashLoopBackOff state:**
+
+```cmd
+for /f "tokens=1,2,4" %a in ('kubectl get pods --all-namespaces ^| findstr "Error CrashLoopBackOff"') do @kubectl delete pod %b --namespace %a
+```
+
+---
+
+**Restart Pod (Without Deletion):**
+
+```bash
+kubectl exec <pod-name> -- pkill java
+```
+
+> This restarts the Java process without changing the pod name. The restart count increments.
+
+---
+
+#### Configuration & Secrets
+
+**Check ConfigMaps:**
+
+```bash
+kubectl get configmaps
+kubectl describe configmap <configmap-name>
+```
+
+**Check Secrets:**
+
+```bash
+kubectl get secrets
+kubectl describe secret <secret-name>
+```
+
+**Verify Application Configuration:**
+
+```bash
+kubectl exec <pod-name> -- cat /opt/ZipLip/config/pmapp.cfg
+```
+
+**Verify ZooKeeper Quorum:**
+
+```bash
+kubectl exec <zookeeper-pod-name> -- cat /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+```
+
+---
+
+#### Resource Utilization
+
+**Node Resource Usage:**
+
+```bash
+kubectl top nodes
+```
+
+**Pod Resource Usage:**
+
+```bash
+kubectl top pods
+kubectl top pods -A
+```
+
+> **Note:** Requires `metrics-server` to be installed.
+
+---
+
+**Check Node Capacity:**
+
+```bash
+kubectl describe node <node-name>
+```
+
+Look for CPU/Memory capacity, allocated resources, and resource pressure.
+
+---
+
+#### Cluster Health
+
+**Check Cluster Events:**
+
+```bash
+kubectl get events -A
+kubectl get events --namespace=<namespace>
+kubectl get events -w --sort-by='.lastTimestamp'
+```
+
+**Common Events:**
+
+- Scheduling failures
+- Image pull issues
+- Volume mount errors
+- Node disconnections
+
+---
+
+**Check Cluster Components:**
+
+```bash
+kubectl get componentstatuses
+```
+
+Shows status of:
+
+- Scheduler
+- Controller Manager
+- etcd
+
+---
+
+**Check DaemonSets:**
+
+```bash
+kubectl get daemonsets -A
+kubectl -n kube-system describe daemonset <daemonset-name>
+```
+
+**View DaemonSet Logs:**
+
+```bash
+kubectl -n kube-system get pods -l app=<daemonset-name>
+kubectl -n kube-system logs <pod-name>
+```
+
+---
+
+#### Network Troubleshooting
+
+**Test Service Connectivity:**
+
+```bash
+kubectl exec -it <pod-name> -- /bin/bash
+
+# Inside pod
+ping <service-name>
+curl http://<service-name>:<port>
+
+# Install curl if needed
+apt update && apt install -y curl
+```
+
+**Test DNS Resolution:**
+
+```bash
+kubectl exec -it <pod-name> -- nslookup <service-name>
+```
+
+**Use ClusterIP Directly:**
+
+```bash
+kubectl exec -it <pod-name> -- curl http://<cluster-ip>:<port>
+```
+
+---
+
+### Troubleshooting Workflow
+
+> **Subsection Purpose:** A systematic 7-step approach to diagnosing cluster issues. Start with pod status, drill down into logs and events, then expand to node health, resources, network, and configuration. Follow this order to efficiently identify root causes.
+
+#### Step 1: Check Pod Status
+
+```bash
+kubectl get pods --namespace=<namespace>
+```
+
+#### Step 2: Describe Problem Pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+Check the **Events** section for errors.
+
+#### Step 3: View Pod Logs
+
+```bash
+kubectl logs -f <pod-name>
+```
+
+#### Step 4: Check Node Health
+
+```bash
+kubectl get nodes
+kubectl describe node <node-name>
+```
+
+Look for `NotReady`, `DiskPressure`, or resource exhaustion.
+
+#### Step 5: Check Resource Quotas
+
+```bash
+kubectl get resourcequotas -A
+kubectl top nodes
+kubectl top pods -A
+```
+
+#### Step 6: Verify Network Connectivity
+
+```bash
+kubectl exec -it <pod-name> -- /bin/bash
+ping <service-name>
+curl <service-name>:<port>
+```
+
+#### Step 7: Review Configuration
+
+```bash
+kubectl get configmaps
+kubectl get secrets
+kubectl describe configmap <name>
+kubectl describe secret <name>
+```
+
+---
+
+### Quick Reference Table
+
+| Category | Command | Purpose |
+|----------|---------|---------|
+| **Namespaces** | `kubectl get namespaces` | List all namespaces |
+| **Nodes** | `kubectl get nodes -o wide` | Check node status |
+| **Pods** | `kubectl get pods -o wide` | View pod status |
+| **Services** | `kubectl get services` | List service endpoints |
+| **Deployments** | `kubectl get deployments` | Check deployment health |
+| **Logs** | `kubectl logs -f <pod>` | View live logs |
+| **Events** | `kubectl get events -A` | View cluster events |
+| **Resources** | `kubectl top nodes/pods` | Monitor CPU/memory usage |
+| **Storage** | `kubectl get pv,pvc` | Check storage resources |
+| **Shell Access** | `kubectl exec -it <pod> -- /bin/bash` | Access pod shell |
+| **Configuration** | `kubectl get configmaps,secrets` | View configs |
+| **Network Test** | `kubectl exec -it <pod> -- curl <url>` | Test connectivity |
+
+---
+
+# Reference
+
+---
+
+## Additional Resources
+
+### ECR (Elastic Container Registry) Commands
+
+```bash
+# List images in repository
+aws ecr list-images --repository-name my-app-repo
+
+# Describe repository
+aws ecr describe-repositories --repository-names my-app-repo
+```
+
+### EBS Commands
+
+```bash
+# Describe EBS volumes
+aws ebs describe-volumes
+aws ebs describe-volumes --filters "Name=tag:Name,Values=zlzookeeper"
+```
+
+### EFS Commands
+
+```bash
+# Describe file systems
+aws efs describe-file-systems
+```
+
+---
+
+## Best Practices
+
+1. **Always use internal load balancers** for private clusters
+2. **Tag subnets correctly** to control ELB placement
+3. **Use metrics-server** for resource monitoring
+4. **Enable logging** for troubleshooting
+5. **Use SSM Session Manager** instead of bastion hosts (cost-effective, IAM-based, audited)
+6. **Create VPC endpoints** for SSM in private subnets
+7. **Regularly check events** for cluster issues
+8. **Monitor resource usage** to prevent exhaustion
+9. **Verify configurations** before deploying
+10. **Use namespaces** to organize resources
+11. **Keep IAM roles** scoped to minimum permissions
+12. **Use SSM port forwarding** to access databases and internal services securely
+
+---
+
+## Cleanup Commands
+
+> **Section Purpose:** Provides commands to tear down all AWS resources created during deployment. Use these when decommissioning a cluster to avoid ongoing charges for unused resources.
+
+```bash
+eksctl delete cluster --name <ekscluster-name> --region <region>
+aws ecr delete-repository --repository-name my-app-repo --force
+aws efs delete-file-system --file-system-id <fs-id>
+```
+
+---
+
+## Document Version
+
+**Original Document:** AWS_EKS_Deployment.docx  
+**Revised:** Logical Deployment Order Format  
+**Date:** November 29, 2025

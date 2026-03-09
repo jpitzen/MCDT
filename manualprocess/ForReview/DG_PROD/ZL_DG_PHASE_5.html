@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 5</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 5: S3 CSI Driver</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 5</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 5: S3 CSI Driver</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">7</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">S3 CSI Driver Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 5</strong> installs Mountpoint for Amazon S3 to enable Kubernetes pods to mount S3 buckets as file systems for archive storage.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Create S3 bucket for archive storage</li>
+                    <li data-steps="2">Enable versioning for data protection</li>
+                    <li data-steps="3">Create IAM policy for S3 CSI Driver</li>
+                    <li data-steps="4">Configure IAM service account with IRSA</li>
+                    <li data-steps="5">Install Mountpoint for S3 CSI Driver via Helm</li>
+                    <li data-steps="6">Configure S3 StorageClass and PV/PVC resources</li>
+                    <li data-steps="7">Verify S3 configuration complete</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            
+            <!-- Bottom Navigation Controls (Always visible) -->
+            <div class="pagination-controls bottom-controls" id="bottom-nav">
+                <button class="nav-btn prev-btn" id="prev-btn-bottom" onclick="prevStep()">
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="bottom-step-title">Step 1 of 7</div>
+                <button class="nav-btn next-btn" id="next-btn-bottom" onclick="nextStep()">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <!-- JavaScript -->
+    <script>
+        // Step data for Phase 5
+        const stepData = {
+            1: {
+                title: "Create S3 Bucket",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 25: Create S3 Bucket</h3>
+                        <div class="step-description">Creates an S3 bucket for application storage with proper region configuration.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates S3 bucket for archive storage</li>
+                            <li>Configures proper region settings</li>
+                            <li>Prepares bucket for CSI driver mounting</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create S3 Bucket (us-east-1):</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws s3api create-bucket --bucket use1-zlps-app-storage --region us-east-1')">Copy</button>
+                            <pre><code>aws s3api create-bucket --bucket use1-zlps-app-storage --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Important Note:</strong>
+                        <ul>
+                            <li>us-east-1 is the default S3 region and does not require the <code>LocationConstraint</code> parameter</li>
+                            <li>For other regions, add: <code>--create-bucket-configuration LocationConstraint=&lt;region&gt;</code></li>
+                            <li>Update bucket names if using different regions</li>
+                        </ul>
+                    </div>
+                `
+            },
+            2: {
+                title: "Enable Versioning",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 26: Enable Versioning</h3>
+                        <div class="step-description">Enables versioning on the S3 bucket for data protection and recovery.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Enables S3 bucket versioning for data protection</li>
+                            <li>Allows recovery from accidental deletions or overwrites</li>
+                            <li>Provides audit trail for object changes</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws s3api put-bucket-versioning --bucket use1-zlps-app-storage --versioning-configuration Status=Enabled --region us-east-1')">Copy</button>
+                            <pre><code>aws s3api put-bucket-versioning --bucket use1-zlps-app-storage --versioning-configuration Status=Enabled --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Versioning:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws s3api get-bucket-versioning --bucket use1-zlps-app-storage --region us-east-1')">Copy</button>
+                            <pre><code>aws s3api get-bucket-versioning --bucket use1-zlps-app-storage --region us-east-1</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>{
+    "Status": "Enabled"
+}</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                title: "Create S3 CSI Driver IAM Policy",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 27: Create S3 CSI Driver IAM Policy</h3>
+                        <div class="step-description">Creates IAM policy with permissions for the S3 CSI driver to access the S3 bucket.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates IAM policy for S3 CSI driver permissions</li>
+                            <li>Grants read/write access to the specific S3 bucket</li>
+                            <li>Enables CSI driver to manage S3 objects</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Policy JSON File:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::use1-zlps-app-storage",
+        "arn:aws:s3:::use1-zlps-app-storage/*"
+      ]
+    }
+  ]
+}')">Copy JSON</button>
+                            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::use1-zlps-app-storage",
+        "arn:aws:s3:::use1-zlps-app-storage/*"
+      ]
+    }
+  ]
+}</code></pre>
+                        </div>
+                        <p>Save this as <code>policies/S3-CSI-Driver-Policy.json</code></p>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create IAM Policy:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws iam create-policy --policy-name ZLPS_S3_CSI_Driver_Policy --policy-document file://policies/S3-CSI-Driver-Policy.json --region us-east-1')">Copy</button>
+                            <pre><code>aws iam create-policy --policy-name ZLPS_S3_CSI_Driver_Policy --policy-document file://policies/S3-CSI-Driver-Policy.json --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Note:</strong> Update the bucket name in the JSON if using a different S3 bucket than <code>use1-zlps-app-storage</code>.
+                    </div>
+                `
+            },
+            4: {
+                title: "Create IAM Service Account for S3 CSI Driver",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 28: Create IAM Service Account for S3 CSI Driver</h3>
+                        <div class="step-description">Associates the IAM policy with a Kubernetes service account using IAM Roles for Service Accounts (IRSA).</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates Kubernetes service account in kube-system namespace</li>
+                            <li>Associates IAM role with S3 CSI Driver permissions</li>
+                            <li>Enables pods to assume IAM role for S3 access</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create Service Account with IAM Role:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('eksctl create iamserviceaccount --cluster=ue1-zlps-eks-01 --namespace=kube-system --name=s3-csi-driver-sa --attach-policy-arn=arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/ZLPS_S3_CSI_Driver_Policy --approve --region=us-east-1')">Copy</button>
+                            <pre><code>eksctl create iamserviceaccount \\
+  --cluster=ue1-zlps-eks-01 \\
+  --namespace=kube-system \\
+  --name=s3-csi-driver-sa \\
+  --attach-policy-arn=arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/ZLPS_S3_CSI_Driver_Policy \\
+  --approve \\
+  --region=us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Service Account:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get sa s3-csi-driver-sa -n kube-system -o yaml')">Copy</button>
+                            <pre><code>kubectl get sa s3-csi-driver-sa -n kube-system -o yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Important:</strong> Replace <code>&lt;YOUR_ACCOUNT_ID&gt;</code> with your AWS account ID. You can get it with: <code>aws sts get-caller-identity --query Account --output text</code>
+                    </div>
+                `
+            },
+            5: {
+                title: "Install S3 Mountpoint CSI Driver",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 29: Install S3 Mountpoint CSI Driver</h3>
+                        <div class="step-description">Installs the Mountpoint for Amazon S3 CSI driver via Helm to enable S3 bucket mounting in Kubernetes.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Adds AWS S3 CSI driver Helm repository</li>
+                            <li>Installs Mountpoint for Amazon S3 CSI driver</li>
+                            <li>Enables S3 bucket mounting as file systems in Kubernetes</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Add Helm Repository:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('helm repo add aws-s3-csi https://awslabs.github.io/mountpoint-s3-csi-driver\\nhelm repo update')">Copy</button>
+                            <pre><code>helm repo add aws-s3-csi https://awslabs.github.io/mountpoint-s3-csi-driver
+helm repo update</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Install the Driver:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('helm upgrade --install aws-mountpoint-s3-csi-driver \\\\\\n  --namespace kube-system \\\\\\n  --set serviceAccount.create=false \\\\\\n  --set serviceAccount.name=s3-csi-driver-sa \\\\\\n  aws-s3-csi/aws-mountpoint-s3-csi-driver')">Copy</button>
+                            <pre><code>helm upgrade --install aws-mountpoint-s3-csi-driver \\
+  --namespace kube-system \\
+  --set serviceAccount.create=false \\
+  --set serviceAccount.name=s3-csi-driver-sa \\
+  aws-s3-csi/aws-mountpoint-s3-csi-driver</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Installation:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-mountpoint-s3-csi-driver')">Copy</button>
+                            <pre><code>kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-mountpoint-s3-csi-driver</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                                                READY   STATUS    RESTARTS   AGE
+aws-mountpoint-s3-csi-driver-6b8b8b8b8b-abcde       3/3     Running   0          30s
+aws-mountpoint-s3-csi-driver-6b8b8b8b8b-fghij       3/3     Running   0          30s</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Important Notes</h4>
+                        <ul>
+                            <li>Using existing service account (s3-csi-driver-sa) created in Step 28</li>
+                            <li>Driver pods should show 3/3 Ready status</li>
+                            <li>Verify pods are running before proceeding</li>
+                        </ul>
+                    </div>
+                `
+            },
+            6: {
+                title: "Configure S3 Storage Class and PV",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 30: Configure S3 Storage Class and PersistentVolume</h3>
+                        <div class="step-description">Creates Kubernetes storage resources to enable applications to use S3 bucket storage.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates StorageClass for S3 bucket access</li>
+                            <li>Defines PersistentVolume pointing to S3 bucket</li>
+                            <li>Creates PersistentVolumeClaim for application use</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>StorageClass for S3:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('apiVersion: storage.k8s.io/v1\\nkind: StorageClass\\nmetadata:\\n  name: s3-sc\\nprovisioner: s3.csi.aws.com\\nparameters:\\n  bucketName: use1-zlps-app-storage\\nmountOptions:\\n  - allow-delete\\n  - region us-east-1')">Copy</button>
+                            <pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: s3-sc
+provisioner: s3.csi.aws.com
+parameters:
+  bucketName: use1-zlps-app-storage
+mountOptions:
+  - allow-delete
+  - region us-east-1</code></pre>
+                        </div>
+                        <p>Save as <code>yaml/s3-sc.yaml</code> and apply:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl apply -f yaml/s3-sc.yaml')">Copy</button>
+                            <pre><code>kubectl apply -f yaml/s3-sc.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>PersistentVolume Example:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('apiVersion: v1\\nkind: PersistentVolume\\nmetadata:\\n  name: s3-pv\\nspec:\\n  capacity:\\n    storage: 100Gi\\n  accessModes:\\n    - ReadWriteMany\\n  mountOptions:\\n    - allow-delete\\n    - region us-east-1\\n  csi:\\n    driver: s3.csi.aws.com\\n    volumeHandle: use1-zlps-app-storage\\n    volumeAttributes:\\n      bucketName: use1-zlps-app-storage')">Copy</button>
+                            <pre><code>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s3-pv
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - allow-delete
+    - region us-east-1
+  csi:
+    driver: s3.csi.aws.com
+    volumeHandle: use1-zlps-app-storage
+    volumeAttributes:
+      bucketName: use1-zlps-app-storage</code></pre>
+                        </div>
+                        <p>Save as <code>yaml/s3-pv.yaml</code> and apply:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl apply -f yaml/s3-pv.yaml')">Copy</button>
+                            <pre><code>kubectl apply -f yaml/s3-pv.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>PersistentVolumeClaim Example:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('apiVersion: v1\\nkind: PersistentVolumeClaim\\nmetadata:\\n  name: s3-pvc\\nspec:\\n  accessModes:\\n    - ReadWriteMany\\n  storageClassName: s3-sc\\n  resources:\\n    requests:\\n      storage: 100Gi')">Copy</button>
+                            <pre><code>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s3-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: s3-sc
+  resources:
+    requests:
+      storage: 100Gi</code></pre>
+                        </div>
+                        <p>Save as <code>yaml/s3-pvc.yaml</code> and apply:</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl apply -f yaml/s3-pvc.yaml')">Copy</button>
+                            <pre><code>kubectl apply -f yaml/s3-pvc.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="verification-section">
+                        <h4>Verify Resources:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get sc s3-sc\\nkubectl get pv s3-pv\\nkubectl get pvc s3-pvc')">Copy</button>
+                            <pre><code>kubectl get sc s3-sc
+kubectl get pv s3-pv
+kubectl get pvc s3-pvc</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ S3 Storage Limitations</h4>
+                        <ul>
+                            <li><strong>Not for databases:</strong> S3 has higher latency than EBS/EFS</li>
+                            <li><strong>Not for random I/O:</strong> Best for sequential read/write operations</li>
+                            <li><strong>Best use cases:</strong> Archive storage, backups, large file storage, logs</li>
+                            <li><strong>Cost effective:</strong> Significantly cheaper than EBS/EFS for large datasets</li>
+                        </ul>
+                    </div>
+                `
+            },
+            7: {
+                title: 'Phase 5 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 5 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 6, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> S3 bucket created for application storage</label><br>
+                            <label><input type="checkbox"> S3 bucket versioning enabled</label><br>
+                            <label><input type="checkbox"> S3 CSI Driver IAM policy created</label><br>
+                            <label><input type="checkbox"> S3 CSI Driver IAM service account configured</label><br>
+                            <label><input type="checkbox"> S3 Mountpoint CSI Driver installed via Helm</label><br>
+                            <label><input type="checkbox"> S3 CSI Driver pods running in kube-system namespace</label><br>
+                            <label><input type="checkbox"> S3 StorageClass created</label><br>
+                            <label><input type="checkbox"> S3 PersistentVolume and PVC configured</label><br>
+                            <label><input type="checkbox"> S3 storage limitations understood (not suitable for databases)</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 6:</strong> Once all items are checked, you can proceed to Phase 6 (Database Configuration).
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'S3-CSI-Driver-Policy.json': `{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::usw1-zlps-app-storage",
+        "arn:aws:s3:::usw1-zlps-app-storage/*"
+      ]
+    }
+  ]
+}`
+        };
+
+        // Download JSON file
+        function downloadJsonFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 7;
+        const phaseSteps = [1, 2, 3, 4, 5, 6, 7];
+
+        function updatePagination() {
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                const step = parseInt(dot.dataset.step);
+                dot.classList.toggle('active', step === currentStep);
+                dot.classList.toggle('completed', step < currentStep);
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentStep === 1;
+            document.getElementById('next-btn').disabled = currentStep === totalSteps;
+            
+            // Update bottom navigation buttons
+            document.getElementById('prev-btn-bottom').disabled = currentStep === 1;
+            if (currentStep === totalSteps) {
+                document.getElementById('next-btn-bottom').innerHTML = '<a href="ZL_DG_PHASE_6.html" style="color: inherit; text-decoration: none;">Next Phase →</a>';
+            } else {
+                document.getElementById('next-btn-bottom').innerHTML = 'Next Step →';
+                document.getElementById('next-btn-bottom').disabled = false;
+            }
+            document.getElementById('bottom-step-title').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+            // Update step info
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('step-title').textContent = stepData[currentStep].title;
+
+            // Update progress
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+
+            // Load step content
+            document.getElementById('step-container').innerHTML = stepData[currentStep].content;
+
+            // Update URL hash for bookmarking
+            window.location.hash = 'step-' + currentStep;
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updatePagination();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updatePagination();
+            }
+        }
+
+        function goToStep(step) {
+            if (step >= 1 && step <= 4) {
+                currentStep = step;
+                updatePagination();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for hash in URL
+            const hash = window.location.hash;
+            if (hash.startsWith('#step-')) {
+                const step = parseInt(hash.replace('#step-', ''));
+                if (step >= 1 && step <= 4) {
+                    currentStep = step;
+                }
+            }
+
+            updatePagination();
+
+            // Event listeners
+            document.getElementById('next-btn').addEventListener('click', nextStep);
+            document.getElementById('prev-btn').addEventListener('click', prevStep);
+
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    goToStep(parseInt(this.dataset.step));
+                });
+            });
+        });
+
+        // Utility functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show temporary feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                const originalClass = btn.className;
+                btn.textContent = 'Copied!';
+                btn.className = 'copy-btn copied';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.className = originalClass;
+                }, 2000);
+            });
+        }
+
+        function toggleYaml(btn) {
+            const content = btn.nextElementSibling;
+            const isVisible = content.style.display !== 'none';
+            content.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? '📄 View YAML' : '📄 Hide YAML';
+        }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+

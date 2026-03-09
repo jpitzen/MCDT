@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "Get-ChildItem 'E:\\ZipLip\\ZLMapiConnector\\' -Recurse -Include '*.cfg','*.properties','*.xml' | Select-Object FullName",
+    "netstat -ano | findstr 'LISTENING'",
+    "Get-Content 'E:\\ZipLip\\ZLMapiConnector\\config\\zlmapisvc.cfg' -ErrorAction SilentlyContinue"
+  ]
+}

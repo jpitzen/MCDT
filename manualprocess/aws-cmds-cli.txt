@@ -1,0 +1,1844 @@
+SSM Host start
+
+aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters '{"host":["usw-zlps-msexpsql-01.c5s06occm2dn.us-west-1.rds.amazonaws.com"],"portNumber":["1433"],"localPortNumber":["1433"]}'
+
+ aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{`"host`":[`"usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com`"],`"portNumber`":[`"1433`"],`"localPortNumber`":[`"1433`"]}" --region us-west-1
+
+Create Cluster
+1. eksctl create cluster --name usw1-zlps-eks-01 --version 1.34 --region us-west-1 --nodegroup-name uw1-zlps-ng-01 --node-type m5.xlarge --nodes 2 --nodes-min 1 --nodes-max 2 --managed
+
+Associate OIDC Provider
+2. eksctl utils associate-iam-oidc-provider --region us-west-1 --cluster usw1-zlps-eks-01 --approve
+
+Get Cluster Information and oidc issuer
+3. aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+Get Cluster VPC
+4. aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.resourcesVpcConfig.{VPC: vpcId}" --output table
+
+Output from 4.
+5. aws ec2 describe-vpcs --vpc-ids vpc-07644cdd0224da4f3 --query "Vpcs[].{VpcId:VpcId, Name:Tags[?Key=='Name']|[0].Value}" --output table
+
+List Subnets from the EKS Cluster VPC
+6. aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.resourcesVpcConfig.{VPC: vpcId, Subnets: subnetIds}" --output table
+
+ECR Setup and integration
+
+Verify ECR
+7. aws ecr describe-repositories --repository-names uw1-zlps-ecr-01
+
+Verify Images
+8. aws ecr describe-images --repository-name uw1-zlps-ecr-01 --region us-west-1
+
+Create ECR Pull Secret 
+9. kubectl create secret docker-registry docker-secret --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01  --docker-username=AWS --docker-password="$(aws ecr get-login-password --region us-west-1)" --namespace kube-system
+
+Verify Secret:
+10. kubectl get secrets --namespace kube-system
+
+
+Create the Amazon_EBS_CSI_Driver_Policy.json file
+11. aws iam create-policy --policy-name AmazonEBSCSIDriverPolicy --policy-document file://Amazon_EBS_CSI_Driver_Policy.json
+
+Output:
+
+{
+    "Policy": {
+        "PolicyName": "AmazonEBSCSIDriverPolicy",
+        "PolicyId": "ANPA6PS42ZO4LORDN4INB",
+        "Arn": "arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2025-12-04T12:27:24+00:00",
+        "UpdateDate": "2025-12-04T12:27:24+00:00"
+    }
+}
+
+
+capture Arn: "arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy"
+
+List Policy
+12. aws iam list-policies --query "Policies[?PolicyName=='AmazonEBSCSIDriverPolicy'].[PolicyName, Arn, AttachmentCount, CreateDate]" --output table
+
+---------------------------------------------------------------------------------------------------------------------------------
+|                                                         ListPolicies                                                          |
++--------------------------+-----------------------------------------------------------------+----+-----------------------------+
+|  AmazonEBSCSIDriverPolicy|  arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy      |  0 |  2025-12-04T12:27:24+00:00  ||  AmazonEBSCSIDriverPolicy|  arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy  | 2022-04-04T17:24:29+00:00  |+--------------------------+-----------------------------------------------------------------+----+-----------------------------+
+
+Verify Policy
+13. aws iam get-policy-version --policy-arn arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy --version-id v1
+
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "ec2:CreateSnapshot",
+                        "ec2:AttachVolume",
+                        "ec2:DetachVolume",
+                        "ec2:ModifyVolume",
+                        "ec2:DescribeAvailabilityZones",
+                        "ec2:DescribeInstances",
+                        "ec2:DescribeSnapshots",
+                        "ec2:DescribeTags",
+                        "ec2:DescribeVolumes",
+                        "ec2:DescribeVolumeAttribute",
+                        "ec2:DescribeVolumeStatus",
+                        "ec2:CreateVolume",
+                        "ec2:DeleteVolume",
+                        "ec2:DeleteSnapshot",
+                        "ec2:CreateTags"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v1",
+        "IsDefaultVersion": true,
+        "CreateDate": "2025-12-04T12:27:24+00:00"
+    }
+}
+
+
+
+Create IAM Role for EBS CSI Driver (IRSA)
+14. eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster usw1-zlps-eks-01 --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole
+
+2025-12-04 07:38:27 [ℹ]  1 iamserviceaccount (kube-system/ebs-csi-controller-sa) was included (based on the include/exclude rules)
+2025-12-04 07:38:27 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2025-12-04 07:38:27 [ℹ]  1 task: {
+    2 sequential sub-tasks: {
+        create IAM role for serviceaccount "kube-system/ebs-csi-controller-sa",
+        create serviceaccount "kube-system/ebs-csi-controller-sa",
+    } }2025-12-04 07:38:27 [ℹ]  building iamserviceaccount stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2025-12-04 07:38:28 [ℹ]  deploying stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2025-12-04 07:38:28 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2025-12-04 07:38:58 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2025-12-04 07:38:58 [ℹ]  created serviceaccount "kube-system/ebs-csi-controller-sa"
+
+Validate Role
+15. kubectl get serviceaccount ebs-csi-controller-sa -n kube-system -o yaml
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole
+  creationTimestamp: "2025-12-04T12:38:58Z"
+  labels:
+    app.kubernetes.io/managed-by: eksctl
+  name: ebs-csi-controller-sa
+  namespace: kube-system
+  resourceVersion: "98632"
+  uid: aefcfad1-7af5-4491-82fa-1b2aa892c69f
+  
+Install EBS CSI Driver (kubectl method)
+
+From Powershell CLI:
+
+Get current stable version
+16. curl -s https://api.github.com/repos/kubernetes-sigs/aws-ebs-csi-driver/releases/latest | Select-String -Pattern '"tag_name"' 
+
+"tag_name": "v1.53.0"
+
+
+17. kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.53"
+
+Warning: resource serviceaccounts/ebs-csi-controller-sa is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+serviceaccount/ebs-csi-controller-sa configured
+serviceaccount/ebs-csi-node-sa created
+role.rbac.authorization.k8s.io/ebs-csi-leases-role created
+clusterrole.rbac.authorization.k8s.io/ebs-csi-node-role created
+clusterrole.rbac.authorization.k8s.io/ebs-external-attacher-role created
+clusterrole.rbac.authorization.k8s.io/ebs-external-provisioner-role created
+clusterrole.rbac.authorization.k8s.io/ebs-external-resizer-role created
+clusterrole.rbac.authorization.k8s.io/ebs-external-snapshotter-role created
+rolebinding.rbac.authorization.k8s.io/ebs-csi-leases-rolebinding created
+clusterrolebinding.rbac.authorization.k8s.io/ebs-csi-attacher-binding created
+clusterrolebinding.rbac.authorization.k8s.io/ebs-csi-node-getter-binding created
+clusterrolebinding.rbac.authorization.k8s.io/ebs-csi-provisioner-binding created
+clusterrolebinding.rbac.authorization.k8s.io/ebs-csi-resizer-binding created
+clusterrolebinding.rbac.authorization.k8s.io/ebs-csi-snapshotter-binding created
+deployment.apps/ebs-csi-controller created
+poddisruptionbudget.policy/ebs-csi-controller created
+daemonset.apps/ebs-csi-node created
+csidriver.storage.k8s.io/ebs.csi.aws.com created
+
+Verify Installation
+18. kubectl get pods -n kube-system -l app=ebs-csi-controller
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+ebs-csi-controller-54b57d7767-5jwpq   6/6     Running   0          89s
+ebs-csi-controller-54b57d7767-rv8kd   6/6     Running   0          89s
+
+Verify policy attached
+19. aws iam list-attached-role-policies --role-name AmazonEKS_EBS_CSI_DriverRole --query "AttachedPolicies[?PolicyName=='AmazonEBSCSIDriverPolicy']" --output text
+
+arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy       AmazonEBSCSIDriverPolicy
+
+Install AWS EBS CSI Driver Add-on
+20. aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole --region us-west-1
+
+{
+    "addon": {
+        "addonName": "aws-ebs-csi-driver",
+        "clusterName": "usw1-zlps-eks-01",
+        "status": "CREATING",
+        "addonVersion": "v1.53.0-eksbuild.1",
+        "health": {
+            "issues": []
+        },
+        "addonArn": "arn:aws:eks:us-west-1:995553364920:addon/usw1-zlps-eks-01/aws-ebs-csi-driver/6acd74bd-451d-6ee0-1456-6ac2d4bbc2fc",
+        "createdAt": "2025-12-04T08:08:33.600000-05:00",
+        "modifiedAt": "2025-12-04T08:08:33.626000-05:00",
+        "serviceAccountRoleArn": "arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole",
+        "tags": {},
+        "namespaceConfig": {
+            "namespace": "kube-system"
+        }
+    }
+}
+
+Verify Installation
+21. aws eks describe-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --region us-west-1
+
+{
+    "addon": {
+        "addonName": "aws-ebs-csi-driver",
+        "clusterName": "usw1-zlps-eks-01",
+        "status": "ACTIVE",
+        "addonVersion": "v1.53.0-eksbuild.1",
+        "health": {
+            "issues": []
+        },
+        "addonArn": "arn:aws:eks:us-west-1:995553364920:addon/usw1-zlps-eks-01/aws-ebs-csi-driver/54cd74be-f991-eccb-660e-333738b83ff8",
+        "createdAt": "2025-12-04T08:12:17.149000-05:00",
+        "modifiedAt": "2025-12-04T08:12:47.644000-05:00",
+        "serviceAccountRoleArn": "arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole",
+        "tags": {},
+        "namespaceConfig": {
+            "namespace": "kube-system"
+        }
+    }
+}
+
+
+
+Troubleshooting if a conflict exists
+Delete failed addon first
+aws eks delete-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --region us-west-1
+
+Re-create with OVERWRITE to replace conflicting resources
+aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole --resolve-conflicts OVERWRITE --region us-west-1
+
+Check Kubernetes
+22. kubectl get pods -n kube-system -l app=ebs-csi-controller
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+ebs-csi-controller-564b557f9d-6n4wv   6/6     Running   0          2m6s
+ebs-csi-controller-564b557f9d-gj6nm   6/6     Running   0          2m5s
+
+Create EBS StorageClass
+23. Create the yaml: ebs-sc.yaml (note location you saved it and run kubectl apply -f ebs-sc.yaml from there e.g.  (see command in step 25.)
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  fsType: ext4
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+
+Apply the yaml
+24. kubectl apply -f ebs-sc.yaml
+
+kubectl apply -f ebs-sc.yaml
+storageclass.storage.k8s.io/ebs-sc created
+
+Verify
+25. kubectl get storageclass
+
+kubectl get storageclass
+NAME               PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-sc (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   109s
+
+Create ZL Application service account (update zlzookeeper-statefulset.yaml):
+26. kubectl create serviceaccount zlapp-sa -n default
+
+Create Docker-secret in Default namespace:
+27. kubectl create secret docker-registry docker-secret --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01  --docker-username=AWS --docker-password="$(aws ecr get-login-password --region us-west-1)" --namespace default
+
+Deploy ZL
+28. kubectl apply -f zlapp-config.yaml
+29. kubectl apply -f zk-cs.yaml
+30. kubectl apply -f zk-hs.yaml
+31. kubectl apply -f zlzookeeper-statefulset.yaml
+
+Verify pods (from powershell prompt):
+
+32. kubectl get pods -l app=zlzookeeper -w
+
+NAME            READY   STATUS              RESTARTS   AGE
+zlzookeeper-0   0/1     ContainerCreating   0          7s
+zlzookeeper-0   1/1     Running             0          13s
+zlzookeeper-1   0/1     Pending             0          0s
+zlzookeeper-1   0/1     Pending             0          3s
+zlzookeeper-1   0/1     ContainerCreating   0          3s
+
+
+33. kubectl get pods -l app=zlzookeeper
+
+NAME            READY   STATUS              RESTARTS   AGE
+zlzookeeper-0   1/1     Running             0          21s
+zlzookeeper-1   0/1     ContainerCreating   0          8s
+
+34. kubectl get pods -l app=zlzookeeper; kubectl get pvc -l app=zlzookeeper
+
+NAME            READY   STATUS              RESTARTS   AGE
+zlzookeeper-0   1/1     Running             0          25s
+zlzookeeper-1   0/1     ContainerCreating   0          12s
+NAME                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+zlzkdata-zlzookeeper-0   Bound    pvc-1377efd8-241e-4a81-81a0-2d58eb2c0300   10Gi       RWO            ebs-sc         <unset>                 26s
+zlzkdata-zlzookeeper-1   Bound    pvc-7c694696-cf9d-4e34-9401-20cbcc3579d3   10Gi       RWO            ebs-sc         <unset>                 13s
+
+35. kubectl get pods -l app=zlzookeeper; kubectl get pvc -l app=zlzookeeper
+
+NAME            READY   STATUS    RESTARTS   AGE
+zlzookeeper-0   1/1     Running   0          47s
+zlzookeeper-1   1/1     Running   0          34s
+zlzookeeper-2   1/1     Running   0          17s
+NAME                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+zlzkdata-zlzookeeper-0   Bound    pvc-1377efd8-241e-4a81-81a0-2d58eb2c0300   10Gi       RWO            ebs-sc         <unset>                 48s
+zlzkdata-zlzookeeper-1   Bound    pvc-7c694696-cf9d-4e34-9401-20cbcc3579d3   10Gi       RWO            ebs-sc         <unset>                 35s
+zlzkdata-zlzookeeper-2   Bound    pvc-c97e05e0-97dd-4596-a343-785716b3b3ed   10Gi       RWO            ebs-sc         <unset>                 18s
+ kubectl get serviceaccount zlapp-sa -o yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2025-12-04T14:15:54Z"
+  name: zlapp-sa
+  namespace: default
+  resourceVersion: "119106"
+  uid: 53fff74d-4f2f-48b1-a9f1-34c6c3cba903
+
+36. kubectl get pods -o custom-columns="NAME:.metadata.name,SERVICE_ACCOUNT:.spec.serviceAccountName" | Select-String "zlapp-sa"
+
+zlzookeeper-0   zlapp-sa
+zlzookeeper-1   zlapp-sa
+zlzookeeper-2   zlapp-sa
+
+37. aws ec2 describe-volumes --filters "Name=tag:kubernetes.io/created-for/pvc/name,Values=zlzkdata-zlzookeeper-*" --region us-west-1 --query "Volumes[*].[VolumeId,VolumeType,State,AvailabilityZone]" --output table
+
+----------------------------------------------------------
+|                     DescribeVolumes                    |
++------------------------+------+---------+--------------+
+|  vol-06455cb1a4fe80012 |  gp3 |  in-use |  us-west-1a  |
+|  vol-09d52e47a78b46d23 |  gp3 |  in-use |  us-west-1c  |
+|  vol-0ad647a41fa03b064 |  gp3 |  in-use |  us-west-1a  |
++------------------------+------+---------+--------------+
+
+38. aws ec2 describe-volumes --filters "Name=tag:ebs.csi.aws.com/cluster,Values=true" --region us-west-1 --query "Volumes[*].[VolumeId,VolumeType,State,AvailabilityZone,Tags[?Key=='kubernetes.io/created-for/pvc/name'].Value|[0]]" --output table
+
+------------------------------------------------------------------------------------
+|                                  DescribeVolumes                                 |
++------------------------+------+---------+-------------+--------------------------+
+|  vol-06455cb1a4fe80012 |  gp3 |  in-use |  us-west-1a |  zlzkdata-zlzookeeper-2  |
+|  vol-09d52e47a78b46d23 |  gp3 |  in-use |  us-west-1c |  zlzkdata-zlzookeeper-1  |
+|  vol-0ad647a41fa03b064 |  gp3 |  in-use |  us-west-1a |  zlzkdata-zlzookeeper-0  |
++------------------------+------+---------+-------------+--------------------------+
+
+39. aws ec2 describe-volumes --filters "Name=tag-key,Values=kubernetes.io/created-for/pvc/name" --region us-west-1 --query "Volumes[*].[VolumeId,VolumeType,State,AvailabilityZone]" --output table
+
+----------------------------------------------------------
+|                     DescribeVolumes                    |
++------------------------+------+---------+--------------+
+|  vol-06455cb1a4fe80012 |  gp3 |  in-use |  us-west-1a  |
+|  vol-09d52e47a78b46d23 |  gp3 |  in-use |  us-west-1c  |
+|  vol-0ad647a41fa03b064 |  gp3 |  in-use |  us-west-1a  |
++------------------------+------+---------+--------------+
+
+EFS Integration
+
+OIDC Verification
+40. aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.identity.oidc.issuer" --output text
+
+https://oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E
+
+Associate OIDC Provider (if you haven't done this already in step 2.)
+41. eksctl utils associate-iam-oidc-provider --region us-west-1 --cluster usw1-zlps-eks-01 --approve
+
+2025-12-04 09:43:51 [ℹ]  IAM Open ID Connect provider is already associated with cluster "usw1-zlps-eks-01" in "us-west-1"
+
+Create the IAM Policy for the EFS CSI Driver 
+
+42. C:\Projects\aws-zl\policies>aws iam create-policy --policy-name ZLEFSPolicy --policy-document file://EFS-IAM-policy.json
+
+{
+    "Policy": {
+        "PolicyName": "ZLEFSPolicy",
+        "PolicyId": "ANPA6PS42ZO4AW7CIKRLB",
+        "Arn": "arn:aws:iam::995553364920:policy/ZLEFSPolicy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2025-12-04T14:55:47+00:00",
+        "UpdateDate": "2025-12-04T14:55:47+00:00"
+    }
+}
+
+
+Create the IAM Role and Service Account 
+Get the Arn from the policy creation output ("arn:aws:iam::995553364920:policy/ZLEFSPolicy")
+43. eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --namespace kube-system --name efs-csi-controller-sa --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy --approve --role-name AmazonEKS_EFS_CSI_DriverRole
+
+2025-12-04 10:28:29 [ℹ]  1 existing iamserviceaccount(s) (kube-system/ebs-csi-controller-sa) will be excluded
+2025-12-04 10:28:29 [ℹ]  1 iamserviceaccount (kube-system/efs-csi-controller-sa) was included (based on the include/exclude rules)
+2025-12-04 10:28:29 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2025-12-04 10:28:29 [ℹ]  1 task: {
+    2 sequential sub-tasks: {
+        create IAM role for serviceaccount "kube-system/efs-csi-controller-sa",
+        create serviceaccount "kube-system/efs-csi-controller-sa",
+    } }2025-12-04 10:28:29 [ℹ]  building iamserviceaccount stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-efs-csi-controller-sa"
+2025-12-04 10:28:29 [ℹ]  deploying stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-efs-csi-controller-sa"
+2025-12-04 10:28:29 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-efs-csi-controller-sa"
+2025-12-04 10:29:00 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-efs-csi-controller-sa"
+2025-12-04 10:29:00 [ℹ]  created serviceaccount "kube-system/efs-csi-controller-sa"
+
+Install the EFS CSI driver add on
+44. aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-efs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EFS_CSI_DriverRole --region us-west-1
+
+{
+    "addon": {
+        "addonName": "aws-efs-csi-driver",
+        "clusterName": "usw1-zlps-eks-01",
+        "status": "CREATING",
+        "addonVersion": "v2.1.15-eksbuild.1",
+        "health": {
+            "issues": []
+        },
+        "addonArn": "arn:aws:eks:us-west-1:995553364920:addon/usw1-zlps-eks-01/aws-efs-csi-driver/32cd74fe-b5f6-5d3a-1d6b-85f868e4b33e",
+        "createdAt": "2025-12-04T10:31:31.141000-05:00",
+        "modifiedAt": "2025-12-04T10:31:31.156000-05:00",
+        "serviceAccountRoleArn": "arn:aws:iam::995553364920:role/AmazonEKS_EFS_CSI_DriverRole",
+        "tags": {},
+        "namespaceConfig": {
+            "namespace": "kube-system"
+        }
+    }
+}
+
+45. aws eks describe-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-efs-csi-driver --region us-west-1 2>&1
+
+{
+    "addon": {
+        "addonName": "aws-efs-csi-driver",
+        "clusterName": "usw1-zlps-eks-01",
+        "status": "ACTIVE",
+        "addonVersion": "v2.1.15-eksbuild.1",
+        "health": {
+            "issues": []
+        },
+        "addonArn": "arn:aws:eks:us-west-1:995553364920:addon/usw1-zlps-eks-01/aws-efs-csi-driver/32cd74fe-b5f6-5d3a-1d6b-85f868e4b33e",
+        "createdAt": "2025-12-04T10:31:31.141000-05:00",
+        "modifiedAt": "2025-12-04T10:31:47.217000-05:00",
+        "serviceAccountRoleArn": "arn:aws:iam::995553364920:role/AmazonEKS_EFS_CSI_DriverRole",
+        "tags": {},
+        "namespaceConfig": {
+            "namespace": "kube-system"
+        }
+    }
+}
+
+46. (Do not run the HELM installation, it is redundant)
+
+verify EFS CSI Driver installation
+47. C:\Projects\aws-zl\policies>kubectl get pod -n kube-system -l "app.kubernetes.io/name=aws-efs-csi-driver,app.kubernetes.io/instance=aws-efs-csi-driver"
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+efs-csi-controller-556d9958f9-blnxh   3/3     Running   0          4m29s
+efs-csi-controller-556d9958f9-rhw74   3/3     Running   0          4m29s
+efs-csi-node-6tdlz                    3/3     Running   0          4m29s
+efs-csi-node-pl89d                    3/3     Running   0          4m29s
+
+C:\Projects\aws-zl\policies>kubectl get pods -n kube-system | findstr efs
+
+efs-csi-controller-556d9958f9-blnxh   3/3     Running   0          5m9s
+efs-csi-controller-556d9958f9-rhw74   3/3     Running   0          5m9s
+efs-csi-node-6tdlz                    3/3     Running   0          5m9s
+efs-csi-node-pl89d                    3/3     Running   0          5m9s
+
+Verify current environment:
+
+48. C:\Projects\aws-zl\policies>aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.resourcesVpcConfig.{VpcId:vpcId,SubnetIds:subnetIds}" --output json
+
+{
+    "VpcId": "vpc-07644cdd0224da4f3",
+    "SubnetIds": [
+        "subnet-01c24772a882a3a1b",
+        "subnet-06eb80d784d985109",
+        "subnet-0c861c54ffa4ddbe6",
+        "subnet-039bd7f435475c3dc"
+    ]
+}
+
+49. C:\Projects\aws-zl\policies>aws efs describe-file-systems --region us-west-1 --query "FileSystems[?Tags[?Key=='Name']].{FileSystemId:FileSystemId,Name:Tags[?Key=='Name']|[0].Value,LifeCycleState:LifeCycleState}" --output json
+
+[
+    {
+        "FileSystemId": "fs-0a4ec87cd91178047",
+        "Name": "usw1-zlps-efs-01",
+        "LifeCycleState": "available"
+    }
+]
+
+50. C:\Projects\aws-zl\policies>aws ec2 describe-subnets --subnet-ids subnet-01c24772a882a3a1b subnet-06eb80d784d985109 subnet-0c861c54ffa4ddbe6 subnet-039bd7f435475c3dc --region us-west-1 --query "Subnets[].{SubnetId:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock}" --output table
+
+---------------------------------------------------------------
+|                       DescribeSubnets                       |
++------------+-------------------+----------------------------+
+|     AZ     |       CIDR        |         SubnetId           |
++------------+-------------------+----------------------------+
+|  us-west-1c|  192.168.32.0/19  |  subnet-06eb80d784d985109  |
+|  us-west-1c|  192.168.96.0/19  |  subnet-039bd7f435475c3dc  |
+|  us-west-1a|  192.168.64.0/19  |  subnet-0c861c54ffa4ddbe6  |
+|  us-west-1a|  192.168.0.0/19   |  subnet-01c24772a882a3a1b  |
++------------+-------------------+----------------------------+
+
+51. C:\Projects\aws-zl\policies>aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=usw1-zlps-eks-01" --region us-west-1 --query "Reservations[].Instances[].SecurityGroups[?contains(GroupName,'node')].GroupId" --output text
+
+<Nothing>
+
+52. C:\Projects\aws-zl\policies>aws ec2 describe-instances --filters "Name=tag:eks:cluster-name,Values=usw1-zlps-eks-01" --region us-west-1 --query "Reservations[].Instances[].SecurityGroups[]" --output json
+
+[
+    {
+        "GroupId": "sg-07a77dc047e9fb6fe",
+        "GroupName": "eks-cluster-sg-usw1-zlps-eks-01-6457660"
+    },
+    {
+        "GroupId": "sg-07a77dc047e9fb6fe",
+        "GroupName": "eks-cluster-sg-usw1-zlps-eks-01-6457660"
+    }
+]
+
+53. C:\Projects\aws-zl\policies>aws ec2 describe-security-groups --filters "Name=vpc-id,Values=vpc-07644cdd0224da4f3" --region us-west-1 --query "SecurityGroups[?contains(GroupName,'node')].{GroupId:GroupId,GroupName:GroupName}" --output json
+
+[]
+
+54. C:\Projects\aws-zl\policies>aws ec2 describe-security-groups --filters "Name=vpc-id,Values=vpc-07644cdd0224da4f3" --region us-west-1 --query "SecurityGroups[].{GroupId:GroupId,GroupName:GroupName}" --output json
+[
+    {
+        "GroupId": "sg-0a0482894854f1aec",
+        "GroupName": "k8s-elb-abc67fb83272c4084a030b610f4a79bd"
+    },
+    {
+        "GroupId": "sg-0afb0a3f0c30ba84d",
+        "GroupName": "eksctl-usw1-zlps-eks-01-cluster-ClusterSharedNodeSecurityGroup-hPtqmHrFAG02"
+    },
+    {
+        "GroupId": "sg-093f93c048992e038",
+        "GroupName": "default"
+    },
+    {
+        "GroupId": "sg-0658ff8b3a07d7f55",
+        "GroupName": "k8s-default-zluiingr-67ea20cf98"
+    },
+    {
+        "GroupId": "sg-0b03b5e59a8e1fd8d",
+        "GroupName": "k8s-traffic-usw1zlpseks01-ca263d0c72"
+    },
+    {
+        "GroupId": "sg-07a77dc047e9fb6fe",
+        "GroupName": "eks-cluster-sg-usw1-zlps-eks-01-6457660"
+    },
+    {
+        "GroupId": "sg-0ad3cd926087de7e1",
+        "GroupName": "eksctl-usw1-zlps-eks-01-cluster-ControlPlaneSecurityGroup-aQaAqttMqg9j"
+    },
+    {
+        "GroupId": "sg-0a0718698768e8015",
+        "GroupName": "usw1-zlps-rds-sg"
+    }
+]
+
+
+55. Consolidate Environment information 
+VPC: vpc-07644cdd0224da4f3
+Region: us-west-1
+Availability Zones: us-west-1a, us-west-1c (2 AZs)
+Node Security Group: sg-0afb0a3f0c30ba84d (ClusterSharedNodeSecurityGroup)
+EFS File Systems: None exist yet 
+
+Create EFS File System
+56. C:\Projects\aws-zl\policies>aws efs create-file-system --region us-west-1 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=usw1-zlps-efs-01
+
+{
+    "OwnerId": "995553364920",
+    "CreationToken": "1b5814d0-deb4-40b9-afc8-9267b1a88aea",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "FileSystemArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:file-system/fs-0a4ec87cd91178047",
+    "CreationTime": "2025-12-04T10:50:31-05:00",
+    "LifeCycleState": "creating",
+    "Name": "usw1-zlps-efs-01",
+    "NumberOfMountTargets": 0,
+    "SizeInBytes": {
+        "Value": 0,
+        "ValueInIA": 0,
+        "ValueInStandard": 0,
+        "ValueInArchive": 0
+    },
+    "PerformanceMode": "generalPurpose",
+    "Encrypted": false,
+    "ThroughputMode": "bursting",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "usw1-zlps-efs-01"
+        }
+    ],
+    "FileSystemProtection": {
+        "ReplicationOverwriteProtection": "ENABLED"
+    }
+}
+
+Create Mount Targets (get filesystem id from output: fs-0a4ec87cd91178047)  NOTE: One per Availability Zone
+
+for us-west-1a:
+57.  C:\Projects\aws-zl\policies>aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-01c24772a882a3a1b --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+{
+    "OwnerId": "995553364920",
+    "MountTargetId": "fsmt-0cd88c4cffed04ee8",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "SubnetId": "subnet-01c24772a882a3a1b",
+    "LifeCycleState": "creating",
+    "IpAddress": "192.168.31.251",
+    "NetworkInterfaceId": "eni-047ee0f85433a03d5",
+    "AvailabilityZoneId": "usw1-az1",
+    "AvailabilityZoneName": "us-west-1a",
+    "VpcId": "vpc-07644cdd0224da4f3"
+}
+
+for us-west-1c:
+58. C:\Projects\aws-zl\policies>aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-06eb80d784d985109 --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+{
+    "OwnerId": "995553364920",
+    "MountTargetId": "fsmt-0da90aea385501ea8",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "SubnetId": "subnet-06eb80d784d985109",
+    "LifeCycleState": "creating",
+    "IpAddress": "192.168.46.240",
+    "NetworkInterfaceId": "eni-0b044d7221f10ca71",
+    "AvailabilityZoneId": "usw1-az3",
+    "AvailabilityZoneName": "us-west-1c",
+    "VpcId": "vpc-07644cdd0224da4f3"
+}
+
+Verify Mount Targets
+59. C:\Projects\aws-zl\policies>aws efs describe-mount-targets --file-system-id fs-0a4ec87cd91178047 --region us-west-1
+
+{
+    "MountTargets": [
+        {
+            "OwnerId": "995553364920",
+            "MountTargetId": "fsmt-0cd88c4cffed04ee8",
+            "FileSystemId": "fs-0a4ec87cd91178047",
+            "SubnetId": "subnet-01c24772a882a3a1b",
+            "LifeCycleState": "available",
+            "IpAddress": "192.168.31.251",
+            "NetworkInterfaceId": "eni-047ee0f85433a03d5",
+            "AvailabilityZoneId": "usw1-az1",
+            "AvailabilityZoneName": "us-west-1a",
+            "VpcId": "vpc-07644cdd0224da4f3"
+        },
+        {
+            "OwnerId": "995553364920",
+            "MountTargetId": "fsmt-0da90aea385501ea8",
+            "FileSystemId": "fs-0a4ec87cd91178047",
+            "SubnetId": "subnet-06eb80d784d985109",
+            "LifeCycleState": "available",
+            "IpAddress": "192.168.46.240",
+            "NetworkInterfaceId": "eni-0b044d7221f10ca71",
+            "AvailabilityZoneId": "usw1-az3",
+            "AvailabilityZoneName": "us-west-1c",
+            "VpcId": "vpc-07644cdd0224da4f3"
+        }
+    ]
+}
+
+Create access point for zltikatemp:
+60. C:\Projects\aws-zl\policies>aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zltikatemp-ap --region us-west-1
+
+{
+    "ClientToken": "e9dadcd9-0685-47a1-a2e0-0510976cb46c",
+    "Name": "zltikatemp-ap",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "zltikatemp-ap"
+        }
+    ],
+    "AccessPointId": "fsap-08c3382b23a64f7fd",
+    "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-08c3382b23a64f7fd",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "PosixUser": {
+        "Uid": 1000,
+        "Gid": 1000
+    },
+    "RootDirectory": {
+        "Path": "/zltikatemp",
+        "CreationInfo": {
+            "OwnerUid": 1000,
+            "OwnerGid": 1000,
+            "Permissions": "755"
+        }
+    },
+    "OwnerId": "995553364920",
+    "LifeCycleState": "creating"
+}
+
+Create access point for zluilogs:
+61. C:\Projects\aws-zl\policies>aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zluilogs-ap --region us-west-1
+
+{
+    "ClientToken": "ce59a97b-4925-4373-b2fe-b2a65dd73021",
+    "Name": "zluilogs-ap",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "zluilogs-ap"
+        }
+    ],
+    "AccessPointId": "fsap-06e5e523915353e85",
+    "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-06e5e523915353e85",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "PosixUser": {
+        "Uid": 1000,
+        "Gid": 1000
+    },
+    "RootDirectory": {
+        "Path": "/zluilogs",
+        "CreationInfo": {
+            "OwnerUid": 1000,
+            "OwnerGid": 1000,
+            "Permissions": "755"
+        }
+    },
+    "OwnerId": "995553364920",
+    "LifeCycleState": "creating"
+}
+
+
+Create access point for zlvault:
+62. C:\Projects\aws-zl\policies>aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zluilogs-ap --region us-west-1
+
+{
+    "ClientToken": "ce59a97b-4925-4373-b2fe-b2a65dd73021",
+    "Name": "zluilogs-ap",
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "zluilogs-ap"
+        }
+    ],
+    "AccessPointId": "fsap-06e5e523915353e85",
+    "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-06e5e523915353e85",
+    "FileSystemId": "fs-0a4ec87cd91178047",
+    "PosixUser": {
+        "Uid": 1000,
+        "Gid": 1000
+    },
+    "RootDirectory": {
+        "Path": "/zluilogs",
+        "CreationInfo": {
+            "OwnerUid": 1000,
+            "OwnerGid": 1000,
+            "Permissions": "755"
+        }
+    },
+    "OwnerId": "995553364920",
+    "LifeCycleState": "creating"
+}
+
+
+63. C:\Projects\aws-zl\policies>aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlvault-ap --region us-west-1 --query "AccessPointId" --output text
+
+fsap-070de74811e8c461f
+
+Verify access points were created:
+64. C:\Projects\aws-zl\policies>aws efs describe-access-points --file-system-id fs-0a4ec87cd91178047 --region us-west-1
+{
+    "AccessPoints": [
+        {
+            "ClientToken": "e9dadcd9-0685-47a1-a2e0-0510976cb46c",
+            "Name": "zltikatemp-ap",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "zltikatemp-ap"
+                }
+            ],
+            "AccessPointId": "fsap-08c3382b23a64f7fd",
+            "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-08c3382b23a64f7fd",
+            "FileSystemId": "fs-0a4ec87cd91178047",
+            "PosixUser": {
+                "Uid": 1000,
+                "Gid": 1000
+            },
+            "RootDirectory": {
+                "Path": "/zltikatemp",
+                "CreationInfo": {
+                    "OwnerUid": 1000,
+                    "OwnerGid": 1000,
+                    "Permissions": "755"
+                }
+            },
+            "OwnerId": "995553364920",
+            "LifeCycleState": "available"
+        },
+        {
+            "ClientToken": "ce59a97b-4925-4373-b2fe-b2a65dd73021",
+            "Name": "zluilogs-ap",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "zluilogs-ap"
+                }
+            ],
+            "AccessPointId": "fsap-06e5e523915353e85",
+            "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-06e5e523915353e85",
+            "FileSystemId": "fs-0a4ec87cd91178047",
+            "PosixUser": {
+                "Uid": 1000,
+                "Gid": 1000
+            },
+            "RootDirectory": {
+                "Path": "/zluilogs",
+                "CreationInfo": {
+                    "OwnerUid": 1000,
+                    "OwnerGid": 1000,
+                    "Permissions": "755"
+                }
+            },
+            "OwnerId": "995553364920",
+            "LifeCycleState": "available"
+        },
+        {
+            "ClientToken": "27e049a6-49eb-4ecc-8ad4-dcbf095f8040",
+            "Name": "zlvault-ap",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "zlvault-ap"
+                }
+            ],
+            "AccessPointId": "fsap-070de74811e8c461f",
+            "AccessPointArn": "arn:aws:elasticfilesystem:us-west-1:995553364920:access-point/fsap-070de74811e8c461f",
+            "FileSystemId": "fs-0a4ec87cd91178047",
+            "PosixUser": {
+                "Uid": 1000,
+                "Gid": 1000
+            },
+            "RootDirectory": {
+                "Path": "/zlvault",
+                "CreationInfo": {
+                    "OwnerUid": 1000,
+                    "OwnerGid": 1000,
+                    "Permissions": "755"
+                }
+            },
+            "OwnerId": "995553364920",
+            "LifeCycleState": "available"
+        }
+    ]
+}
+
+
+** IMPORTANT: Note the AccessPointId for each access point from the output **
+
+65. Update the PV YAML files with the AccessPointId values:
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zltikatemp.yaml - Replace fsap-08c3382b23a64f7fd
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zluilogs.yaml - Replace fsap-06e5e523915353e85
+   - Edit C:\Projects\aws-zl\yaml\efs-pv-zlvault.yaml - Replace fsap-070de74811e8c461f
+   
+Verify security group access
+66. C:\Projects\aws-zl\policies>aws ec2 describe-security-groups --group-ids sg-0afb0a3f0c30ba84d --region us-west-1 --query "SecurityGroups[].IpPermissions" --output json
+ 
+[
+    [
+        {
+            "IpProtocol": "-1",
+            "UserIdGroupPairs": [
+                {
+                    "Description": "Allow nodes to communicate with each other (all ports)",
+                    "UserId": "995553364920",
+                    "GroupId": "sg-0afb0a3f0c30ba84d"
+                },
+                {
+                    "Description": "Allow managed and unmanaged nodes to communicate with each other (all ports)",
+                    "UserId": "995553364920",
+                    "GroupId": "sg-07a77dc047e9fb6fe"
+                }
+            ],
+            "IpRanges": [],
+            "Ipv6Ranges": [],
+            "PrefixListIds": []
+        }
+    ]
+]
+
+deploy EFS StorageClass
+67. kubectl apply -f efs-sc.yaml
+
+storageclass.storage.k8s.io/efs-sc created
+
+Deploy PersistentVolumes
+68. kubectl apply -f efs-pv-zltikatemp.yaml
+
+persistentvolume/efs-pv-zltikatemp created
+69. kubectl apply -f efs-pv-zluilogs.yaml
+
+persistentvolume/efs-pv-zluilogs created
+
+70. kubectl apply -f efs-pv-zlvault.yaml
+
+persistentvolume/efs-pv-zlvault created
+
+Verify:
+71. kubectl get pv | findstr efs
+
+efs-pv-zltikatemp                          10Gi       RWX            Retain           Available                                    efs-sc         <unset>                          81s
+efs-pv-zluilogs                            10Gi       RWX            Retain           Available                                    efs-sc         <unset>                          53s
+efs-pv-zlvault                             10Gi       RWX            Retain           Available                                    efs-sc         <unset>                          29s
+
+
+72. kubectl get pvc -n default | findstr efs
+
+zltikatemp-efs           Bound    efs-pv-zltikatemp                          10Gi       RWX            efs-sc         <unset>                 74s
+zluilogs-efs             Bound    efs-pv-zluilogs                            10Gi       RWX            efs-sc         <unset>                 42s
+zlvault-efs              Bound    efs-pv-zlvault                             10Gi       RWX            efs-sc         <unset>                 23s
+
+Ensure DB Secrets
+
+Retreive DB Details
+73. aws rds describe-db-instances --db-instance-identifier usw-zlps-msexpsql-01 --region us-west-1 --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,Engine:Engine,DBName:DBName,MasterUsername:MasterUsername}" --output json
+{
+    "Endpoint": "usw-zlps-msexpsql-01.c5s06occm2dn.us-west-1.rds.amazonaws.com",
+    "Port": 1433,
+    "Engine": "sqlserver-ex",
+    "DBName": null,
+    "MasterUsername": "zlpsdbadmin"
+}
+
+Use the information and the DB Password for the yaml creation
+
+encode your pfuser password (from powershell):
+
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("YOUR_PFUSER_PASSWORD"))
+
+74. db-config.yaml
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: db-config
+data:
+  DB_HOST: "usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com"
+  DB_NAME: zldb
+  DB_PORT: '1433'
+  DB_TYPE: mssql
+  DB_USER: pfuser
+  
+75. db-secret.yaml
+
+kind: Secret
+apiVersion: v1
+metadata:
+  name: db-secret
+data:
+  DB_PASSWORD: TEpaLENCRYPTED1RaNGg=
+type: Opaque
+
+Verify the config and secret:
+
+kubectl describe configmap db-config
+Name:         db-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+ 
+Data
+====
+DB_HOST:
+----
+usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com
+ 
+DB_NAME:
+----
+zldb
+ 
+DB_PORT:
+----
+1433
+ 
+DB_TYPE:
+----
+mssql
+ 
+DB_USER:
+----
+pfuser
+ 
+ 
+BinaryData
+====
+ 
+Events:  <none>
+ 
+ 
+ 
+kubectl describe secret db-secret
+Name:         db-secret
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+ 
+Type:  Opaque
+ 
+Data
+====
+DB_PASSWORD:  26 bytes
+
+  
+
+Deploy the db related yamls
+76. kubectl apply -f C:\Projects\aws-zl\yaml\db-config.yaml
+
+configmap/db-config created
+
+77. kubectl apply -f C:\Projects\aws-zl\yaml\db-secret.yaml
+
+secret/db-secret created
+
+Deploy Application Pods
+
+78. kubectl apply -f C:\Projects\aws-zl\yaml\zltika-deployment.yaml
+
+deployment.apps/zltika created
+
+79. kubectl apply -f C:\Projects\aws-zl\yaml\zlui-deployment.yaml
+
+deployment.apps/zlui created
+
+Verify
+80. kubectl get pods -n default
+
+NAME                      READY   STATUS    RESTARTS   AGE
+zltika-849744484c-z9dnc   1/1     Running   0          22m
+zlui-7d7696fc8f-7mcwx     1/1     Running   0          48s
+zlui-7d7696fc8f-g6px5     1/1     Running   0          48s
+zlzookeeper-0             1/1     Running   0          161m
+zlzookeeper-1             1/1     Running   0          160m
+zlzookeeper-2             1/1     Running   0          160m
+
+deploy service yamls
+81. kubectl apply -f C:\Projects\aws-zl\yaml\zltika-service.yaml
+
+service/zltika created
+
+82. kubectl apply -f C:\Projects\aws-zl\yaml\zlui-service.yaml
+
+service/zlui created
+
+verify
+83. kubectl get svc -n default
+
+NAME         TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)                       AGE
+kubernetes   ClusterIP      10.100.0.1       <none>                                                                    443/TCP                       14h
+zk-cs        ClusterIP      10.100.107.106   <none>                                                                    2181/TCP                      3h30m
+zk-hs        ClusterIP      None             <none>                                                                    2181/TCP,2888/TCP,3888/TCP    3h29m
+zltika       ClusterIP      10.100.104.88    <none>                                                                    9972/TCP                      45s
+zlui         LoadBalancer   10.100.140.104   af2b9b3d5aff04257965343863aa781e-1764276749.us-west-1.elb.amazonaws.com   80:32393/TCP,8000:31385/TCP   19s
+
+
+
+Check the zlui pod mounts
+84. kubectl exec -it zlui-7d7696fc8f-7mcwx -n default -- df -h | findstr ZipLip
+
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/logs
+127.0.0.1:/     8.0E     0  8.0E   0% /var/ZipLip/Vault
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/zlserver/WEB-INF/tmp
+
+85. kubectl exec -it zlui-7d7696fc8f-g6px5 -n default -- df -h | findstr ZipLip
+
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/logs
+127.0.0.1:/     8.0E     0  8.0E   0% /var/ZipLip/Vault
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/zlserver/WEB-INF/tmp
+
+
+86. kubectl exec -it zltika-849744484c-z9dnc -n default -- df -h | findstr ZipLip
+
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/zlserver/WEB-INF/tmp
+
+87. kubectl exec -it zltika-849744484c-z9dnc -n default -- df -h | findstr ZipLip
+
+127.0.0.1:/     8.0E     0  8.0E   0% /opt/ZipLip/zlserver/WEB-INF/tmp
+
+
+S3 Configuration
+
+Create S3 bucket for application storage
+88. aws s3api create-bucket --bucket usw1-zlps-app-storage --region us-west-1 --create-bucket-configuration LocationConstraint=us-west-1
+
+aws s3api create-bucket --bucket usw1-zlps-app-storage --region us-west-1 --create-bucket-configuration LocationConstraint=us-west-1
+
+{
+    "Location": "http://usw1-zlps-app-storage.s3.amazonaws.com/"
+}
+
+Enable versioning (recommended for data protection)
+89. aws s3api put-bucket-versioning --bucket usw1-zlps-app-storage --versioning-configuration Status=Enabled --region us-west-1
+
+Verify bucket creation
+90. aws s3 ls
+
+2025-12-04 12:25:26 usw1-zlps-app-storage
+
+Create the IAM Policy and Service Account
+91. C:\Projects\aws-zl\policies\S3-CSI-Driver-Policy.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::usw1-zlps-app-storage",
+        "arn:aws:s3:::usw1-zlps-app-storage/*"
+      ]
+    }
+  ]
+}
+
+Create IAM Policy
+92. aws iam create-policy --policy-name ZLPS_S3_CSI_Driver_Policy --policy-document file://C:\Projects\aws-zl\policies\S3-CSI-Driver-Policy.json --region us-west-1
+{
+    "Policy": {
+        "PolicyName": "ZLPS_S3_CSI_Driver_Policy",
+        "PolicyId": "ANPA6PS42ZO4MKPRJXEUR",
+        "Arn": "arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2025-12-04T17:28:47+00:00",
+        "UpdateDate": "2025-12-04T17:28:47+00:00"
+    }
+}
+
+Create service account with IRSA
+93. eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --namespace kube-system --name s3-csi-controller-sa --attach-policy-arn arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy --approve --override-existing-serviceaccounts --region us-west-1
+
+2025-12-04 12:29:36 [ℹ]  2 existing iamserviceaccount(s) (kube-system/ebs-csi-controller-sa,kube-system/efs-csi-controller-sa) will be excluded
+2025-12-04 12:29:36 [ℹ]  1 iamserviceaccount (kube-system/s3-csi-controller-sa) was included (based on the include/exclude rules)
+2025-12-04 12:29:36 [!]  metadata of serviceaccounts that exist in Kubernetes will be updated, as --override-existing-serviceaccounts was set
+2025-12-04 12:29:36 [ℹ]  1 task: {
+    2 sequential sub-tasks: {
+        create IAM role for serviceaccount "kube-system/s3-csi-controller-sa",
+        create serviceaccount "kube-system/s3-csi-controller-sa",
+    } }2025-12-04 12:29:36 [ℹ]  building iamserviceaccount stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-s3-csi-controller-sa"
+2025-12-04 12:29:36 [ℹ]  deploying stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-s3-csi-controller-sa"
+2025-12-04 12:29:36 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-s3-csi-controller-sa"
+2025-12-04 12:30:06 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-s3-csi-controller-sa"
+2025-12-04 12:30:07 [ℹ]  created serviceaccount "kube-system/s3-csi-controller-sa"
+
+
+Add Helm repository
+94. helm repo add aws-s3-csi https://awslabs.github.io/mountpoint-s3-csi-driver
+
+"aws-s3-csi" has been added to your repositories
+
+95. helm repo update
+
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "aws-s3-csi" chart repository
+Update Complete. ⎈Happy Helming!⎈
+
+Install S3 CSI driver
+96. helm upgrade --install aws-mountpoint-s3-csi-driver --namespace kube-system aws-s3-csi/aws-mountpoint-s3-csi-driver --set node.serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-bFTIIAIpDdYp" --set node.tolerations[0].key=node-role.kubernetes.io/master --set node.tolerations[0].operator=Exists --set node.tolerations[0].effect=NoSchedule
+
+Release "aws-mountpoint-s3-csi-driver" does not exist. Installing it now.
+NAME: aws-mountpoint-s3-csi-driver
+LAST DEPLOYED: Thu Dec  4 12:34:37 2025
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+Thank you for using Mountpoint for Amazon S3 CSI Driver v2.2.1.
+
+Attach S3 policy to node group IAM role (CRITICAL for mount operations)
+97. aws iam attach-role-policy --role-name eksctl-usw1-zlps-eks-01-nodegroup--NodeInstanceRole-ekzJtOX3o2UN --policy-arn arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy --region us-west-1
+
+Verify S3 policy attached to node role
+98. aws iam list-attached-role-policies --role-name eksctl-usw1-zlps-eks-01-nodegroup--NodeInstanceRole-ekzJtOX3o2UN --query "AttachedPolicies[?contains(PolicyName, 'S3') || contains(PolicyName, 'ZLPS')].PolicyName" --output table
+
+-------------------------------
+|  ListAttachedRolePolicies   |
++-----------------------------+
+|  ZLPS_S3_CSI_Driver_Policy  |
++-----------------------------+
+
+Verify S3 CSI driver installation
+99. kubectl get pods -n kube-system | Select-String "s3"
+
+s3-csi-controller-6b675fdfff-7hbz5    1/1     Running   0          30s
+s3-csi-node-2bwvj                     3/3     Running   0          30s
+s3-csi-node-z58qj                     3/3     Running   0          30s
+
+100. kubectl get csidrivers | Select-String "s3"
+
+s3.csi.aws.com    false            true             false             sts.amazonaws.com,pods.eks.amazonaws.com   true         Persistent   38s
+
+Create S3 PersistentVolume
+101. kubectl apply -f C:\Projects\aws-zl\yaml\s3-pv-archive.yaml
+
+persistentvolume/s3-pv-archive created
+
+Create S3 PersistentVolumeClaim
+102. kubectl apply -f C:\Projects\aws-zl\yaml\s3-pvc-archive.yaml
+
+persistentvolumeclaim/s3-archive-pvc created
+
+Verify S3 PV/PVC status
+103. kubectl get pv,pvc -n default | Select-String "s3"
+
+persistentvolume/s3-pv-archive                              100Gi      RWX            Retain           Bound    default/s3-archive-pvc                          <unset>                          11s
+persistentvolumeclaim/s3-archive-pvc           Bound    s3-pv-archive                              100Gi      RWX              <unset>                 8s
+
+Create test pod with S3 mount
+104. Get-Content C:\Projects\aws-zl\yaml\s3-test-pod.yaml | kubectl apply -f -
+
+pod/s3-test-pod created
+
+Wait for test pod to be ready
+105. kubectl wait --for=condition=Ready pod/s3-test-pod -n default --timeout=120s
+
+pod/s3-test-pod condition met
+
+Test write to S3 via mounted volume
+106. kubectl exec -n default s3-test-pod -- sh -c "echo 'Test from EKS pod at $(date)' > /s3-data/test-file.txt"
+
+Verify file appears in S3 bucket
+107. aws s3 ls s3://usw1-zlps-app-storage/
+
+2025-12-04 13:57:27         41 test-file.txt
+
+Test read from S3 mount
+108. kubectl exec -n default s3-test-pod -- cat /s3-data/test-file.txt
+
+Test from EKS pod at 12/04/2025 13:57:24
+
+Verify file content from S3 directly
+109. aws s3 cp s3://usw1-zlps-app-storage/test-file.txt -
+
+Test from EKS pod at 12/04/2025 13:57:24
+
+Verify S3 mount in pod
+110. kubectl exec -n default s3-test-pod -- df -h | Select-String "/s3-data"
+
+mountpoint-s3             8.0E         0      8.0E   0% /s3-data
+
+Cleanup test pod
+111. kubectl delete pod s3-test-pod -n default
+
+pod "s3-test-pod" deleted from default namespace
+
+View final storage status (EFS + S3)
+112. kubectl get pv,pvc -n default | Select-String "s3|efs"
+
+persistentvolume/efs-pv-zltikatemp                          10Gi       RWX            Retain           Bound    default/zltikatemp-efs           efs-sc         <unset>                          157m
+persistentvolume/efs-pv-zluilogs                            10Gi       RWX            Retain           Bound    default/zluilogs-efs             efs-sc         <unset>                          157m
+persistentvolume/efs-pv-zlvault                             10Gi       RWX            Retain           Bound    default/zlvault-efs              efs-sc         <unset>                          156m
+persistentvolume/s3-pv-archive                              100Gi      RWX            Retain           Bound    default/s3-archive-pvc                          <unset>                          82m
+persistentvolumeclaim/s3-archive-pvc           Bound    s3-pv-archive                              100Gi      RWX              <unset>                 82m
+persistentvolumeclaim/zltikatemp-efs           Bound    efs-pv-zltikatemp                          10Gi       RWX              efs-sc         <unset>                 154m
+persistentvolumeclaim/zluilogs-efs             Bound    efs-pv-zluilogs                            10Gi       RWX              efs-sc         <unset>                 154m
+persistentvolumeclaim/zlvault-efs              Bound    efs-pv-zlvault                             10Gi       RWX              efs-sc         <unset>                 154m
+
+
+Node Autoscaling Setup - Phase 1: Create IAM Policy
+
+Create Cluster Autoscaler IAM Policy
+113. aws iam create-policy --policy-name AmazonEKSClusterAutoscalerPolicy --policy-document file://C:\Projects\aws-zl\policies\ClusterAutoscalerPolicy.json --region us-west-1
+
+{
+    "Policy": {
+        "PolicyName": "AmazonEKSClusterAutoscalerPolicy",
+        "PolicyId": "ANPA6PS42ZO4JOPNZZUAJ",
+        "Arn": "arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy",
+        "Path": "/",
+        "DefaultVersionId": "v1",
+        "AttachmentCount": 0,
+        "PermissionsBoundaryUsageCount": 0,
+        "IsAttachable": true,
+        "CreateDate": "2025-12-04T19:12:46+00:00",
+        "UpdateDate": "2025-12-04T19:12:46+00:00"
+    }
+}
+
+Verify policy creation
+114. aws iam list-policies --query "Policies[?PolicyName=='AmazonEKSClusterAutoscalerPolicy']" --output table
+
+--------------------------------------------------------------------------------------------------------
+|                                             ListPolicies                                             |
++--------------------------------+---------------------------------------------------------------------+
+|  Arn                           |  arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy  |
+|  AttachmentCount               |  0                                                                  |
+|  CreateDate                    |  2025-12-04T19:12:46+00:00                                          |
+|  DefaultVersionId              |  v1                                                                 |
+|  IsAttachable                  |  True                                                               |
+|  Path                          |  /                                                                  |
+|  PermissionsBoundaryUsageCount |  0                                                                  |
+|  PolicyId                      |  ANPA6PS42ZO4JOPNZZUAJ                                              |
+|  PolicyName                    |  AmazonEKSClusterAutoscalerPolicy                                   |
+|  UpdateDate                    |  2025-12-04T19:12:46+00:00                                          |
++--------------------------------+---------------------------------------------------------------------+
+
+
+Node Autoscaling Setup - Phase 2: Create IAM Role with IRSA
+
+Get OIDC provider URL and extract OIDC ID
+115. aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+https://oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E
+
+OIDC ID extracted: C0CA93DEA5736D0F19AC427D5A0A123E
+
+Create IAM role with OIDC trust policy
+116. aws iam create-role --role-name eks-cluster-autoscaler-role --assume-role-policy-document file://C:\Projects\aws-zl\policies\cluster-autoscaler-trust-policy.json --region us-west-1
+
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "eks-cluster-autoscaler-role",
+        "RoleId": "AROA6PS42ZO4KJGOMP64C",
+        "Arn": "arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role",
+        "CreateDate": "2025-12-04T19:20:44+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "arn:aws:iam::995553364920:oidc-provider/oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                        "StringEquals": {
+                            "oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E:sub": "system:serviceaccount:kube-system:cluster-autoscaler",
+                            "oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E:aud": "sts.amazonaws.com"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+
+Verify role creation
+117. aws iam list-roles --query "Roles[?RoleName=='eks-cluster-autoscaler-role']" --output table
+
+-------------------------------------------------------------------------------------------------------------------------------
+|                                                                  ListRoles                                                  |
++-----------------------------------+-----------------------------------------------------------------------------------------+
+|  Arn                              |  arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role                             |
+|  CreateDate                       |  2025-12-04T19:20:44+00:00                                                              |
+|  MaxSessionDuration               |  3600                                                                                   |
+|  Path                             |  /                                                                                      |
+|  RoleId                           |  AROA6PS42ZO4KJGOMP64C                                                                  |
+|  RoleName                         |  eks-cluster-autoscaler-role                                                            |
++-----------------------------------+-----------------------------------------------------------------------------------------+
+
+Attach Cluster Autoscaler policy to the role
+118. aws iam attach-role-policy --role-name eks-cluster-autoscaler-role --policy-arn arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy --region us-west-1
+
+Verify policy attachment
+119. aws iam list-attached-role-policies --role-name eks-cluster-autoscaler-role --output table
+
+---------------------------------------------------------------------------------------
+|                              ListAttachedRolePolicies                               |
++-------------------------------------------------------------------------------------+
+||                                 AttachedPolicies                                  ||
+|+------------+----------------------------------------------------------------------+|
+||  PolicyArn |  arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy   ||
+||  PolicyName|  AmazonEKSClusterAutoscalerPolicy                                    ||
+|+------------+----------------------------------------------------------------------+|
+
+
+Node Autoscaling Setup - Phase 3: Create Service Account with IRSA
+
+Create service account using eksctl (creates IAM role and service account)
+120. eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --region us-west-1 --namespace kube-system --name cluster-autoscaler --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy --approve --override-existing-serviceaccounts
+
+2025-12-04 14:31:12 [ℹ]  3 existing iamserviceaccount(s) (kube-system/ebs-csi-controller-sa,kube-system/efs-csi-controller-sa,kube-system/s3-csi-controller-sa) will be excluded
+2025-12-04 14:31:12 [ℹ]  1 iamserviceaccount (kube-system/cluster-autoscaler) was included (based on the include/exclude rules)
+2025-12-04 14:31:12 [!]  metadata of serviceaccounts that exist in Kubernetes will be updated, as --override-existing-serviceaccounts was set
+2025-12-04 14:31:12 [ℹ]  1 task: {
+    2 sequential sub-tasks: {
+        create IAM role for serviceaccount "kube-system/cluster-autoscaler",
+        create serviceaccount "kube-system/cluster-autoscaler",
+    } }
+2025-12-04 14:31:12 [ℹ]  building iamserviceaccount stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-cluster-autoscaler"
+2025-12-04 14:31:13 [ℹ]  deploying stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-cluster-autoscaler"
+2025-12-04 14:31:13 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-cluster-autoscaler"
+2025-12-04 14:31:43 [ℹ]  waiting for CloudFormation stack "eksctl-usw1-zlps-eks-01-addon-iamserviceaccount-kube-system-cluster-autoscaler"
+2025-12-04 14:31:44 [ℹ]  created serviceaccount "kube-system/cluster-autoscaler"
+
+Verify service account creation
+121. kubectl get sa cluster-autoscaler -n kube-system -o yaml
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-WlvYkJ8a7uLz
+  creationTimestamp: "2025-12-04T19:31:44Z"
+  labels:
+    app.kubernetes.io/managed-by: eksctl
+  name: cluster-autoscaler
+  namespace: kube-system
+  resourceVersion: "190209"
+  uid: 31d6c23c-b27e-4dc2-b9f5-b77f642efc24
+
+Verify role annotation
+122. kubectl get sa cluster-autoscaler -n kube-system -o yaml | Select-String "role-arn"
+
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-WlvYkJ8a7uLz
+
+Describe service account
+123. kubectl describe sa cluster-autoscaler -n kube-system
+
+Name:                cluster-autoscaler
+Namespace:           kube-system
+Labels:              app.kubernetes.io/managed-by=eksctl
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-WlvYkJ8a7uLz
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+
+
+Node Autoscaling Setup - Phase 4: Tag Auto Scaling Groups (CRITICAL)
+
+ASG Name: eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b
+
+Apply cluster-autoscaler tags to Auto Scaling Group (after adding AutoScalingFullAccess permission)
+124. aws autoscaling create-or-update-tags --region us-west-1 --tags Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group Key=k8s.io/cluster-autoscaler/usw1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group
+
+SUCCESS - Tags applied
+
+Verify cluster-autoscaler tags on ASG
+125. aws autoscaling describe-auto-scaling-groups --region us-west-1 --auto-scaling-group-names eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b --query "AutoScalingGroups[0].Tags[?contains(Key,'cluster-autoscaler')]" --output table
+
+-------------------------------------------------------------------------------------------------------------------------------
+|                                                                  DescribeAutoScalingGroups                                  |
++---------------------------------------------+--------------------+-----------------------------------------------------------+---------------------+--------+
+|                     Key                     | PropagateAtLaunch  |                        ResourceId                         |    ResourceType     | Value  |
++---------------------------------------------+--------------------+-----------------------------------------------------------+---------------------+--------+
+|  k8s.io/cluster-autoscaler/enabled          |  True              |  eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b  |  auto-scaling-group |  true  |
+|  k8s.io/cluster-autoscaler/usw1-zlps-eks-01 |  True              |  eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b  |  auto-scaling-group |  owned |
++---------------------------------------------+--------------------+-----------------------------------------------------------+---------------------+--------+
+
+Verify ASG scaling configuration
+126. aws autoscaling describe-auto-scaling-groups --region us-west-1 --auto-scaling-group-names eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b --query "AutoScalingGroups[0].{Name:AutoScalingGroupName,MinSize:MinSize,MaxSize:MaxSize,DesiredCapacity:DesiredCapacity,Instances:length(Instances)}" --output table
+
+--------------------------------------------------------------------------------
+|                           DescribeAutoScalingGroups                          |
++-----------------+------------------------------------------------------------+
+|  DesiredCapacity|  2                                                         |
+|  Instances      |  2                                                         |
+|  MaxSize        |  2                                                         |
+|  MinSize        |  1                                                         |
+|  Name           |  eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b   |
++-----------------+------------------------------------------------------------+
+
+
+Node Autoscaling Setup - Phase 5: Update Node Group Scaling Limits
+
+Update node group scaling configuration (Min: 2, Max: 5, Desired: 2)
+127. eksctl scale nodegroup --cluster usw1-zlps-eks-01 --name uw1-zlps-ng-01 --nodes-min 2 --nodes-max 5 --nodes 2 --region us-west-1
+
+2025-12-04 14:39:32 [ℹ]  scaling nodegroup "uw1-zlps-ng-01" in cluster usw1-zlps-eks-01
+2025-12-04 14:39:34 [ℹ]  initiated scaling of nodegroup
+2025-12-04 14:39:34 [ℹ]  to see the status of the scaling run `eksctl get nodegroup --cluster usw1-zlps-eks-01 --region us-west-1 --name uw1-zlps-ng-01`
+
+Verify node group scaling configuration
+128. eksctl get nodegroup --cluster usw1-zlps-eks-01 --region us-west-1 --name uw1-zlps-ng-01
+
+CLUSTER                 NODEGROUP       STATUS  CREATED                 MIN SIZE        MAX SIZE        DESIRED CAPACITY      INSTANCE TYPE    IMAGE ID                ASG NAME                                                TYPE
+usw1-zlps-eks-01        uw1-zlps-ng-01  ACTIVE  2025-12-04T02:51:14Z    2               5               2                     m5.xlarge        AL2023_x86_64_STANDARD  eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b managed
+
+Verify scaling configuration via EKS API
+129. aws eks describe-nodegroup --cluster-name usw1-zlps-eks-01 --nodegroup-name uw1-zlps-ng-01 --region us-west-1 --query "nodegroup.scalingConfig" --output table
+
+---------------------------------------
+|          DescribeNodegroup          |
++-------------+-----------+-----------+
+| desiredSize |  maxSize  |  minSize  |
++-------------+-----------+-----------+
+|  2          |  5        |  2        |
++-------------+-----------+-----------+
+
+Verify ASG scaling limits were updated
+130. aws autoscaling describe-auto-scaling-groups --region us-west-1 --auto-scaling-group-names eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b --query "AutoScalingGroups[0].{Name:AutoScalingGroupName,MinSize:MinSize,MaxSize:MaxSize,DesiredCapacity:DesiredCapacity}" --output table
+
+--------------------------------------------------------------------------------
+|                           DescribeAutoScalingGroups                          |
++-----------------+------------------------------------------------------------+
+|  DesiredCapacity|  2                                                         |
+|  MaxSize        |  5                                                         |
+|  MinSize        |  2                                                         |
+|  Name           |  eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b   |
++-----------------+------------------------------------------------------------+
+
+
+Node Autoscaling Setup - Phase 6: Deploy Cluster Autoscaler
+
+Deploy Cluster Autoscaler to kube-system namespace
+131. kubectl apply -f C:\Projects\aws-zl\yaml\cluster-autoscaler.yaml
+
+Warning: resource serviceaccounts/cluster-autoscaler is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+serviceaccount/cluster-autoscaler configured
+clusterrole.rbac.authorization.k8s.io/cluster-autoscaler created
+clusterrolebinding.rbac.authorization.k8s.io/cluster-autoscaler created
+deployment.apps/cluster-autoscaler created
+
+Check autoscaler pod status
+132. kubectl get pods -n kube-system | Select-String "autoscaler"
+
+cluster-autoscaler-7cf8696b5c-vnfjs   1/1     Running   0          12s
+
+Verify autoscaler deployment
+133. kubectl -n kube-system get deployment cluster-autoscaler
+
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+cluster-autoscaler   1/1     1            1           18s
+
+Check autoscaler logs for ASG registration
+134. kubectl -n kube-system logs deployment/cluster-autoscaler --tail=100 | Select-String "eks-uw1"
+
+I1204 19:41:22.958930       1 auto_scaling_groups.go:165] Registering ASG eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b
+I1204 19:41:22.959009       1 auto_scaling_groups.go:487] Extracted autoscaling options from "eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b" ASG tags: map[]
+
+Verify autoscaler pod is running
+135. kubectl get pod -n kube-system -l app=cluster-autoscaler
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+cluster-autoscaler-7cf8696b5c-vnfjs   1/1     Running   0          42s
+
+Verify service account role annotation
+136. kubectl get sa cluster-autoscaler -n kube-system -o yaml | Select-String "role-arn"
+
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-WlvYkJ8a7uLz
+
+Check current nodes
+137. kubectl get nodes
+
+NAME                                          STATUS   ROLES    AGE   VERSION
+ip-192-168-26-34.us-west-1.compute.internal   Ready    <none>   16h   v1.34.2-eks-ecaa3a6
+ip-192-168-48-5.us-west-1.compute.internal    Ready    <none>   16h   v1.34.2-eks-ecaa3a6
+
+EKS Private Cluster Implementation
+
+Check current cluster endpoint configuration
+138. aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.resourcesVpcConfig.{PublicAccess:endpointPublicAccess,PrivateAccess:endpointPrivateAccess,VpcId:vpcId,SubnetIds:subnetIds}" --output json
+
+Output:
+{
+    "PublicAccess": true,
+    "PrivateAccess": false,
+    "VpcId": "vpc-07644cdd0224da4f3",
+    "SubnetIds": [
+        "subnet-01c24772a882a3a1b",
+        "subnet-06eb80d784d985109",
+        "subnet-0c861c54ffa4ddbe6",
+        "subnet-039bd7f435475c3dc"
+    ]
+}
+
+Check current LoadBalancer scheme
+139. aws elb describe-load-balancers --region us-west-1 --query "LoadBalancerDescriptions[].{Name:LoadBalancerName,DNS:DNSName,Scheme:Scheme,Subnets:Subnets}" --output json
+
+Output:
+[
+    {
+        "Name": "af2b9b3d5aff04257965343863aa781e",
+        "DNS": "af2b9b3d5aff04257965343863aa781e-1764276749.us-west-1.elb.amazonaws.com",
+        "Scheme": "internet-facing",
+        "Subnets": [
+            "subnet-01c24772a882a3a1b",
+            "subnet-06eb80d784d985109"
+        ]
+    }
+]
+
+Verify subnet tags
+140. aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-07644cdd0224da4f3" --region us-west-1 --query "Subnets[].{SubnetId:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock,Type:Tags[?Key=='Name']|[0].Value,ELBTag:Tags[?Key=='kubernetes.io/role/elb']|[0].Value,InternalELBTag:Tags[?Key=='kubernetes.io/role/internal-elb']|[0].Value}" --output table
+
+Identified subnets:
+Public: subnet-01c24772a882a3a1b (us-west-1a), subnet-06eb80d784d985109 (us-west-1c) - has kubernetes.io/role/elb=1
+Private: subnet-0c861c54ffa4ddbe6 (us-west-1a), subnet-039bd7f435475c3dc (us-west-1c) - has kubernetes.io/role/internal-elb=1
+
+Check route tables to confirm public vs private
+141. aws ec2 describe-route-tables --filters "Name=vpc-id,Values=vpc-07644cdd0224da4f3" --region us-west-1 --query "RouteTables[].{RouteTableId:RouteTableId,Subnets:Associations[].SubnetId,Routes:Routes[?GatewayId!=null].{Destination:DestinationCidrBlock,Gateway:GatewayId}}" --output json
+
+Confirmed:
+- Public subnets route 0.0.0.0/0 to igw-084975095eb3e77da (Internet Gateway)
+- Private subnets only have local routes
+
+Create SSM-enabled bastion instance in EKS VPC
+142. aws ec2 run-instances --image-id ami-07d1169edc703a15b --instance-type t3.micro --subnet-id subnet-0c861c54ffa4ddbe6 --iam-instance-profile Name=EC2SSMRoleProfile --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=eks-ssm-bastion},{Key=Purpose,Value=EKS-Private-Access}]' --region us-west-1 --output json
+
+Output:
+Instance created: i-0a113657ce642df1f
+Private IP: 192.168.87.174
+VPC: vpc-07644cdd0224da4f3
+Subnet: subnet-0c861c54ffa4ddbe6 (Private us-west-1a)
+IAM Role: EC2SSMRoleProfile (with AmazonSSMManagedInstanceCore)
+
+Wait for instance to be running
+143. aws ec2 wait instance-running --instance-ids i-0a113657ce642df1f --region us-west-1
+
+Verify instance status
+144. aws ec2 describe-instances --instance-ids i-0a113657ce642df1f --region us-west-1 --query "Reservations[].Instances[].{InstanceId:InstanceId,State:State.Name,PrivateIp:PrivateIpAddress,VpcId:VpcId,SubnetId:SubnetId}" --output json
+
+Output:
+{
+    "InstanceId": "i-0a113657ce642df1f",
+    "State": "running",
+    "PrivateIp": "192.168.87.174",
+    "VpcId": "vpc-07644cdd0224da4f3",
+    "SubnetId": "subnet-0c861c54ffa4ddbe6"
+}
+
+Update zlui service to internal LoadBalancer
+145. Modified zlui-service.yaml to add:
+annotations:
+  service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-0c861c54ffa4ddbe6,subnet-039bd7f435475c3dc"
+
+Delete existing internet-facing service
+146. kubectl delete svc zlui
+
+Output: service "zlui" deleted
+
+Create new internal LoadBalancer service
+147. kubectl apply -f c:\Projects\aws-zl\yaml\zlui-service.yaml
+
+Output: service/zlui created
+
+Verify internal LoadBalancer created
+148. kubectl get svc zlui -o wide
+
+Output:
+NAME   TYPE           CLUSTER-IP      EXTERNAL-IP                                                                       PORT(S)                       AGE
+zlui   LoadBalancer   10.100.78.234   internal-abc67fb83272c4084a030b610f4a79bd-306399535.us-west-1.elb.amazonaws.com   80:31829/TCP,8000:32633/TCP   8s
+
+Verify LoadBalancer scheme and subnets
+149. aws elb describe-load-balancers --region us-west-1 --query "LoadBalancerDescriptions[?contains(DNSName, 'internal-abc67fb83272c4084a030b610f4a79bd')].{Name:LoadBalancerName,DNS:DNSName,Scheme:Scheme,Subnets:Subnets}" --output json
+
+Output:
+{
+    "Name": "abc67fb83272c4084a030b610f4a79bd",
+    "DNS": "internal-abc67fb83272c4084a030b610f4a79bd-306399535.us-west-1.elb.amazonaws.com",
+    "Scheme": "internal",
+    "Subnets": [
+        "subnet-039bd7f435475c3dc",
+        "subnet-0c861c54ffa4ddbe6"
+    ]
+}
+
+SUCCESS: LoadBalancer is now internal and using only private subnets!
+
+Make EKS cluster private
+150. aws eks update-cluster-config --region us-west-1 --name usw1-zlps-eks-01 --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
+
+Output:
+{
+    "update": {
+        "id": "e707219d-09df-3452-897a-7e42fdd2984d",
+        "status": "InProgress",
+        "type": "EndpointAccessUpdate",
+        "params": [
+            {
+                "type": "EndpointPublicAccess",
+                "value": "false"
+            },
+            {
+                "type": "EndpointPrivateAccess",
+                "value": "true"
+            }
+        ],
+        "createdAt": "2025-12-04T15:18:39.238000-05:00",
+        "errors": []
+    }
+}
+
+Check update status
+151. aws eks describe-update --region us-west-1 --name usw1-zlps-eks-01 --update-id e707219d-09df-3452-897a-7e42fdd2984d
+
+Output: Status changed from "InProgress" to "Successful" after ~2 minutes
+
+Verify cluster is now private
+152. aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.resourcesVpcConfig.{PublicAccess:endpointPublicAccess,PrivateAccess:endpointPrivateAccess}" --output json
+
+Output:
+{
+    "PublicAccess": false,
+    "PrivateAccess": true
+}
+
+Test kubectl access from local machine (expected to fail)
+153. kubectl get nodes
+
+Output: Unable to connect to the server: dial tcp 52.52.57.169:443: i/o timeout
+
+EXPECTED: Local kubectl access is now blocked. EKS API is only accessible from within VPC.
+
+Next Steps:
+- Connect to SSM bastion instance (i-0a113657ce642df1f) via SSM Session Manager
+- Install kubectl and aws-cli on bastion
+- Configure kubeconfig for private EKS access
+- Test kubectl from bastion
+- Verify application is only accessible within VPC
+
+Create Linux Bastion for Port Forwarding (Application Testing)
+154. aws ec2 describe-images --owners amazon --filters "Name=name,Values=amzn2-ami-hvm-*-x86_64-gp2" "Name=state,Values=available" --query "Images | sort_by(@, &CreationDate) | [-1].{ImageId:ImageId,Name:Name}" --region us-west-1 --output json
+
+Output:
+{
+    "ImageId": "ami-02610f36df0c59544",
+    "Name": "amzn2-ami-hvm-2.0.20251121.0-x86_64-gp2"
+}
+
+155. aws ec2 run-instances --image-id ami-0d53d72369335a9d6 --instance-type t3.micro --subnet-id subnet-0c861c54ffa4ddbe6 --iam-instance-profile Name=EC2SSMRoleProfile --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=eks-linux-bastion},{Key=Purpose,Value=Port-Forwarding}]' --region us-west-1 --output json
+
+Output: Instance i-0db8baa2cdb746d4c created
+- Private IP: 192.168.65.215
+- Subnet: subnet-0c861c54ffa4ddbe6 (EKS VPC private subnet)
+- Security Group: sg-093f93c048992e038 (default)
+- Platform: Ubuntu 24.04 (SSM Agent pre-installed)
+
+Wait for SSM to become available
+156. aws ssm describe-instance-information --filters "Key=InstanceIds,Values=i-0db8baa2cdb746d4c" --region us-west-1 --output json
+
+Output:
+{
+    "PingStatus": "Online",
+    "PlatformType": "Linux",
+    "IPAddress": "192.168.65.215"
+}
+
+Start Port Forwarding to Internal LoadBalancer (zlui port 80)
+157. aws ssm start-session --target i-0db8baa2cdb746d4c --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{`"host`":[`"internal-abc67fb83272c4084a030b610f4a79bd-306399535.us-west-1.elb.amazonaws.com`"],`"portNumber`":[`"80`"],`"localPortNumber`":[`"8080`"]}" --region us-west-1
+
+Output:
+Port 8080 opened for sessionId zlpsmsa-ql6nvigdfzdked8nsdcue56b5e.
+Waiting for connections...
+
+SUCCESS: Application now accessible at http://localhost:8080
+- Port forwards from local machine port 8080 → Internal LB port 80 → zlui pods
+- Session runs in background terminal
+- Use same pattern for port 8000 if needed
+
+Setup Internet-Facing Application Load Balancer (ALB) for Public Access
+158. curl -o iam-policy-alb.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json
+
+Download IAM policy for AWS Load Balancer Controller
+
+159. aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam-policy-alb.json --region us-west-1 --output json
+
+Output: 
+Policy ARN: arn:aws:iam::995553364920:policy/AWSLoadBalancerControllerIAMPolicy
+
+160. eksctl create iamserviceaccount --cluster=usw1-zlps-eks-01 --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::995553364920:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve --region us-west-1
+
+Output: Created serviceaccount "kube-system/aws-load-balancer-controller" with IAM role
+
+161. kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+
+Install cert-manager (required for ALB controller webhooks)
+
+162. helm repo add eks https://aws.github.io/eks-charts; helm repo update
+
+Add EKS Helm repository
+
+163. helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=usw1-zlps-eks-01 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-west-1 --set vpcId=vpc-07644cdd0224da4f3
+
+Output: AWS Load Balancer controller installed!
+
+164. kubectl get deployment -n kube-system aws-load-balancer-controller
+
+Output: 2/2 replicas ready
+
+Create Ingress for Internet-Facing ALB
+165. Created yaml\zlui-ingress.yaml with:
+- Scheme: internet-facing
+- Target type: ip
+- Subnets: subnet-01c24772a882a3a1b,subnet-06eb80d784d985109 (public subnets)
+- Listen ports: HTTP 80
+- Backend: zlui service port 80
+
+166. kubectl apply -f yaml\zlui-ingress.yaml
+
+Output: ingress.networking.k8s.io/zlui-ingress created
+
+167. kubectl get ingress zlui-ingress
+
+Output:
+NAME           CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
+zlui-ingress   alb     *       k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com   80      9s
+
+168. aws elbv2 describe-load-balancers --region us-west-1 --query "LoadBalancers[?contains(LoadBalancerName, 'k8s-default-zluiingr')]"
+
+Output:
+- Name: k8s-default-zluiingr-e9951b35c2
+- DNS: k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com
+- Scheme: internet-facing
+- State: active
+- Subnets: Public subnets (subnet-01c24772a882a3a1b, subnet-06eb80d784d985109)
+
+SUCCESS: Public ALB provisioned and active
+Application accessible at: http://k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com
+
+Note: Application /ps context deployment still failing due to Java version mismatch
+- OAuth library compiled with Java 21 (class version 65.0)
+- Container running Java 17 (class version 61.0)
+- Docker image needs to be rebuilt with Java 21 or downgrade OAuth library
+
+
+
+
+
+
+

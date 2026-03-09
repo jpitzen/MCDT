@@ -1,0 +1,18 @@
+{
+  "commands": [
+    "Write-Host '=== Procrun Service Parameters (JVM Config) ==='",
+    "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\WOW6432Node\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc\\Parameters\\Java' -ErrorAction SilentlyContinue | Format-List",
+    "",
+    "Write-Host '=== Alternative Registry Path ==='",
+    "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc\\Parameters\\Java' -ErrorAction SilentlyContinue | Format-List",
+    "",
+    "Write-Host '=== Full Procrun Registry Tree ==='",
+    "Get-ChildItem -Path 'HKLM:\\SOFTWARE\\WOW6432Node\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc' -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.PSPath; Get-ItemProperty $_.PSPath | Format-List }",
+    "",
+    "Write-Host '=== Alternative Full Tree ==='", 
+    "Get-ChildItem -Path 'HKLM:\\SOFTWARE\\Apache Software Foundation\\Procrun 2.0\\zlmapisvc' -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.PSPath; Get-ItemProperty $_.PSPath | Format-List }",
+    "",
+    "Write-Host '=== Check zlmapiservice.bat for JVM options ==='",
+    "Get-Content 'E:\\ZipLip\\ZLMapiConnector\\bin\\zlmapiservice.bat'"
+  ]
+}

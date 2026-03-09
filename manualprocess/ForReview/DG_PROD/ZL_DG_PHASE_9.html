@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 9</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 9: Network & Ingress</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 9</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 9: Network & Ingress</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">5</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Network & Ingress Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 9</strong> configures the AWS Load Balancer Controller and creates an Ingress to expose the application via Application Load Balancer.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Install AWS Load Balancer Controller and configure IAM</li>
+                    <li data-steps="2">Create Ingress resource for application exposure</li>
+                    <li data-steps="3">Verify load balancer creation and routing</li>
+                    <li data-steps="4">Configure SSL/TLS termination (optional)</li>
+                    <li data-steps="5">Complete Phase 9 deployment checklist</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            
+            <!-- Bottom Navigation Controls (Always visible) -->
+            <div class="pagination-controls bottom-controls" id="bottom-nav">
+                <button class="nav-btn prev-btn" id="prev-btn-bottom" onclick="navigateStep(-1)">
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="bottom-step-title">Step 1 of 5</div>
+                <button class="nav-btn next-btn" id="next-btn-bottom" onclick="navigateStep(1)">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript -->
+<script>
+        // Step data for Phase 9
+        const stepData = {
+            1: {
+                title: "Install AWS Load Balancer Controller",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 49: Install AWS Load Balancer Controller</h3>
+                        <div class="step-description">Installs the AWS Load Balancer Controller to manage ALBs for Kubernetes Ingress resources.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates IAM service account for ALB controller</li>
+                            <li>Installs ALB controller via Helm</li>
+                            <li>Enables automatic ALB provisioning for Ingress resources</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Create IAM Service Account:</h4>
+                        <div class="code-block">
+                            <pre><code>eksctl create iamserviceaccount --cluster use1-zlps-eks-01 --namespace kube-system --name aws-load-balancer-controller --attach-policy-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy --approve</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Install via Helm:</h4>
+                        <div class="code-block">
+                            <pre><code>helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=use1-zlps-eks-01 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Installation:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get deployment -n kube-system aws-load-balancer-controller</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+aws-load-balancer-controller   1/1     1            1           30s</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>Why ALB Ingress Is Needed</h4>
+                        <ul>
+                            <li><strong>External Access:</strong> Makes the application accessible from the internet</li>
+                            <li><strong>SSL/TLS Termination:</strong> Can handle HTTPS traffic (with ACM certificates)</li>
+                            <li><strong>Load Balancing:</strong> Distributes traffic across multiple UI pods</li>
+                            <li><strong>Health Checks:</strong> Automatically routes away from unhealthy pods</li>
+                        </ul>
+                    </div>
+                `
+            },
+            2: {
+                title: "Create Ingress for Public Access",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 50: Create Ingress for Public Access</h3>
+                        <div class="step-description">Creates a Kubernetes Ingress resource that will automatically provision an internet-facing ALB.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates Ingress resource with ALB annotations</li>
+                            <li>Automatically provisions internet-facing ALB</li>
+                            <li>Routes traffic from ALB to ZL UI service</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Apply Ingress:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/zlui-ingress.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>The Ingress configuration is stored in <code>zlui-ingress.yaml</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlui-ingress')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlui-ingress.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlui-ingress" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlui-ingress.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlui-ingress')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlui-ingress">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Ingress Configuration:</strong>
+                        <ul>
+                            <li><strong>Scheme:</strong> internet-facing (accessible from internet)</li>
+                            <li><strong>Target Type:</strong> ip (routes to pod IPs)</li>
+                            <li><strong>Subnets:</strong> Public subnets for ALB placement</li>
+                            <li><strong>Health Check:</strong> Root path (/) for health monitoring</li>
+                        </ul>
+                    </div>
+                `
+            },
+            3: {
+                title: "Verify Load Balancer & Application Access",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 51: Verify Load Balancer & Application Access</h3>
+                        <div class="step-description">Verifies that the ALB has been created and the application is accessible.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Checks Ingress resource status</li>
+                            <li>Verifies ALB creation and DNS</li>
+                            <li>Confirms application accessibility</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Check Ingress Status:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get ingress zlui-ingress</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME           CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
+zlui-ingress   alb     *       k8s-default-zluiingr-xxxxxxxxx.us-east-1.elb.amazonaws.com   80      5m</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Get ALB Details:</h4>
+                        <div class="code-block">
+                            <pre><code>aws elbv2 describe-load-balancers --region us-east-1 --query "LoadBalancers[?contains(DNSName, 'zluiingr')].[DNSName,State.Code,VpcId]" --output table</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="success-section">
+                        <h4>✅ Application Access URL</h4>
+                        <p><strong>Access your ZL Application at:</strong></p>
+                        <p><code>http://&lt;YOUR_ALB_DNS_NAME&gt;</code></p>
+                        <div class="info-section">
+                            <strong>💡 Note:</strong> It may take 2-5 minutes for the ALB to become active and DNS to propagate.
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Test Application Access:</h4>
+                        <div class="code-block">
+                            <pre><code>curl -I http://&lt;YOUR_ALB_DNS_NAME&gt;</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>HTTP/1.1 200 OK
+Server: awselb/2.0
+Content-Type: text/html
+...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>🔍 Troubleshooting</h4>
+                        <ul>
+                            <li><strong>502 Bad Gateway:</strong> Check if zlui pods are Running and healthy</li>
+                            <li><strong>No ADDRESS:</strong> Check ALB controller logs: <code>kubectl logs -n kube-system deployment/aws-load-balancer-controller</code></li>
+                            <li><strong>Timeout:</strong> Verify security groups allow traffic on port 80</li>
+                        </ul>
+                    </div>
+                `
+            },
+            4: {
+                title: "Configure SSL/TLS (Optional)",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 52: Configure SSL/TLS Termination (Optional)</h3>
+                        <div class="step-description">Configures HTTPS access with AWS Certificate Manager (ACM) for production deployments.</div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Prerequisites</h4>
+                        <ul>
+                            <li>ACM certificate created in us-east-1 region</li>
+                            <li>Domain name configured in Route 53 or external DNS</li>
+                            <li>Certificate ARN available</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Updates Ingress with ACM certificate annotation</li>
+                            <li>Configures HTTPS listener on port 443</li>
+                            <li>Enables automatic HTTP to HTTPS redirect</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 HTTPS Configuration File</h4>
+                        <p>The HTTPS-enabled Ingress configuration is stored in <code>zlui-ingress-https.yaml</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlui-ingress-https')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlui-ingress-https.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlui-ingress-https" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlui-ingress-https.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlui-ingress-https')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlui-ingress-https">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Update Ingress with HTTPS:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/zlui-ingress-https.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 SSL/TLS Configuration:</strong>
+                        <ul>
+                            <li><strong>Certificate ARN:</strong> Replace with your ACM certificate ARN</li>
+                            <li><strong>SSL Redirect:</strong> Automatically redirects HTTP (80) to HTTPS (443)</li>
+                            <li><strong>Listen Ports:</strong> ALB listens on both 80 and 443</li>
+                            <li><strong>Production Ready:</strong> Enables encrypted traffic for security</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-section">
+                        <h4>✅ HTTPS Access</h4>
+                        <p>After applying, access your application at:</p>
+                        <p><code>https://&lt;YOUR_DOMAIN_NAME&gt;</code></p>
+                        <p>HTTP requests will automatically redirect to HTTPS.</p>
+                    </div>
+                `
+            },
+            5: {
+                title: 'Phase 9 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 9 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 10, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> AWS Load Balancer Controller installed</label><br>
+                            <label><input type="checkbox"> Controller pods running in kube-system namespace</label><br>
+                            <label><input type="checkbox"> Kubernetes Services created (zlui, zlserver, zltika)</label><br>
+                            <label><input type="checkbox"> Ingress resource deployed with path-based routing</label><br>
+                            <label><input type="checkbox"> ALB provisioned successfully</label><br>
+                            <label><input type="checkbox"> ALB DNS name obtained and documented</label><br>
+                            <label><input type="checkbox"> Application accessible via ALB URL</label><br>
+                            <label><input type="checkbox"> All application paths routing correctly (/ui, /zlserver)</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 10:</strong> Once all items are checked, you can proceed to Phase 10 (Cluster Autoscaling).
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'zlui-ingress.yaml': `apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zlui-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: <YOUR_PUBLIC_SUBNET_1>,<YOUR_PUBLIC_SUBNET_2>
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zlui
+            port:
+              number: 80`,
+            'zlui-ingress-https.yaml': `apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zlui-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:995553364920:certificate/719d21b9-90fc-4764-bf32-cbe1995bde79
+    alb.ingress.kubernetes.io/healthcheck-path: /
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zlui
+            port:
+              number: 8080`
+        };
+
+        // Toggle YAML content visibility
+        function toggleYamlContent(id) {
+            const contentDiv = document.getElementById(`yaml-content-${id}`);
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const filename = id + '.yaml';
+
+            if (contentDiv.style.display === 'none') {
+                if (fileContents[filename]) {
+                    codeElement.textContent = fileContents[filename];
+                    contentDiv.style.display = 'block';
+                } else {
+                    codeElement.textContent = `Error: ${filename} content not found`;
+                    contentDiv.style.display = 'block';
+                }
+            } else {
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy YAML content to clipboard
+        function copyYamlContent(id) {
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Download YAML file
+        function downloadYamlFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'text/yaml' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+            
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < currentStep) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.disabled = currentStep === totalSteps;
+
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+
+            // Update bottom navigation buttons
+            document.getElementById('prev-btn-bottom').disabled = currentStep === 1;
+            if (currentStep === totalSteps) {
+                document.getElementById('next-btn-bottom').innerHTML = '<a href="ZL_DG_PHASE_10.html" style="color: inherit; text-decoration: none;">Next Phase →</a>';
+            } else {
+                document.getElementById('next-btn-bottom').innerHTML = 'Next Step →';
+                document.getElementById('next-btn-bottom').disabled = false;
+            }
+            document.getElementById('bottom-step-title').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+            // Update step info
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('step-title').textContent = stepData[currentStep].title;
+
+            // Update progress bar
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Load step content
+            document.getElementById('step-container').innerHTML = stepData[currentStep].content;
+
+            // Save progress
+            localStorage.setItem('zl-phase9-current-step', currentStep);
+            window.location.hash = `step-${currentStep}`;
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Re-initialize copy buttons for the new content
+            initializeCopyButtons();
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners for navigation buttons
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+
+            // Event listeners for step dots
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    showStep(parseInt(this.dataset.step));
+                });
+            });
+            
+            // Check for saved progress or URL hash
+            const savedStep = localStorage.getItem('zl-phase9-current-step');
+            const hashMatch = window.location.hash.match(/step-(\d+)/);
+            
+            if (hashMatch) {
+                const stepFromHash = parseInt(hashMatch[1]);
+                if (stepFromHash >= 1 && stepFromHash <= totalSteps) {
+                    showStep(stepFromHash);
+                    return;
+                }
+            }
+            
+            if (savedStep) {
+                const stepNum = parseInt(savedStep);
+                if (stepNum >= 1 && stepNum <= totalSteps) {
+                    showStep(stepNum);
+                    return;
+                }
+            }
+            
+            // Initial render
+            showStep(1);
+        });
+
+        // Utility functions
+        function copyToClipboard(btn) {
+            const codeBlock = btn.parentElement.querySelector('pre');
+            if (!codeBlock) return;
+            
+            const text = codeBlock.textContent;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showCopied(btn))
+                    .catch(() => fallbackCopy(text, btn));
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopied(btn) {
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Copied!';
+            btn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        function initializeCopyButtons() {
+            // Remove any existing copy buttons to avoid duplicates
+            document.querySelectorAll('.copy-btn').forEach(btn => btn.remove());
+            
+            // Add copy buttons to all code blocks
+            document.querySelectorAll('pre').forEach(pre => {
+                if (pre.closest('.code-block')) {
+                    const codeBlock = pre.closest('.code-block');
+                    if (!codeBlock.querySelector('.copy-btn')) {
+                        const copyBtn = document.createElement('button');
+                        copyBtn.className = 'copy-btn';
+                        copyBtn.textContent = '📋 Copy';
+                        copyBtn.onclick = function() { copyToClipboard(this); };
+                        codeBlock.appendChild(copyBtn);
+                    }
+                }
+            });
+        }
+
+        function toggleYaml(btn) {
+            const panel = btn.nextElementSibling;
+            if (panel && panel.classList.contains('yaml-panel')) {
+                panel.classList.toggle('show');
+                btn.classList.toggle('active');
+                btn.textContent = panel.classList.contains('show') ? 'Hide YAML' : 'View YAML';
+            }
+        }
+
+        function copyYamlContent(btn) {
+            const panel = btn.closest('.yaml-panel');
+            if (!panel) return;
+            
+            const pre = panel.querySelector('pre');
+            if (!pre) return;
+            
+            const text = pre.textContent;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showCopied(btn))
+                    .catch(() => fallbackCopy(text, btn));
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+
+
+

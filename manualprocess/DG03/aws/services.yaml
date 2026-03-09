@@ -1,0 +1,363 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2025-12-15T19:30:21Z"
+    labels:
+      component: apiserver
+      provider: kubernetes
+    name: kubernetes
+    namespace: default
+    resourceVersion: "206"
+    uid: 437b62a3-1ffe-49be-a771-34dce91f9140
+  spec:
+    clusterIP: 10.100.0.1
+    clusterIPs:
+    - 10.100.0.1
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlzookeeper"},"name":"zk-cs","namespace":"default"},"spec":{"ports":[{"name":"client","port":2181}],"selector":{"app":"zlzookeeper"}}}
+    creationTimestamp: "2025-12-22T18:01:42Z"
+    labels:
+      app: zlzookeeper
+    name: zk-cs
+    namespace: default
+    resourceVersion: "2107044"
+    uid: 2d451bf7-a901-4e2c-8b01-584893db4b50
+  spec:
+    clusterIP: 10.100.94.28
+    clusterIPs:
+    - 10.100.94.28
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: client
+      port: 2181
+      protocol: TCP
+      targetPort: 2181
+    selector:
+      app: zlzookeeper
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlzookeeper"},"name":"zk-hs","namespace":"default"},"spec":{"clusterIP":"None","ports":[{"name":"client","port":2181},{"name":"server","port":2888},{"name":"leader-election","port":3888}],"selector":{"app":"zlzookeeper"}}}
+    creationTimestamp: "2025-12-22T18:01:42Z"
+    labels:
+      app: zlzookeeper
+    name: zk-hs
+    namespace: default
+    resourceVersion: "2107043"
+    uid: 23da3895-b68b-4f5f-b346-d33e1dbb398d
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: client
+      port: 2181
+      protocol: TCP
+      targetPort: 2181
+    - name: server
+      port: 2888
+      protocol: TCP
+      targetPort: 2888
+    - name: leader-election
+      port: 3888
+      protocol: TCP
+      targetPort: 3888
+    selector:
+      app: zlzookeeper
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlsearch"},"name":"zlsearch","namespace":"default"},"spec":{"ports":[{"name":"http","port":80,"targetPort":80}],"selector":{"app":"zlsearch"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-22T18:14:22Z"
+    labels:
+      app: zlsearch
+    name: zlsearch
+    namespace: default
+    resourceVersion: "2110763"
+    uid: b719ea16-61e8-4f95-a5c0-2dd9524a3ac6
+  spec:
+    clusterIP: 10.100.57.122
+    clusterIPs:
+    - 10.100.57.122
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: zlsearch
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlsearch"},"name":"zlsearch-service","namespace":"default"},"spec":{"ports":[{"name":"http","port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"app":"zlsearch"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-22T18:01:43Z"
+    labels:
+      app: zlsearch
+    name: zlsearch-service
+    namespace: default
+    resourceVersion: "2106981"
+    uid: c18b151a-f0f3-46c9-8fa8-81efb8702cbd
+  spec:
+    clusterIP: 10.100.82.195
+    clusterIPs:
+    - 10.100.82.195
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: zlsearch
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlserver"},"name":"zlserver-service","namespace":"default"},"spec":{"ports":[{"name":"http","port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"app":"zlserver"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-22T18:01:43Z"
+    labels:
+      app: zlserver
+    name: zlserver-service
+    namespace: default
+    resourceVersion: "2106985"
+    uid: a97a31ff-2841-41eb-b6d6-5bc2c530a89e
+  spec:
+    clusterIP: 10.100.149.10
+    clusterIPs:
+    - 10.100.149.10
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: zlserver
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zltika"},"name":"zltika","namespace":"default"},"spec":{"ports":[{"name":"tika","port":9972,"targetPort":9972}],"selector":{"app":"zltika"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-22T18:14:04Z"
+    labels:
+      app: zltika
+    name: zltika
+    namespace: default
+    resourceVersion: "2110621"
+    uid: ab32064d-74e9-4c67-84a3-1db4d9b96a70
+  spec:
+    clusterIP: 10.100.68.188
+    clusterIPs:
+    - 10.100.68.188
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: tika
+      port: 9972
+      protocol: TCP
+      targetPort: 9972
+    selector:
+      app: zltika
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zltika-service"},"name":"zltika-service","namespace":"default"},"spec":{"ports":[{"name":"9972-9972","port":9972,"protocol":"TCP","targetPort":9972}],"selector":{"app":"zltika-service"},"type":"ClusterIP"},"status":{"loadBalancer":{}}}
+    creationTimestamp: "2025-12-22T19:59:41Z"
+    labels:
+      app: zltika-service
+    name: zltika-service
+    namespace: default
+    resourceVersion: "2135864"
+    uid: 1106a072-7d70-4b95-808c-440f5dc0ac6a
+  spec:
+    clusterIP: 10.100.161.9
+    clusterIPs:
+    - 10.100.161.9
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: 9972-9972
+      port: 9972
+      protocol: TCP
+      targetPort: 9972
+    selector:
+      app: zltika
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlui"},"name":"zlui","namespace":"default"},"spec":{"ports":[{"name":"http","port":8081,"targetPort":80},{"name":"admin","port":8000,"targetPort":8000},{"name":"cluster","port":9975,"targetPort":9975},{"name":"internal","port":9970,"targetPort":9970}],"selector":{"app":"zlui"},"type":"LoadBalancer"}}
+    creationTimestamp: "2025-12-22T18:14:16Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app: zlui
+    name: zlui
+    namespace: default
+    resourceVersion: "2110736"
+    uid: 6af2c39c-d678-4a4e-be0c-b94176f6bc50
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.100.53.30
+    clusterIPs:
+    - 10.100.53.30
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 30262
+      port: 8081
+      protocol: TCP
+      targetPort: 80
+    - name: admin
+      nodePort: 32065
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    - name: cluster
+      nodePort: 32171
+      port: 9975
+      protocol: TCP
+      targetPort: 9975
+    - name: internal
+      nodePort: 30807
+      port: 9970
+      protocol: TCP
+      targetPort: 9970
+    selector:
+      app: zlui
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - hostname: a6af2c39cd6784a4ebe0cb94176f6bc5-748792917.us-east-1.elb.amazonaws.com
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"zlui"},"name":"zlui-service","namespace":"default"},"spec":{"ports":[{"name":"http","port":8080,"protocol":"TCP","targetPort":8080},{"name":"https","port":8443,"protocol":"TCP","targetPort":8443}],"selector":{"app":"zlui"},"type":"LoadBalancer"}}
+    creationTimestamp: "2025-12-22T18:01:43Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app: zlui
+    name: zlui-service
+    namespace: default
+    resourceVersion: "2131299"
+    uid: 0f6d05f1-097a-42ca-8353-6c53a1b9e352
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.100.40.3
+    clusterIPs:
+    - 10.100.40.3
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 30804
+      port: 8080
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      nodePort: 32703
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    selector:
+      app: zlui
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - hostname: a0f6d05f1097a42ca83536c53a1b9e35-458982103.us-east-1.elb.amazonaws.com
+kind: List
+metadata:
+  resourceVersion: ""

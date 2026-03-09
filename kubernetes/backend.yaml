@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlaws-backend
+  namespace: zlaws
+  labels:
+    app: zlaws-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zlaws-backend
+  template:
+    metadata:
+      labels:
+        app: zlaws-backend
+    spec:
+      containers:
+      - name: backend
+        image: zlaws-backend:v1
+        imagePullPolicy: Never  # For Minikube local images
+        ports:
+        - containerPort: 5000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        - secretRef:
+            name: backend-secret
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 15"]
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlaws-backend
+  namespace: zlaws
+  labels:
+    app: zlaws-backend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  selector:
+    app: zlaws-backend

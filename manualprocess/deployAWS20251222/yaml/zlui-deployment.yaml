@@ -1,0 +1,111 @@
+# ZLUI Deployment for AWS EKS
+# *** IMAGE CHANGE: Uses zlserver:k8s-20251222 (same base as zlserver) ***
+# CLUSTER_NAME: UI
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlui
+  labels:
+    name: zlui
+    app: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          # Using K8s-optimized image with Java 21
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLUSTER_NAME
+              value: "UI"
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: PATH
+              value: "/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            - name: TIKA_HOST
+              value: "zltika-service"
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: zltikatemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+            - name: zluilogs
+              mountPath: /opt/ZipLip/logs
+            - name: zlvault
+              mountPath: /var/opt/zlvault
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              subPath: tcdb.cfg
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zltikatemp
+          emptyDir: {}
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui
+  labels:
+    app: zlui
+spec:
+  selector:
+    app: zlui
+  ports:
+    - port: 8081
+      targetPort: 80
+      name: http
+    - port: 8000
+      targetPort: 8000
+      name: admin
+    - port: 9975
+      targetPort: 9975
+      name: cluster
+    - port: 9970
+      targetPort: 9970
+      name: internal
+  type: LoadBalancer

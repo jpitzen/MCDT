@@ -1,0 +1,38 @@
+# Simplified zlapp-config for Kubernetes-optimized images
+# The -k8s images have defaults for most settings
+# This ConfigMap only needs application-specific overrides
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config
+data:
+  # ============================================================
+  # APPLICATION SETTINGS
+  # ============================================================
+  # IMPORTANT: Do NOT include ZOO_SERVERS - handled by image
+  
+  # Tika connection (image will template DocumentConversion.xml)
+  TIKA_HOST: "zltika"
+  TIKA_PORT: "9972"
+  __tika.ZLTikaService.Host: "zltika"
+  __tika.ZLTikaService.Port: "9972"
+  
+  # Application configuration
+  _isStandalone: "false"
+  _isKubernetes: "true"
+  
+  # Logging
+  LOG_LEVEL: "INFO"
+  
+  # ============================================================
+  # DATABASE CONNECTION
+  # ============================================================
+  # Database settings - use db-secret for password
+  DB_HOST: "your-rds-endpoint.us-east-1.rds.amazonaws.com"
+  DB_PORT: "1433"
+  DB_NAME: "ZLDB"
+  DB_USER: "zladmin"
+  
+  # JDBC URL (password injected separately)
+  _db.param.jdbcUrl: "jdbc:sqlserver://your-rds-endpoint.us-east-1.rds.amazonaws.com:1433;TrustServerCertificate=true"
+  _db.param.DatabaseName: "ZLDB"

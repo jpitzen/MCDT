@@ -1,0 +1,31 @@
+# Test configuration for AWS EKS
+# This is a minimal configuration to validate Terraform works
+
+cluster_name       = "zlaws-test-cluster"
+environment        = "test"
+aws_region         = "us-east-1"
+kubernetes_version = "1.27"
+
+# Minimal node configuration for testing
+node_count         = 1
+min_node_count     = 1
+max_node_count     = 1
+node_instance_type = "t3.micro"
+enable_autoscaling = false
+
+# Network configuration
+create_vpc               = true
+aws_vpc_cidr             = "10.0.0.0/16"
+aws_availability_zones   = ["us-east-1a"]
+
+# Feature flags
+enable_monitoring = false
+enable_logging    = false
+
+# Tags
+common_tags = {
+  Project     = "ZLAWS"
+  Environment = "Test"
+  ManagedBy   = "Terraform"
+  Purpose     = "Installation-Verification"
+}

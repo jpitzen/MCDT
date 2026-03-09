@@ -1,0 +1,1912 @@
+================================================================================
+ZL APPLICATION AWS EKS DEPLOYMENT GUIDE
+================================================================================
+Version: 1.0
+Last Updated: December 10, 2025
+Cluster: usw1-zlps-eks-01
+Region: us-west-1
+================================================================================
+
+EXECUTIVE SUMMARY
+-----------------
+
+ABOUT THIS DOCUMENT
+This document provides a comprehensive guide for deploying the ZL Application
+on Amazon Elastic Kubernetes Service (EKS). It captures all steps taken during
+the initial deployment, including AWS resource provisioning, Kubernetes 
+configuration, storage setup, and application deployment.
+
+PURPOSE
+- Serve as a reference for the deployed ZL application infrastructure
+- Enable reproducibility for future deployments or disaster recovery
+- Document architectural decisions and configurations
+- Provide troubleshooting guidance for common issues
+
+DEPLOYMENT OVERVIEW
+The ZL Application is deployed as a containerized microservices architecture:
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                        AWS EKS Cluster                               │
+  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────────────────────┐ │
+  │  │  zlui   │  │zlserver │  │ zltika  │  │ zlzookeeper (x3 pods)   │ │
+  │  │  (UI)   │  │(Backend)│  │ (Docs)  │  │ (Coordination)          │ │
+  │  └────┬────┘  └────┬────┘  └────┬────┘  └────────────┬────────────┘ │
+  │       │            │            │                    │              │
+  │       └────────────┴────────────┴────────────────────┘              │
+  │                              │                                       │
+  │  ┌───────────────────────────┴───────────────────────────────────┐  │
+  │  │                    Shared EFS Storage                          │  │
+  │  │   /zlvault  /zluilogs  /zltikatemp  /zlserverlogs             │  │
+  │  └───────────────────────────────────────────────────────────────┘  │
+  └─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+                    ┌───────────────────────────────┐
+                    │   RDS SQL Server (ZLDB)       │
+                    │   usw1-zlps-msexpsql-01-eks   │
+                    └───────────────────────────────┘
+
+KEY COMPONENTS
+| Component          | Technology              | Purpose                        |
+|--------------------|-------------------------|--------------------------------|
+| Container Runtime  | AWS EKS 1.34            | Kubernetes orchestration       |
+| Worker Nodes       | m5.xlarge (2-5 nodes)   | Application compute            |
+| Container Registry | AWS ECR                 | Docker image storage           |
+| Shared Storage     | AWS EFS                 | Logs, temp files, vault data   |
+| Block Storage      | AWS EBS (gp3)           | ZooKeeper persistent data      |
+| Database           | AWS RDS SQL Server      | Application database           |
+| Load Balancer      | AWS ALB                 | Public internet access         |
+| DNS                | Kubernetes internal DNS | Service discovery              |
+
+ACCESS INFORMATION
+| Resource           | Endpoint/URL                                                    |
+|--------------------|-----------------------------------------------------------------|
+| Application URL    | http://k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com |
+| EKS Cluster        | usw1-zlps-eks-01 (us-west-1)                                    |
+| Database           | usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com:1433 |
+| ECR Repository     | 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01    |
+
+DOCUMENT STRUCTURE
+- Phases 1-11: Step-by-step deployment commands with explanations
+- Appendix A: Complete YAML file contents for all Kubernetes resources
+- Appendix B: EFS access points and Vault directory structure
+- Appendix C: ConfigMaps and Secrets configuration
+- Appendix D: Services and networking architecture
+
+SHELL/TERMINAL COMPATIBILITY REFERENCE
+--------------------------------------
+This document includes commands for multiple shell environments. Each command
+section indicates which shell(s) are supported:
+
+| Shell             | OS           | Line Continuation | Variable Substitution |
+|-------------------|--------------|-------------------|----------------------|
+| PowerShell        | Windows      | ` (backtick)      | $VAR or $env:VAR     |
+| CMD               | Windows      | ^ (caret)         | %VAR%                |
+| Bash              | Linux/macOS  | \ (backslash)     | $VAR or ${VAR}       |
+
+IMPORTANT NOTES:
+- "All Shells" means the command works identically in PowerShell, CMD, and Bash
+- kubectl and eksctl commands generally work the same across all shells
+- AWS CLI commands may need different quoting/escaping per shell
+- Commands that run inside containers (kubectl exec) use bash regardless of host shell
+- When in doubt, use the shell-specific example provided
+
+QUICK REFERENCE:
+  PowerShell: Use backticks (`) for line continuation, $() for command substitution
+  CMD:        Single-line commands preferred, or use ^ for continuation
+  Bash:       Use backslash (\) for line continuation, $() for command substitution
+
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+1. ENVIRONMENT OVERVIEW
+2. PHASE 1: EKS CLUSTER CREATION
+3. PHASE 2: ECR SETUP AND IMAGE MANAGEMENT
+4. PHASE 3: EBS CSI DRIVER INSTALLATION
+5. PHASE 4: EFS CSI DRIVER AND STORAGE
+6. PHASE 5: S3 CSI DRIVER (OPTIONAL)
+7. PHASE 6: DATABASE CONFIGURATION
+8. PHASE 7: ZOOKEEPER DEPLOYMENT
+9. PHASE 8: APPLICATION DEPLOYMENT (zltika, zlserver, zlui)
+10. PHASE 9: NETWORK AND INGRESS CONFIGURATION
+11. PHASE 10: CLUSTER AUTOSCALING
+12. PHASE 11: POST-DEPLOYMENT CONFIGURATION
+13. TROUBLESHOOTING
+
+APPENDIX A: YAML FILE REFERENCE
+APPENDIX B: EFS ACCESS POINTS AND VAULT MOUNT STRUCTURE
+APPENDIX C: CONFIGMAPS AND SECRETS
+APPENDIX D: SERVICES AND NETWORKING
+
+================================================================================
+1. ENVIRONMENT OVERVIEW
+================================================================================
+
+AWS Resources Created:
+----------------------
+| Resource Type          | Name/ID                                            | Purpose                    |
+|------------------------|----------------------------------------------------|----------------------------|
+| EKS Cluster            | usw1-zlps-eks-01                                   | Kubernetes control plane   |
+| Node Group             | uw1-zlps-ng-01                                     | Worker nodes (m5.xlarge)   |
+| VPC                    | vpc-07644cdd0224da4f3                              | Network isolation          |
+| ECR Repository         | uw1-zlps-ecr-01                                    | Container image storage    |
+| EFS File System        | fs-0a4ec87cd91178047 (usw1-zlps-efs-01)            | Shared persistent storage  |
+| RDS Instance           | usw1-zlps-msexpsql-01-eks                          | SQL Server database        |
+| S3 Bucket              | usw1-zlps-app-storage                              | Archive storage            |
+| ALB                    | k8s-default-zluiingr-e9951b35c2                    | Public load balancer       |
+
+Network Configuration:
+----------------------
+| Subnet ID                   | Type    | Availability Zone | CIDR             |
+|-----------------------------|---------|-------------------|------------------|
+| subnet-01c24772a882a3a1b    | Public  | us-west-1a        | 192.168.0.0/19   |
+| subnet-06eb80d784d985109    | Public  | us-west-1c        | 192.168.32.0/19  |
+| subnet-0c861c54ffa4ddbe6    | Private | us-west-1a        | 192.168.64.0/19  |
+| subnet-039bd7f435475c3dc    | Private | us-west-1c        | 192.168.96.0/19  |
+
+Security Groups:
+----------------
+| Group ID                | Name                                                    | Purpose              |
+|-------------------------|---------------------------------------------------------|----------------------|
+| sg-0afb0a3f0c30ba84d    | eksctl-usw1-zlps-eks-01-cluster-ClusterSharedNodeSG     | Node communication   |
+| sg-07a77dc047e9fb6fe    | eks-cluster-sg-usw1-zlps-eks-01-6457660                 | Cluster SG           |
+
+Docker Images:
+--------------
+| Image Tag                    | Purpose                           |
+|------------------------------|-----------------------------------|
+| zlserver-11.0.1-b123         | ZL Server application             |
+| zltika-11.0.1-b123           | Document conversion service       |
+| zlzookeeper-11.0.1-b123      | ZooKeeper coordination service    |
+
+================================================================================
+2. PHASE 1: EKS CLUSTER CREATION
+================================================================================
+
+STEP 1: Create EKS Cluster
+--------------------------
+PURPOSE: Creates a managed Kubernetes cluster with a node group
+SHELL: Works in PowerShell, Bash, or CMD (use appropriate line continuation)
+
+# PowerShell / Bash (use backtick ` for PowerShell, backslash \ for Bash)
+eksctl create cluster `
+  --name usw1-zlps-eks-01 `
+  --version 1.34 `
+  --region us-west-1 `
+  --nodegroup-name uw1-zlps-ng-01 `
+  --node-type m5.xlarge `
+  --nodes 2 `
+  --nodes-min 1 `
+  --nodes-max 2 `
+  --managed
+
+# Windows CMD (single line)
+eksctl create cluster --name usw1-zlps-eks-01 --version 1.34 --region us-west-1 --nodegroup-name uw1-zlps-ng-01 --node-type m5.xlarge --nodes 2 --nodes-min 1 --nodes-max 2 --managed
+
+EXPLANATION:
+- Creates EKS cluster version 1.34 in us-west-1
+- Node group uses m5.xlarge instances (4 vCPU, 16GB RAM)
+- Starts with 2 nodes, can scale between 1-2 nodes
+- Managed node group means AWS handles node updates
+
+
+STEP 2: Associate OIDC Provider
+-------------------------------
+STEP 3: Get Cluster OIDC Issuer
+-------------------------------
+PURPOSE: Retrieve the OIDC issuer URL (needed for trust policies)
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+OUTPUT: https://oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E
+
+# All Shells (single line works everywhere)
+eksctl utils associate-iam-oidc-provider --region us-west-1 --cluster usw1-zlps-eks-01 --approve
+
+EXPLANATION:
+- Creates an IAM OIDC identity provider
+- Allows Kubernetes service accounts to assume IAM roles
+- Required for EBS, EFS, and S3 CSI drivers to work
+
+
+STEP 3: Get Cluster OIDC Issuer
+-------------------------------
+PURPOSE: Retrieve the OIDC issuer URL (needed for trust policies)
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+OUTPUT: https://oidc.eks.us-west-1.amazonaws.com/id/C0CA93DEA5736D0F19AC427D5A0A123E
+
+
+STEP 4: Get Cluster VPC Information
+-----------------------------------
+PURPOSE: Identify the VPC and subnets for additional resource configuration
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws eks describe-cluster --name usw1-zlps-eks-01 --query "cluster.resourcesVpcConfig.{VPC: vpcId, Subnets: subnetIds}" --output table
+
+================================================================================
+3. PHASE 2: ECR SETUP AND IMAGE MANAGEMENT
+================================================================================
+
+OVERVIEW:
+---------
+Amazon Elastic Container Registry (ECR) is AWS's private Docker image registry.
+This phase sets up the container registry where your application images are stored
+and creates the necessary credentials for EKS to pull these images.
+
+WHY ECR IS NEEDED:
+- Provides secure, private storage for your proprietary container images
+- Integrates natively with AWS IAM for access control
+- Eliminates need to manage your own Docker registry infrastructure
+- Images are stored close to your EKS cluster for fast pulls
+- Supports image scanning for security vulnerabilities
+
+IMAGES STORED IN THIS REPOSITORY:
+| Image Tag                | Size    | Purpose                              |
+|--------------------------|---------|--------------------------------------|
+| zlserver-11.0.1-b123     | ~800MB  | ZL Server/UI application             |
+| zltika-11.0.1-b123       | ~600MB  | Document conversion (Apache Tika)    |
+| zlzookeeper-11.0.1-b123  | ~400MB  | ZooKeeper coordination service       |
+
+
+STEP 5: Create ECR Repository
+-----------------------------
+PURPOSE: Create a private container registry to store your Docker images
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws ecr create-repository --repository-name uw1-zlps-ecr-01 --region us-west-1 --image-scanning-configuration scanOnPush=true
+
+OUTPUT:
+{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:us-west-1:995553364920:repository/uw1-zlps-ecr-01",
+        "repositoryUri": "995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01",
+        "registryId": "995553364920",
+        "repositoryName": "uw1-zlps-ecr-01"
+    }
+}
+
+EXPLANATION:
+- Creates a private Docker registry in your AWS account
+- `--image-scanning-configuration scanOnPush=true` automatically scans images for vulnerabilities
+- The repositoryUri (995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01) is used 
+  in all deployment YAML files to reference images
+- Without this repository, you have nowhere to store your application container images
+
+WHY IT'S NEEDED:
+EKS pods need to pull container images from somewhere. Public registries like Docker Hub
+have rate limits and expose your images publicly. ECR provides:
+1. Unlimited pulls within AWS (no rate limiting)
+2. Private storage (only your AWS account can access)
+3. IAM-based security (integrates with AWS permissions)
+4. Regional storage (fast pulls from same region as EKS)
+
+
+STEP 6: Verify ECR Repository
+-----------------------------
+PURPOSE: Confirm the ECR repository exists and is accessible
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws ecr describe-repositories --repository-names uw1-zlps-ecr-01 --region us-west-1
+
+EXPLANATION:
+- Validates that the repository was created successfully
+- Returns repository details including the URI needed for pushing/pulling images
+- If this fails, subsequent steps will fail when trying to pull images
+
+WHY IT'S NEEDED:
+Before pushing images or deploying pods, verify the repository exists. This catches
+configuration errors early rather than debugging "image not found" errors later.
+
+
+STEP 7: Authenticate Docker to ECR
+----------------------------------
+PURPOSE: Log in to ECR so you can push images to the repository
+SHELL: Different syntax required per shell
+
+# PowerShell:
+aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 995553364920.dkr.ecr.us-west-1.amazonaws.com
+
+# Bash/Linux:
+aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 995553364920.dkr.ecr.us-west-1.amazonaws.com
+
+# Windows CMD (two steps):
+aws ecr get-login-password --region us-west-1 > ecr-password.txt
+set /p ECR_PASSWORD=<ecr-password.txt
+docker login --username AWS --password %ECR_PASSWORD% 995553364920.dkr.ecr.us-west-1.amazonaws.com
+del ecr-password.txt
+
+OUTPUT: Login Succeeded
+
+EXPLANATION:
+- `aws ecr get-login-password` generates a temporary authentication token (valid 12 hours)
+- The token is passed to `docker login` to authenticate with ECR
+- Username is always "AWS" for ECR authentication
+- This allows you to push images from your local machine to ECR
+
+WHY IT'S NEEDED:
+ECR is a private registry that requires authentication. Without logging in first,
+`docker push` commands will fail with "unauthorized" errors.
+
+
+STEP 8: Push Images to ECR
+--------------------------
+PURPOSE: Upload your application container images to ECR
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# Tag local images for ECR (if not already tagged)
+docker tag zlserver:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+docker tag zltika:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+docker tag zlzookeeper:11.0.1-b123 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+
+# Push images to ECR
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+docker push 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+
+EXPLANATION:
+- `docker tag` creates an alias of your local image with the ECR repository URI
+- The tag format is: <registry>/<repository>:<image-tag>
+- `docker push` uploads the image layers to ECR
+- Large images may take several minutes to upload depending on bandwidth
+
+WHY IT'S NEEDED:
+Your container images must exist in ECR before EKS can deploy them. The deployment
+YAML files reference these exact image URIs:
+  image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+
+
+STEP 9: List Images in ECR
+--------------------------
+PURPOSE: Verify all container images were uploaded successfully
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws ecr describe-images --repository-name uw1-zlps-ecr-01 --region us-west-1
+
+EXPLANATION:
+- Lists all images stored in the repository with their tags, sizes, and push dates
+- Confirms the images exist before attempting to deploy pods
+- Shows image digest (SHA) which uniquely identifies each image version
+
+WHY IT'S NEEDED:
+Verification step to ensure all three required images are present:
+- zlserver-11.0.1-b123 (used by zlui and zlserver deployments)
+- zltika-11.0.1-b123 (used by zltika deployment)
+- zlzookeeper-11.0.1-b123 (used by zlzookeeper statefulset)
+
+
+STEP 10: Create ECR Pull Secret in kube-system
+----------------------------------------------
+PURPOSE: Allow Kubernetes system components to pull images from private ECR
+SHELL: Different syntax required per shell
+
+# PowerShell
+kubectl create secret docker-registry docker-secret `
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 `
+  --docker-username=AWS `
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" `
+  --namespace kube-system
+
+# Bash / Linux
+kubectl create secret docker-registry docker-secret \
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" \
+  --namespace kube-system
+
+# Windows CMD (two steps required)
+aws ecr get-login-password --region us-west-1 > ecr-password.txt
+set /p ECR_PASSWORD=<ecr-password.txt
+kubectl create secret docker-registry docker-secret --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 --docker-username=AWS --docker-password=%ECR_PASSWORD% --namespace kube-system
+del ecr-password.txt
+
+EXPLANATION:
+- Creates a Kubernetes Secret of type "docker-registry" containing ECR credentials
+- The `kube-system` namespace is where system components (CSI drivers, etc.) run
+- `--docker-password` uses command substitution to dynamically get the ECR token
+- The token expires after 12 hours; you may need to recreate this secret periodically
+
+WHY IT'S NEEDED:
+Kubernetes pods cannot pull from private registries without credentials. This secret
+is referenced in deployment YAML files:
+  spec:
+    imagePullSecrets:
+      - name: docker-secret    # ← This references the secret created here
+
+
+STEP 11: Create ECR Pull Secret in default namespace
+----------------------------------------------------
+PURPOSE: Allow application pods in default namespace to pull images from ECR
+SHELL: Different syntax required per shell (see STEP 10 for CMD alternative)
+
+# PowerShell
+kubectl create secret docker-registry docker-secret `
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 `
+  --docker-username=AWS `
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" `
+  --namespace default
+
+# Bash / Linux
+kubectl create secret docker-registry docker-secret \
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" \
+  --namespace default
+
+EXPLANATION:
+- Creates the same docker-registry secret but in the `default` namespace
+- The `default` namespace is where all ZL application pods run (zlui, zlserver, zltika, zlzookeeper)
+- Secrets are namespace-scoped, so you need one in each namespace that pulls images
+- Uses the same 12-hour token as the kube-system secret
+
+WHY IT'S NEEDED:
+Your application deployments (STEP 35-37) run in the `default` namespace and need
+credentials to pull images. Without this secret, pods will fail with "ImagePullBackOff":
+
+  Events:
+    Type     Reason          Message
+    ----     ------          -------
+    Warning  Failed          Failed to pull image: unauthorized
+
+USED IN SUBSEQUENT STEPS:
+| Step | Deployment        | Image Referenced                                      |
+|------|-------------------|-------------------------------------------------------|
+| 32   | zlzookeeper       | uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123               |
+| 35   | zltika            | uw1-zlps-ecr-01:zltika-11.0.1-b123                    |
+| 36   | zlserver          | uw1-zlps-ecr-01:zlserver-11.0.1-b123                  |
+| 37   | zlui              | uw1-zlps-ecr-01:zlserver-11.0.1-b123                  |
+
+
+IMPORTANT: ECR Token Expiration
+-------------------------------
+ECR authentication tokens expire after 12 hours. If pods fail to start with
+"ImagePullBackOff" errors after the cluster has been running for a while,
+recreate the secrets:
+
+# Delete and recreate (PowerShell example)
+kubectl delete secret docker-secret -n default
+kubectl delete secret docker-secret -n kube-system
+# Then re-run STEP 10 and STEP 11
+
+================================================================================
+4. PHASE 3: EBS CSI DRIVER INSTALLATION
+================================================================================
+
+PURPOSE: Enable dynamic provisioning of EBS volumes for persistent storage
+         Used by ZooKeeper for data persistence
+
+STEP 12: Create EBS CSI Driver IAM Policy
+----------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+NOTE: file:// syntax works in all shells; use forward slashes for path
+
+# All Shells
+aws iam create-policy --policy-name AmazonEBSCSIDriverPolicy --policy-document file://Amazon_EBS_CSI_Driver_Policy.json
+
+OUTPUT ARN: arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy
+
+
+STEP 13: Create IAM Service Account for EBS CSI Driver
+------------------------------------------------------
+PURPOSE: Creates service account with IAM role permissions
+SHELL: All shells (single line recommended)
+
+# All Shells (single line)
+eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster usw1-zlps-eks-01 --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole
+
+
+STEP 14: Install EBS CSI Driver (kubectl method)
+------------------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.53"
+
+
+STEP 15: Install EBS CSI Driver as EKS Add-on (recommended)
+-----------------------------------------------------------
+PURPOSE: Managed add-on ensures driver stays updated
+SHELL: All shells (single line recommended)
+
+# All Shells
+aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EBS_CSI_DriverRole --region us-west-1
+
+
+STEP 16: Verify EBS CSI Driver Installation
+-------------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl get pods -n kube-system -l app=ebs-csi-controller
+
+EXPECTED OUTPUT:
+NAME                                  READY   STATUS    RESTARTS   AGE
+ebs-csi-controller-54b57d7767-xxxxx   6/6     Running   0          XXm
+ebs-csi-controller-54b57d7767-xxxxx   6/6     Running   0          XXm
+
+
+STEP 17: Create EBS StorageClass
+--------------------------------
+PURPOSE: Define how EBS volumes are provisioned
+SHELL: All shells (PowerShell, Bash, CMD)
+NOTE: Use forward slashes for paths in kubectl commands
+
+# All Shells
+kubectl apply -f yaml/ebs-sc.yaml
+
+(See APPENDIX A for ebs-sc.yaml content)
+
+================================================================================
+5. PHASE 4: EFS CSI DRIVER AND STORAGE
+================================================================================
+
+PURPOSE: Enable shared persistent storage accessible by multiple pods
+         Used for: logs, Tika temp files, and Vault storage
+
+STEP 18: Create EFS IAM Policy
+------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws iam create-policy --policy-name ZLEFSPolicy --policy-document file://policies/EFS-IAM-policy.json
+
+OUTPUT ARN: arn:aws:iam::995553364920:policy/ZLEFSPolicy
+
+
+STEP 19: Create IAM Service Account for EFS CSI Driver
+------------------------------------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --namespace kube-system --name efs-csi-controller-sa --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy --approve --role-name AmazonEKS_EFS_CSI_DriverRole
+
+
+STEP 20: Install EFS CSI Driver as EKS Add-on
+---------------------------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+aws eks create-addon --cluster-name usw1-zlps-eks-01 --addon-name aws-efs-csi-driver --service-account-role-arn arn:aws:iam::995553364920:role/AmazonEKS_EFS_CSI_DriverRole --region us-west-1
+
+
+STEP 21: Create EFS File System
+-------------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+aws efs create-file-system --region us-west-1 --performance-mode generalPurpose --throughput-mode bursting --tags Key=Name,Value=usw1-zlps-efs-01
+
+OUTPUT FILE SYSTEM ID: fs-0a4ec87cd91178047
+
+
+STEP 22: Create Mount Targets (one per AZ)
+------------------------------------------
+PURPOSE: Allow EKS nodes to connect to EFS
+SHELL: All shells (single line per command)
+
+# For us-west-1a (All Shells):
+aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-01c24772a882a3a1b --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+
+# For us-west-1c (All Shells):
+aws efs create-mount-target --file-system-id fs-0a4ec87cd91178047 --subnet-id subnet-06eb80d784d985109 --security-groups sg-0afb0a3f0c30ba84d --region us-west-1
+
+
+STEP 23: Create EFS Access Points
+---------------------------------
+PURPOSE: Provide isolated mount points with specific permissions
+SHELL: Different quoting required per shell
+
+# zltikatemp access point (Tika temporary files)
+# PowerShell:
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zltikatemp-ap --region us-west-1
+
+# Bash/Linux:
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory 'Path=/zltikatemp,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}' --tags Key=Name,Value=zltikatemp-ap --region us-west-1
+
+OUTPUT: fsap-08c3382b23a64f7fd
+
+# zluilogs access point (UI logs)
+# PowerShell / Bash (All Shells - single line):
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zluilogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zluilogs-ap --region us-west-1
+
+OUTPUT: fsap-06e5e523915353e85
+
+# zlvault access point (Main application vault)
+# PowerShell / Bash (All Shells - single line):
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlvault,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlvault-ap --region us-west-1
+
+OUTPUT: fsap-070de74811e8c461f
+
+# zlserverlogs access point (Server logs)
+# PowerShell / Bash (All Shells - single line):
+aws efs create-access-point --file-system-id fs-0a4ec87cd91178047 --posix-user Uid=1000,Gid=1000 --root-directory "Path=/zlserverlogs,CreationInfo={OwnerUid=1000,OwnerGid=1000,Permissions=755}" --tags Key=Name,Value=zlserverlogs-ap --region us-west-1
+
+OUTPUT: fsap-0e3cf05f6ae8f8a82
+
+
+STEP 24: Deploy EFS StorageClass and PVs
+----------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+NOTE: Use forward slashes for paths; can run all commands in sequence
+
+# All Shells
+kubectl apply -f yaml/efs-sc.yaml
+kubectl apply -f yaml/efs-pv-zltikatemp.yaml
+kubectl apply -f yaml/efs-pv-zluilogs.yaml
+kubectl apply -f yaml/efs-pv-zlvault.yaml
+kubectl apply -f yaml/efs-pvc-zltikatemp.yaml
+kubectl apply -f yaml/efs-pvc-zluilogs.yaml
+kubectl apply -f yaml/efs-pvc-zlvault.yaml
+
+(See APPENDIX A for YAML content)
+
+================================================================================
+6. PHASE 5: S3 CSI DRIVER (OPTIONAL - FOR ARCHIVE STORAGE)
+================================================================================
+
+STEP 25: Create S3 Bucket
+-------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+aws s3api create-bucket --bucket usw1-zlps-app-storage --region us-west-1 --create-bucket-configuration LocationConstraint=us-west-1
+
+
+STEP 26: Enable Versioning
+--------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+aws s3api put-bucket-versioning --bucket usw1-zlps-app-storage --versioning-configuration Status=Enabled --region us-west-1
+
+
+STEP 27: Create S3 CSI Driver IAM Policy
+----------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws iam create-policy --policy-name ZLPS_S3_CSI_Driver_Policy --policy-document file://policies/S3-CSI-Driver-Policy.json --region us-west-1
+
+
+STEP 28: Install S3 CSI Driver via Helm
+---------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+NOTE: Helm must be installed and in PATH
+
+# All Shells
+helm repo add aws-s3-csi https://awslabs.github.io/mountpoint-s3-csi-driver
+helm repo update
+helm upgrade --install aws-mountpoint-s3-csi-driver --namespace kube-system aws-s3-csi/aws-mountpoint-s3-csi-driver
+
+================================================================================
+7. PHASE 6: DATABASE CONFIGURATION
+================================================================================
+
+RDS SQL Server Details:
+-----------------------
+| Property    | Value                                                      |
+|-------------|-----------------------------------------------------------|
+| Endpoint    | usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com |
+| Port        | 1433                                                       |
+| Engine      | sqlserver-ex                                               |
+| Database    | ZLDB                                                       |
+| User        | pfuser (db_owner role)                                     |
+
+
+STEP 29: Create Database ConfigMap
+----------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zldb-config.yaml
+
+(See APPENDIX C for content)
+
+
+STEP 30: Create Database Secret
+-------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zldb-secret.yaml
+
+NOTE: Contains DB_PASSWORD - update with actual password before applying
+
+
+STEP 31: SSM Port Forwarding for Database Access
+------------------------------------------------
+PURPOSE: Access RDS from local machine through SSM tunnel
+SHELL: Different JSON quoting required per shell
+
+# PowerShell (use backticks to escape quotes):
+aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{`"host`":[`"usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com`"],`"portNumber`":[`"1433`"],`"localPortNumber`":[`"1433`"]}"
+
+# Bash/Linux (use single quotes for JSON):
+aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters '{"host":["usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com"],"portNumber":["1433"],"localPortNumber":["1433"]}'
+
+# Windows CMD (escape quotes with backslash):
+aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{\"host\":[\"usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}"
+
+================================================================================
+8. PHASE 7: ZOOKEEPER DEPLOYMENT
+================================================================================
+
+PURPOSE: ZooKeeper provides distributed coordination for ZL application
+         Manages cluster state, leader election, and configuration
+
+STEP 32: Create ZL Application Service Account
+----------------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl create serviceaccount zlapp-sa -n default
+
+
+STEP 33: Deploy ZooKeeper Services
+----------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# Client service (for application connections) - All Shells
+kubectl apply -f yaml/zk-cs.yaml
+
+# Headless service (for pod-to-pod communication) - All Shells
+kubectl apply -f yaml/zk-hs.yaml
+
+
+STEP 34: Deploy Application ConfigMap
+-------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zlapp-config.yaml
+
+(See APPENDIX C for content)
+
+
+STEP 35: Deploy ZooKeeper StatefulSet
+-------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zlzookeeper-statefulset.yaml
+
+EXPLANATION:
+- Creates 3 ZooKeeper replicas for high availability
+- Each replica gets its own EBS volume via volumeClaimTemplate
+- Uses headless service for stable network identities
+
+
+STEP 36: Verify ZooKeeper Deployment
+------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl get pods -l app=zlzookeeper
+kubectl get pvc -l app=zlzookeeper
+
+EXPECTED OUTPUT:
+NAME            READY   STATUS    RESTARTS   AGE
+zlzookeeper-0   1/1     Running   0          XXm
+zlzookeeper-1   1/1     Running   0          XXm
+zlzookeeper-2   1/1     Running   0          XXm
+
+================================================================================
+9. PHASE 8: APPLICATION DEPLOYMENT
+================================================================================
+
+STEP 37: Deploy Document Conversion ConfigMap
+---------------------------------------------
+PURPOSE: Override Tika service hostname from localhost to zltika
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/docconvert-configmap.yaml
+
+EXPLANATION:
+- Contains DocumentConversion.xml with __tika.ZLTikaService.Host=zltika
+- Mounted into zlserver and zlui containers
+- Required for Tika connectivity in Kubernetes
+
+
+STEP 38: Deploy Tika Service
+----------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zltika-deployment.yaml
+kubectl apply -f yaml/zltika-service.yaml
+
+
+STEP 39: Deploy ZL Server
+-------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zlserver-deployment.yaml
+
+
+STEP 40: Deploy ZL UI
+---------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zlui-deployment.yaml
+kubectl apply -f yaml/zlui-service.yaml
+
+
+STEP 41: Verify All Pods Running
+--------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl get pods -n default
+
+EXPECTED OUTPUT:
+NAME                        READY   STATUS    RESTARTS   AGE
+zltika-xxxxxxxxxx-xxxxx     1/1     Running   0          XXm
+zlserver-xxxxxxxxxx-xxxxx   1/1     Running   0          XXm
+zlui-xxxxxxxxxx-xxxxx       1/1     Running   0          XXm
+zlzookeeper-0               1/1     Running   0          XXm
+zlzookeeper-1               1/1     Running   0          XXm
+zlzookeeper-2               1/1     Running   0          XXm
+
+
+STEP 42: Verify Application Initialization
+------------------------------------------
+SHELL: Different grep syntax per shell
+
+# Bash/Linux:
+kubectl logs deployment/zlui | grep -i "initializing\|done"
+
+# PowerShell:
+kubectl logs deployment/zlui | Select-String -Pattern "initializing|done"
+
+# Windows CMD:
+kubectl logs deployment/zlui | findstr /i "initializing done"
+
+SUCCESS INDICATOR: "Done initalizing ZLServer"
+
+================================================================================
+10. PHASE 9: NETWORK AND INGRESS CONFIGURATION
+================================================================================
+
+STEP 43: Install AWS Load Balancer Controller
+---------------------------------------------
+PURPOSE: Enable ALB Ingress for public access
+SHELL: Mixed - curl for Bash, Invoke-WebRequest for PowerShell
+
+# Download IAM policy
+# Bash/Linux:
+curl -o iam-policy-alb.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json
+
+# PowerShell:
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json" -OutFile "iam-policy-alb.json"
+
+# Create IAM policy (All Shells)
+aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam-policy-alb.json --region us-west-1
+
+# Create service account (All Shells - single line)
+eksctl create iamserviceaccount --cluster=usw1-zlps-eks-01 --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::995553364920:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve --region us-west-1
+
+# Install cert-manager (All Shells)
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+
+# Install controller via Helm (All Shells - can use semicolons or run separately)
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+
+# Helm install (PowerShell - use backticks for line continuation):
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller `
+  -n kube-system `
+  --set clusterName=usw1-zlps-eks-01 `
+  --set serviceAccount.create=false `
+  --set serviceAccount.name=aws-load-balancer-controller `
+  --set region=us-west-1 `
+  --set vpcId=vpc-07644cdd0224da4f3
+
+# Helm install (Bash - use backslash for line continuation):
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=usw1-zlps-eks-01 \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=us-west-1 \
+  --set vpcId=vpc-07644cdd0224da4f3
+
+# Helm install (CMD - single line):
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=usw1-zlps-eks-01 --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set region=us-west-1 --set vpcId=vpc-07644cdd0224da4f3
+
+
+STEP 44: Create Ingress for Public Access
+-----------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/zlui-ingress.yaml
+
+(See APPENDIX A for content)
+
+
+STEP 45: Verify Ingress and ALB
+-------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl get ingress zlui-ingress
+
+OUTPUT:
+NAME           CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
+zlui-ingress   alb     *       k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com   80      XXm
+
+ACCESS URL: http://k8s-default-zluiingr-e9951b35c2-755748288.us-west-1.elb.amazonaws.com
+
+================================================================================
+11. PHASE 10: CLUSTER AUTOSCALING (OPTIONAL)
+================================================================================
+
+STEP 46: Create Cluster Autoscaler IAM Policy
+---------------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+aws iam create-policy --policy-name AmazonEKSClusterAutoscalerPolicy --policy-document file://policies/ClusterAutoscalerPolicy.json --region us-west-1
+
+
+STEP 47: Create Service Account for Autoscaler
+----------------------------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --region us-west-1 --namespace kube-system --name cluster-autoscaler --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy --approve --override-existing-serviceaccounts
+
+
+STEP 48: Tag ASG for Cluster Autoscaler Discovery
+-------------------------------------------------
+SHELL: Different syntax per shell for --tags parameter
+
+# PowerShell (use backticks):
+aws autoscaling create-or-update-tags --region us-west-1 --tags `
+  Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group `
+  Key=k8s.io/cluster-autoscaler/usw1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group
+
+# Bash/Linux:
+aws autoscaling create-or-update-tags --region us-west-1 --tags \
+  Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group \
+  Key=k8s.io/cluster-autoscaler/usw1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group
+
+# Windows CMD (single line):
+aws autoscaling create-or-update-tags --region us-west-1 --tags Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group Key=k8s.io/cluster-autoscaler/usw1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group
+
+
+STEP 49: Update Node Group Scaling Limits
+-----------------------------------------
+SHELL: All shells (single line recommended)
+
+# All Shells
+eksctl scale nodegroup --cluster usw1-zlps-eks-01 --name uw1-zlps-ng-01 --nodes-min 2 --nodes-max 5 --nodes 2 --region us-west-1
+
+
+STEP 50: Deploy Cluster Autoscaler
+----------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/cluster-autoscaler.yaml
+
+================================================================================
+12. PHASE 11: POST-DEPLOYMENT CONFIGURATION
+================================================================================
+
+STEP 51: Create Vault Directory Structure
+-----------------------------------------
+PURPOSE: Ensure all required Vault directories exist with correct naming
+SHELL: All shells (runs bash inside container)
+
+# All Shells (kubectl exec runs bash inside the Linux container)
+kubectl exec deployment/zlui -- bash -c 'mkdir -p /var/ZipLip/Vault/{resource,secureResource,zlreport,zlexport,zlperiodic,staging,zlSecureMail,zlArchiveMail,zlArchiveAttach,zlJournalMail,zlJournalAttach,zlSearch,zlSearchMaster,zlSearchOther,zlFileRegular,zlFileSearch,zlFileSearchMaster,zlFileSearchOther,zlCompliance,zlCaseMgmt,zlCcPackage,zlRecord,zlTextDBTemp,zlTextDBMaster,zlBigDBApps,zlLogEvent,zlLogEventSearchMaster,zlLogEventSearch,zlInPlaceWorkspaceIndex,zlInPlaceMailContent,zlInPlaceFileRegular}'
+
+
+STEP 52: Verify Vault Structure
+-------------------------------
+SHELL: All shells (kubectl exec runs inside Linux container)
+
+# All Shells
+kubectl exec deployment/zlui -- ls -la /var/ZipLip/Vault/
+
+EXPECTED: 31 directories with proper case-sensitive naming
+
+
+STEP 53: Update Database Disk Volume Paths
+------------------------------------------
+PURPOSE: Update diskvolume table to match EFS mount paths
+
+-- SQL to update paths (run via SSMS or sqlcmd)
+UPDATE diskvolume 
+SET dvpath = REPLACE(dvpath, '/zlvault/Archive_Vault/ZLVault/', '/var/ZipLip/Vault/')
+WHERE dvpath LIKE '/zlvault/Archive_Vault/ZLVault/%';
+
+
+STEP 54: Restart Deployments After Configuration Changes
+---------------------------------------------------------
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl rollout restart deployment zlserver zltika zlui
+
+================================================================================
+13. TROUBLESHOOTING
+================================================================================
+
+COMMON ISSUES AND SOLUTIONS:
+
+1. Tika Connectivity Error
+--------------------------
+ERROR: "Unable to connect!" or "Thread has already exited"
+SOLUTION: Ensure docconvert-configmap.yaml is applied and mounted in both zlserver and zlui
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl apply -f yaml/docconvert-configmap.yaml
+kubectl rollout restart deployment zlserver zlui
+
+
+2. Database Connection Issues
+-----------------------------
+ERROR: "Login failed for user"
+SOLUTION: 
+- Verify db-config has correct RDS endpoint
+- Verify db-secret has correct password
+- Ensure pfuser exists and has db_owner role on ZLDB
+
+
+3. ZooKeeper Not Ready
+----------------------
+ERROR: "null instance" in zlui logs
+SOLUTION:
+- Check zlapp-config has correct ZOO_SERVERS value
+- Verify all 3 ZooKeeper pods are running
+- Check ZooKeeper service endpoints:
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl get endpoints zk-cs
+
+
+4. Image Pull Errors
+--------------------
+ERROR: "ImagePullBackOff"
+SOLUTION:
+- Recreate docker-secret (tokens expire after 12 hours)
+SHELL: Different syntax per shell for password substitution
+
+# PowerShell:
+kubectl delete secret docker-secret -n default
+$ECR_PASSWORD = aws ecr get-login-password --region us-west-1
+kubectl create secret docker-registry docker-secret `
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 `
+  --docker-username=AWS `
+  --docker-password=$ECR_PASSWORD `
+  --namespace default
+
+# Bash/Linux:
+kubectl delete secret docker-secret -n default
+kubectl create secret docker-registry docker-secret \
+  --docker-server=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01 \
+  --docker-username=AWS \
+  --docker-password="$(aws ecr get-login-password --region us-west-1)" \
+  --namespace default
+
+
+5. EFS Mount Failures
+---------------------
+ERROR: "MountVolume.SetUp failed"
+SOLUTION:
+- Verify EFS mount targets exist in both AZs
+- Check security group allows NFS (port 2049)
+- Verify access point IDs in PV definitions
+
+
+6. 404 Error on Application
+---------------------------
+ERROR: "404 - Page not found"
+SOLUTION: ZooKeeper bootstrap not complete
+- Wait for ZooKeeper pods to be running
+- Check zlui logs for initialization messages
+- Restart zlui:
+SHELL: All shells (PowerShell, Bash, CMD)
+
+# All Shells
+kubectl rollout restart deployment zlui
+
+
+7. 500 Access Denied Error
+--------------------------
+ERROR: "500 - Internal Server Error" from ZLJspFilter
+SOLUTION: Application not fully initialized
+- Check all pods are running
+- Verify database connectivity
+- Review application logs for errors
+
+
+================================================================================
+APPENDIX A: YAML FILE REFERENCE
+================================================================================
+
+--------------------------------------------------------------------------------
+A.1 zlui-deployment.yaml - ZL UI Application
+--------------------------------------------------------------------------------
+Purpose: Deploys the web UI for ZL application
+Image: zlserver-11.0.1-b123 (shared with zlserver)
+Replicas: 1
+
+Key Configuration:
+- Service Account: zlapp-sa
+- Environment Variables: From zlapp-config, db-config, db-secret
+- Volume Mounts:
+  * /opt/ZipLip/zlserver/WEB-INF/tmp → zltikatemp-efs (shared temp)
+  * /opt/ZipLip/logs → zluilogs-efs (log storage)
+  * /var/ZipLip/Vault → zlvault-efs (main vault storage)
+  * /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml → docconvert-config
+
+Full Content:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlui
+  name: zlui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlui
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"  
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+            - mountPath: /opt/ZipLip/logs
+              name: zluilogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+---
+
+--------------------------------------------------------------------------------
+A.2 zlserver-deployment.yaml - ZL Server Backend
+--------------------------------------------------------------------------------
+Purpose: Backend processing server
+Image: zlserver-11.0.1-b123
+Replicas: 1
+
+Key Configuration:
+- Port: 9972
+- Volume Mounts:
+  * /opt/ZipLip/zlserver/WEB-INF/tmp → zlservertemp-efs (temp files)
+  * /opt/ZipLip/logs → zlserverlogs-efs (log storage)
+  * /var/ZipLip/Vault → zlvault-efs (shared vault storage)
+  * DocumentConversion.xml → docconvert-config
+
+Full Content:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlserver
+  name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zlservertemp
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+            - mountPath: /opt/ZipLip/logs
+              name: zlserverlogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+      volumes:
+        - name: zlservertemp
+          persistentVolumeClaim:
+            claimName: zlservertemp-efs
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+---
+
+--------------------------------------------------------------------------------
+A.3 zltika-deployment.yaml - Document Conversion Service
+--------------------------------------------------------------------------------
+Purpose: Converts documents for indexing and viewing
+Image: zltika-11.0.1-b123
+Replicas: 1
+
+Key Configuration:
+- Port: 9972
+- Volume Mount: /opt/ZipLip/zlserver/WEB-INF/tmp → zltikatemp-efs
+
+Full Content:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zltika
+  name: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zltika
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zltikatemp
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+---
+
+--------------------------------------------------------------------------------
+A.4 zlzookeeper-statefulset.yaml - ZooKeeper Cluster
+--------------------------------------------------------------------------------
+Purpose: Distributed coordination service
+Image: zlzookeeper-11.0.1-b123
+Replicas: 3 (for quorum)
+
+Key Configuration:
+- StatefulSet for stable network identities
+- Headless service (zk-hs) for peer discovery
+- EBS volumes for data persistence
+
+Full Content:
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlzookeeper
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: peer
+            - containerPort: 3888
+              name: election
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ebs-sc
+        resources:
+          requests:
+            storage: 10Gi
+---
+
+--------------------------------------------------------------------------------
+A.5 zlui-ingress.yaml - Public ALB Ingress
+--------------------------------------------------------------------------------
+Purpose: Expose ZL UI via internet-facing Application Load Balancer
+
+Full Content:
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zlui-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-01c24772a882a3a1b,subnet-06eb80d784d985109
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zlui
+            port:
+              number: 80
+---
+
+--------------------------------------------------------------------------------
+A.6 EFS PersistentVolume Examples
+--------------------------------------------------------------------------------
+
+efs-pv-zlvault.yaml:
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv-zlvault
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0a4ec87cd91178047::fsap-070de74811e8c461f
+---
+
+efs-pv-zluilogs.yaml:
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv-zluilogs
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0a4ec87cd91178047::fsap-06e5e523915353e85
+---
+
+efs-pv-zltikatemp.yaml:
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv-zltikatemp
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0a4ec87cd91178047::fsap-08c3382b23a64f7fd
+---
+
+efs-pv-zlserverlogs.yaml:
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv-zlserverlogs
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-0a4ec87cd91178047::fsap-036244dc4ad7ddc58
+---
+
+efs-pvc-zlserverlogs.yaml:
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zlserverlogs-efs
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: efs-pv-zlserverlogs
+---
+
+--------------------------------------------------------------------------------
+A.7 EFS StorageClass
+--------------------------------------------------------------------------------
+
+efs-sc.yaml:
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-0a4ec87cd91178047
+  directoryPerms: "755"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+  basePath: "/dynamic_provisioning"
+---
+
+================================================================================
+APPENDIX B: EFS ACCESS POINTS AND VAULT MOUNT STRUCTURE
+================================================================================
+
+EFS FILE SYSTEM: fs-0a4ec87cd91178047 (usw1-zlps-efs-01)
+
+--------------------------------------------------------------------------------
+B.1 EFS Access Points
+--------------------------------------------------------------------------------
+
+| Access Point ID          | Name            | Path           | UID/GID   | Used By            |
+|--------------------------|-----------------|----------------|-----------|--------------------|
+| fsap-08c3382b23a64f7fd   | zltikatemp-ap   | /zltikatemp    | 1000/1000 | zltika, zlui       |
+| fsap-06e5e523915353e85   | zluilogs-ap     | /zluilogs      | 1000/1000 | zlui               |
+| fsap-070de74811e8c461f   | zlvault-ap      | /zlvault       | 1000/1000 | zlui, zlserver     |
+| fsap-036244dc4ad7ddc58   | zlserverlogs-ap | /zlserverlogs  | 1000/1000 | zlserver           |
+
+--------------------------------------------------------------------------------
+B.2 Vault Directory Structure (/var/ZipLip/Vault/)
+--------------------------------------------------------------------------------
+
+Required directories in the Vault mount point:
+
+| Directory               | Purpose                                    |
+|-------------------------|-------------------------------------------|
+| resource                | General resources                          |
+| secureResource          | Secure resources                           |
+| staging                 | Staging area for processing                |
+| zlreport                | Report generation                          |
+| zlexport                | Data export                                |
+| zlperiodic              | Periodic processing                        |
+| zlSecureMail            | Secure mail storage                        |
+| zlArchiveMail           | Archived email messages                    |
+| zlArchiveAttach         | Archived email attachments                 |
+| zlJournalMail           | Journal email messages                     |
+| zlJournalAttach         | Journal email attachments                  |
+| zlSearch                | Search index data                          |
+| zlSearchMaster          | Master search index                        |
+| zlSearchOther           | Additional search data                     |
+| zlFileRegular           | Regular file storage                       |
+| zlFileSearch            | File search index                          |
+| zlFileSearchMaster      | Master file search index                   |
+| zlFileSearchOther       | Additional file search data                |
+| zlCompliance            | Compliance data                            |
+| zlCaseMgmt              | Case management files                      |
+| zlCcPackage             | CC package storage                         |
+| zlRecord                | Records management                         |
+| zlTextDBTemp            | Temporary text database                    |
+| zlTextDBMaster          | Master text database                       |
+| zlBigDBApps             | Large database applications                |
+| zlLogEvent              | Log event storage                          |
+| zlLogEventSearchMaster  | Log event search master index              |
+| zlLogEventSearch        | Log event search index                     |
+| zlInPlaceWorkspaceIndex | In-place workspace indexing                |
+| zlInPlaceMailContent    | In-place mail content                      |
+| zlInPlaceFileRegular    | In-place regular files                     |
+
+IMPORTANT: Directory names are case-sensitive on Linux/EFS!
+
+--------------------------------------------------------------------------------
+B.3 Volume Mount Mapping
+--------------------------------------------------------------------------------
+
+| Pod        | Container Path                                              | EFS Access Point | PVC Name         |
+|------------|-------------------------------------------------------------|------------------|------------------|
+| zlui       | /opt/ZipLip/zlserver/WEB-INF/tmp                            | zltikatemp-ap    | zltikatemp-efs   |
+| zlui       | /opt/ZipLip/logs                                            | zluilogs-ap      | zluilogs-efs     |
+| zlui       | /var/ZipLip/Vault                                           | zlvault-ap       | zlvault-efs      |
+| zltika     | /opt/ZipLip/zlserver/WEB-INF/tmp                            | zltikatemp-ap    | zltikatemp-efs   |
+| zlserver   | /opt/ZipLip/zlserver/WEB-INF/tmp                            | zlservertemp-ap  | zlservertemp-efs |
+| zlserver   | /opt/ZipLip/logs                                            | zlserverlogs-ap  | zlserverlogs-efs |
+| zlserver   | /var/ZipLip/Vault                                           | zlvault-ap       | zlvault-efs      |
+
+================================================================================
+APPENDIX C: CONFIGMAPS AND SECRETS
+================================================================================
+
+--------------------------------------------------------------------------------
+C.1 zlapp-config - Application Configuration
+--------------------------------------------------------------------------------
+
+Purpose: ZooKeeper connection and Tika service settings
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config  
+  namespace: default
+data:
+  ZOO_SERVERS: zlzookeeper-0.zk-hs.default.svc.cluster.local:2181,zlzookeeper-1.zk-hs.default.svc.cluster.local:2181,zlzookeeper-2.zk-hs.default.svc.cluster.local:2181
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"
+  __tika.ZLTikaService.Host: zltika
+  __tika.ZLTikaService.Port: "9972"
+  DEFAULT_URL: ps/PmApp/zlp_dummy?mgc=1&NextPage=/app/home.jsp&domain=yourdomain.com&la=en&authMethod=ZipLipDB&resId=trac_login
+---
+
+EXPLANATION:
+- ZOO_SERVERS: Full DNS names for ZooKeeper pods via headless service
+- TIKA_HOST/PORT: Service name for Tika (Kubernetes DNS resolves to pod IP)
+- __tika.* variables: Override settings for DocumentConversion.xml
+
+--------------------------------------------------------------------------------
+C.2 db-config - Database Configuration
+--------------------------------------------------------------------------------
+
+Purpose: RDS SQL Server connection settings
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: default
+data:
+  DB_HOST: "usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com"
+  DB_NAME: ZLDB
+  DB_PORT: "1433"
+  DB_TYPE: mssql
+  DB_USER: pfuser
+---
+
+--------------------------------------------------------------------------------
+C.3 db-secret - Database Credentials
+--------------------------------------------------------------------------------
+
+Purpose: Secure storage of database password
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+  namespace: default
+type: Opaque
+stringData:
+  DB_PASSWORD: "<YOUR_ACTUAL_PASSWORD>"
+---
+
+NOTE: Replace <YOUR_ACTUAL_PASSWORD> with actual password before applying
+
+--------------------------------------------------------------------------------
+C.4 docconvert-configmap - Tika Configuration Override
+--------------------------------------------------------------------------------
+
+Purpose: Override DocumentConversion.xml to use Kubernetes service name for Tika
+
+Key Setting: __tika.ZLTikaService.Host = zltika (instead of localhost)
+
+This ConfigMap contains the full DocumentConversion.xml file and is mounted
+at /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+in both zlserver and zlui containers.
+
+================================================================================
+APPENDIX D: SERVICES AND NETWORKING
+================================================================================
+
+--------------------------------------------------------------------------------
+D.1 Kubernetes Services
+--------------------------------------------------------------------------------
+
+| Service Name | Type          | Ports                    | Selector        | Purpose                    |
+|--------------|---------------|--------------------------|-----------------|----------------------------|
+| zk-cs        | ClusterIP     | 2181 (client)            | app=zlzookeeper | ZooKeeper client access    |
+| zk-hs        | Headless      | 2181,2888,3888           | app=zlzookeeper | ZooKeeper peer discovery   |
+| zltika       | ClusterIP     | 9972                     | app=zltika      | Tika service               |
+| zlui         | LoadBalancer  | 80,8000,9975,9970        | app=zlui        | UI access (internal LB)    |
+
+--------------------------------------------------------------------------------
+D.2 Service YAML Files
+--------------------------------------------------------------------------------
+
+zk-cs.yaml (ZooKeeper Client Service):
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zk-cs
+  labels:
+    app: zlzookeeper
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zlzookeeper
+---
+
+zk-hs.yaml (ZooKeeper Headless Service):
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zlzookeeper
+  name: zk-hs
+spec:
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zlzookeeper
+---
+
+zltika-service.yaml:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zltika
+  name: zltika
+spec:
+  ports:
+    - name: "9972"
+      port: 9972
+      targetPort: 9972
+  selector:
+    app: zltika
+---
+
+zlui-service.yaml:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui       
+  labels:
+    app: zlui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "80"
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: "8000"
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    - name: "9975"
+      port: 9975
+      protocol: TCP
+      targetPort: 9975
+    - name: "9970"
+      port: 9970
+      protocol: TCP
+      targetPort: 9970
+  selector:
+    app: zlui
+---
+
+--------------------------------------------------------------------------------
+D.3 Network Architecture
+--------------------------------------------------------------------------------
+
+                                    INTERNET
+                                        │
+                                        ▼
+                    ┌───────────────────────────────────────┐
+                    │  Application Load Balancer (ALB)       │
+                    │  k8s-default-zluiingr-e9951b35c2      │
+                    │  (internet-facing, public subnets)    │
+                    └───────────────────────────────────────┘
+                                        │
+                                        ▼ Port 80
+                    ┌───────────────────────────────────────┐
+                    │         Ingress Controller             │
+                    │      (AWS Load Balancer Controller)    │
+                    └───────────────────────────────────────┘
+                                        │
+                                        ▼
+                    ┌───────────────────────────────────────┐
+                    │           zlui Service                 │
+                    │        (ClusterIP → Pods)              │
+                    └───────────────────────────────────────┘
+                                        │
+                          ┌─────────────┼─────────────┐
+                          ▼             ▼             ▼
+                    ┌──────────┐  ┌──────────┐  ┌──────────┐
+                    │  zlui    │  │ zltika   │  │ zlserver │
+                    │  Pod     │  │ Pod      │  │ Pod      │
+                    └──────────┘  └──────────┘  └──────────┘
+                          │             │             │
+                          │             │             │
+                          └──────┬──────┴──────┬──────┘
+                                 │             │
+                    ┌────────────┴─────────────┴────────────┐
+                    │         ZooKeeper Cluster              │
+                    │  zlzookeeper-0, -1, -2                 │
+                    │  (via zk-cs service, port 2181)        │
+                    └──────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+D.4 DNS Resolution
+--------------------------------------------------------------------------------
+
+Kubernetes DNS resolves service names within the cluster:
+
+| DNS Name                                        | Resolves To                |
+|------------------------------------------------|----------------------------|
+| zltika                                          | zltika service ClusterIP   |
+| zlui                                            | zlui service ClusterIP     |
+| zk-cs                                           | ZooKeeper client service   |
+| zlzookeeper-0.zk-hs.default.svc.cluster.local  | ZooKeeper pod 0 IP         |
+| zlzookeeper-1.zk-hs.default.svc.cluster.local  | ZooKeeper pod 1 IP         |
+| zlzookeeper-2.zk-hs.default.svc.cluster.local  | ZooKeeper pod 2 IP         |
+
+================================================================================
+END OF DOCUMENT
+================================================================================

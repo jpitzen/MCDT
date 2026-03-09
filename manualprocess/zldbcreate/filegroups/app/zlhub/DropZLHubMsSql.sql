@@ -1,0 +1,5 @@
+DROP SEQUENCE pfuser01.ProfileTransport_sequence
+DROP TABLE pfuser01.ProfileTransport
+DROP TABLE pfuser01.MsgTransportConfirmation
+DROP TABLE pfuser01.MessageTransport
+

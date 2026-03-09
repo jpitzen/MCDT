@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-express
+  labels:
+    app: mssql-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-express
+  template:
+    metadata:
+      labels:
+        app: mssql-express
+    spec:
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          value: "YourStrong!Passw0rd"
+        - name: MSSQL_PID
+          value: "Express"
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 1433
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 1433
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: mssql-data
+        persistentVolumeClaim:
+          claimName: mssql-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-service
+  labels:
+    app: mssql-express
+spec:
+  ports:
+  - port: 1433
+    targetPort: 1433
+    protocol: TCP
+  selector:
+    app: mssql-express
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

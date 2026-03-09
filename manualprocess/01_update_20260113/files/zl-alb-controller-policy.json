@@ -1,0 +1,35 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateServiceLinkedRole",
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeTags",
+                "ec2:GetCoipPoolUsage",
+                "ec2:DescribeCoipPools",
+                "elasticloadbalancing:*",
+                "acm:DescribeCertificate",
+                "acm:ListCertificates",
+                "waf:GetWebACL",
+                "waf:ListWebACLs",
+                "waf:AssociateWebACL",
+                "waf:DisassociateWebACL",
+                "shield:GetSubscriptionState",
+                "shield:DescribeProtection",
+                "shield:CreateProtection",
+                "shield:DeleteProtection"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

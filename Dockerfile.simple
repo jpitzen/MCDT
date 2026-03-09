@@ -1,0 +1,13 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install express only
+RUN npm install express
+
+# Copy simple server
+COPY simple-server.js .
+
+EXPOSE 5000
+
+CMD ["node", "simple-server.js"]

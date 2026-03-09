@@ -1,0 +1,23 @@
+{
+  "commands": [
+    "Write-Host '=== Check for MAPI Profile Configuration ==='",
+    "Get-ChildItem -Path 'E:\\ZipLip\\ZLMapiConnector' -Recurse -Include '*.properties','*.xml','*.conf','*.cfg' -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check Outlook/MAPI Profiles in Registry ==='",
+    "Get-ChildItem -Path 'HKCU:\\Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles' -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.PSChildName }",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check if Outlook is Installed ==='",
+    "Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\OUTLOOK.EXE' -ErrorAction SilentlyContinue | Select-Object '(default)', Path",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check MAPI32.DLL Location ==='",
+    "if (Test-Path 'C:\\Windows\\System32\\mapi32.dll') { Write-Host 'mapi32.dll exists in System32' }",
+    "if (Test-Path 'C:\\Program Files\\Microsoft Office') { Get-ChildItem 'C:\\Program Files\\Microsoft Office' -Recurse -Filter 'mapi32.dll' -ErrorAction SilentlyContinue | Select-Object FullName }",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Current User Running Service ==='",
+    "Get-WmiObject win32_service | Where-Object {$_.Name -eq 'zlmapisvc'} | Select-Object StartName"
+  ]
+}

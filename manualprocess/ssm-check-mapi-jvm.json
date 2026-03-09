@@ -1,0 +1,20 @@
+{
+  "commands": [
+    "Write-Host '=== ZLMAPISVC Service Configuration ==='",
+    "Get-WmiObject win32_service | Where-Object {$_.Name -like '*zlmapi*'} | Select-Object Name, PathName, StartMode, State | Format-List",
+    "",
+    "Write-Host '=== Looking for wrapper.conf or service config files ==='",
+    "Get-ChildItem -Path 'C:\\ZL' -Recurse -Include 'wrapper.conf','*.conf','*.properties' -ErrorAction SilentlyContinue | Where-Object {$_.FullName -like '*mapi*' -or $_.FullName -like '*wrapper*'} | ForEach-Object { Write-Host $_.FullName }",
+    "",
+    "Write-Host '=== Checking ZL Install Directory Structure ==='",
+    "Get-ChildItem -Path 'C:\\ZL' -Directory -ErrorAction SilentlyContinue | Select-Object Name",
+    "",
+    "Write-Host '=== Looking for Java wrapper config ==='",
+    "if (Test-Path 'C:\\ZL\\zlmapiconnector\\conf') { Get-ChildItem 'C:\\ZL\\zlmapiconnector\\conf' }",
+    "if (Test-Path 'C:\\ZL\\zlmapisvc\\conf') { Get-ChildItem 'C:\\ZL\\zlmapisvc\\conf' }",
+    "",
+    "Write-Host '=== Checking wrapper.conf content if exists ==='",
+    "$wrapperFiles = Get-ChildItem -Path 'C:\\ZL' -Recurse -Filter 'wrapper.conf' -ErrorAction SilentlyContinue",
+    "foreach ($f in $wrapperFiles) { Write-Host \"--- $($f.FullName) ---\"; Get-Content $f.FullName | Select-String -Pattern 'wrapper.java|Xmx|Xms|XX:|java.command' }"
+  ]
+}

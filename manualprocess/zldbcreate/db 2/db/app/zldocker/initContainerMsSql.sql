@@ -1,0 +1,12 @@
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence, '__tika.ZLTikaService.Host', 'String', '1', 'zltika', getdate());
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_caseMgmt.caseFileExportdir','String', '1', '/var/ZipLip/export/caseMgmtExport', getdate());
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_archive.exchange.pstTempPathRoot','String', '1', '/var/ZipLip/export/pstExportTemp', getdate());
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_sys.luceneDirCache.cacheRoot.0','String', '1', '@com.ziplip.root.dir@/WEB-INF/tmp/@_registry.pid@/luceneCache', getdate());
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_sys.vaultCache.cacheRoot','String', '1', '@com.ziplip.root.dir@/WEB-INF/tmp/@_registry.pid@/vault', getdate());
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_sys.logMgr.destDir','String', '1', '@log.dir@/oldLogs', getdate())
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_caseMgmt.export.clusterName','String', '1', 'EXPORT', getdate())
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'MODULE_AZURE_BLOB_ON','String', '1', 'true', getdate())
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'MODULE_ZL_AZURE_BLOB_ON','String', '1', 'true', getdate())
+INSERT INTO pfuser.ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR pfuser.ParameterElement_sequence,'_sys.cloud.azure.queueHostRoot','String', '1', '/var/Azure', getdate())
+INSERT INTO ParameterElement (peId, peName, peType, pePsId, peVal1, peLastUpdate) VALUES (NEXT VALUE FOR ParameterElement_sequence,'__tika.ZLTikaService.Host','String', '1', 'zltika', getdate());
+GO

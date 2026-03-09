@@ -1,0 +1,13 @@
+DROP SEQUENCE pfuser.LogEventStore_sequence
+DROP TABLE pfuser.LogEventStore
+DROP SEQUENCE pfuser.LogEventRepository_sequence
+DROP TABLE pfuser.LogEventRepository
+DROP SEQUENCE pfuser.LogEventObject_sequence
+DROP TABLE pfuser.LogEventObject
+DROP SEQUENCE pfuser.LogEventSchema_sequence
+DROP TABLE pfuser.LogEventSchema
+DROP SEQUENCE pfuser.LogEventFile_sequence
+DROP TABLE pfuser.LogEventFile
+DROP TABLE pfuser.LogEventPrivileges
+DROP TABLE pfuser.LogEventAuditTrail
+DROP TABLE pfuser.LogEventLegalhold

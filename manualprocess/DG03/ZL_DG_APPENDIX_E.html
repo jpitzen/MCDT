@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Appendix E: Monitoring & Logging</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item active" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Appendix E: Monitoring & Logging Reference</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Reference</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="phase-intro">
+                <p>This appendix provides monitoring and logging configurations for the ZL application deployment on AWS EKS.</p>
+
+                <div class="phase-objectives">
+                    <h3>📋 Monitoring Categories</h3>
+                    <ul>
+                        <li>CloudWatch metrics and alarms</li>
+                        <li>Container Insights setup</li>
+                        <li>Application logging configurations</li>
+                        <li>Log aggregation and analysis</li>
+                        <li>Alerting and notification setup</li>
+                        <li>Performance monitoring dashboards</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="appendix-content">
+                <h2>📊 CloudWatch Container Insights</h2>
+
+                <div class="monitoring-section">
+                    <h3>Enable Container Insights</h3>
+                    <pre><code># Enable Container Insights for EKS cluster
+aws logs create-log-group --log-group-name /aws/containerinsights/zl-eks-cluster/performance --region us-east-1
+aws logs create-log-group --log-group-name /aws/containerinsights/zl-eks-cluster/application --region us-east-1
+
+# Deploy CloudWatch agent as DaemonSet
+kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cloudwatch-agent.yaml
+
+# Create ConfigMap for CloudWatch agent
+kubectl apply -f https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/cwagent-configmap.yaml</code></pre>
+                </div>
+
+                <div class="monitoring-section">
+                    <h3>Container Insights Metrics</h3>
+                    <p>Container Insights automatically collects the following metrics:</p>
+                    <ul>
+                        <li><strong>Node metrics:</strong> CPU, memory, disk, network utilization</li>
+                        <li><strong>Pod metrics:</strong> CPU, memory usage by pod</li>
+                        <li><strong>Container metrics:</strong> CPU, memory usage by container</li>
+                        <li><strong>Cluster metrics:</strong> Node count, pod count, container count</li>
+                        <li><strong>Control plane metrics:</strong> API server requests, etcd metrics</li>
+                    </ul>
+                </div>
+
+                <h2>📈 CloudWatch Alarms</h2>
+
+                <div class="monitoring-section">
+                    <h3>Cluster Health Alarms</h3>
+                    <pre><code># High CPU utilization alarm
+aws cloudwatch put-metric-alarm \
+  --alarm-name "zl-eks-high-cpu" \
+  --alarm-description "EKS cluster high CPU utilization" \
+  --metric-name "node_cpu_utilization" \
+  --namespace "ContainerInsights" \
+  --statistic "Average" \
+  --period 300 \
+  --threshold 80 \
+  --comparison-operator "GreaterThanThreshold" \
+  --dimensions Name=ClusterName,Value=zl-eks-cluster \
+  --evaluation-periods 2 \
+  --alarm-actions arn:aws:sns:us-east-1:<YOUR_ACCOUNT_ID>:zl-alerts
+
+# High memory utilization alarm
+aws cloudwatch put-metric-alarm \
+  --alarm-name "zl-eks-high-memory" \
+  --alarm-description "EKS cluster high memory utilization" \
+  --metric-name "node_memory_utilization" \
+  --namespace "ContainerInsights" \
+  --statistic "Average" \
+  --period 300 \
+  --threshold 85 \
+  --comparison-operator "GreaterThanThreshold" \
+  --dimensions Name=ClusterName,Value=zl-eks-cluster \
+  --evaluation-periods 2 \
+  --alarm-actions arn:aws:sns:us-east-1:<YOUR_ACCOUNT_ID>:zl-alerts</code></pre>
+                </div>
+
+                <div class="monitoring-section">
+                    <h3>Application Performance Alarms</h3>
+                    <pre><code># Pod restart alarm
+aws cloudwatch put-metric-alarm \
+  --alarm-name "zl-app-pod-restarts" \
+  --alarm-description "High pod restart rate" \
+  --metric-name "pod_number_of_container_restarts" \
+  --namespace "ContainerInsights" \
+  --statistic "Sum" \
+  --period 300 \
+  --threshold 5 \
+  --comparison-operator "GreaterThanThreshold" \
+  --dimensions Name=ClusterName,Value=zl-eks-cluster Name=Namespace,Value=zl-app \
+  --evaluation-periods 1 \
+  --alarm-actions arn:aws:sns:us-east-1:<YOUR_ACCOUNT_ID>:zl-alerts
+
+# ALB 5xx errors alarm
+aws cloudwatch put-metric-alarm \
+  --alarm-name "zl-alb-5xx-errors" \
+  --alarm-description "High ALB 5xx error rate" \
+  --metric-name "HTTPCode_Target_5XX_Count" \
+  --namespace "AWS/ApplicationELB" \
+  --statistic "Sum" \
+  --period 300 \
+  --threshold 10 \
+  --comparison-operator "GreaterThanThreshold" \
+  --dimensions Name=LoadBalancer,Value=app/zl-alb/1234567890abcdef \
+  --evaluation-periods 1 \
+  --alarm-actions arn:aws:sns:us-east-1:<YOUR_ACCOUNT_ID>:zl-alerts</code></pre>
+                </div>
+
+                <h2>📝 Application Logging</h2>
+
+                <div class="monitoring-section">
+                    <h3>Fluent Bit Configuration</h3>
+                    <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: amazon-cloudwatch
+  labels:
+    k8s-app: fluent-bit
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         5
+        Log_Level     info
+        Daemon        off
+
+    [INPUT]
+        Name              tail
+        Path              /var/log/containers/*zl-app*.log
+        Parser            docker
+        Tag               application.*
+        Refresh_Interval  5
+
+    [OUTPUT]
+        Name  cloudwatch_logs
+        Match application.*
+        Region us-east-1
+        Log_Group_Name /aws/containerinsights/zl-eks-cluster/application
+        Log_Stream_Prefix fluent-bit-
+        Auto_Create_Group On</code></pre>
+                </div>
+
+                <div class="monitoring-section">
+                    <h3>Application Log Groups</h3>
+                    <pre><code># Create log groups for different components
+aws logs create-log-group --log-group-name /zl/application/server --region us-east-1
+aws logs create-log-group --log-group-name /zl/application/ui --region us-east-1
+aws logs create-log-group --log-group-name /zl/zookeeper/cluster --region us-east-1
+
+# Set log retention
+aws logs put-retention-policy --log-group-name /zl/application/server --retention-in-days 30 --region us-east-1
+aws logs put-retention-policy --log-group-name /zl/application/ui --retention-in-days 30 --region us-east-1
+aws logs put-retention-policy --log-group-name /zl/zookeeper/cluster --retention-in-days 30 --region us-east-1</code></pre>
+                </div>
+
+                <h2>📊 Monitoring Dashboards</h2>
+
+                <div class="monitoring-section">
+                    <h3>EKS Cluster Dashboard</h3>
+                    <pre><code>{
+    "widgets": [
+        {
+            "type": "metric",
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "ContainerInsights", "node_cpu_utilization", "ClusterName", "zl-eks-cluster" ],
+                    [ "ContainerInsights", "node_memory_utilization", "ClusterName", "zl-eks-cluster" ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-east-1",
+                "title": "EKS Cluster Resource Utilization",
+                "period": 300
+            }
+        },
+        {
+            "type": "metric",
+            "x": 12,
+            "y": 0,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "metrics": [
+                    [ "ContainerInsights", "pod_cpu_utilization_over_pod_limit", "ClusterName", "zl-eks-cluster", "Namespace", "zl-app" ],
+                    [ "ContainerInsights", "pod_memory_utilization_over_pod_limit", "ClusterName", "zl-eks-cluster", "Namespace", "zl-app" ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "us-east-1",
+                "title": "Application Pod Resource Usage",
+                "period": 300
+            }
+        }
+    ]
+}</code></pre>
+                </div>
+
+                <h2>🚨 Alerting & Notifications</h2>
+
+                <div class="monitoring-section">
+                    <h3>SNS Topic for Alerts</h3>
+                    <pre><code># Create SNS topic for alerts
+aws sns create-topic --name zl-alerts --region us-east-1
+
+# Subscribe email to alerts
+aws sns subscribe \
+  --topic-arn arn:aws:sns:us-east-1:<YOUR_ACCOUNT_ID>:zl-alerts \
+  --protocol email \
+  --notification-endpoint admin@company.com
+
+# Create alarm action for critical alerts
+aws sns create-topic --name zl-critical-alerts --region us-east-1</code></pre>
+                </div>
+
+                <div class="monitoring-section">
+                    <h3>Alert Escalation Policy</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Severity</th><th>Response Time</th><th>Notification Method</th><th>Escalation</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Critical</strong></td>
+                                <td>&lt; 15 minutes</td>
+                                <td>SMS + Email + Pager</td>
+                                <td>Immediate on-call</td>
+                            </tr>
+                            <tr>
+                                <td><strong>High</strong></td>
+                                <td>&lt; 1 hour</td>
+                                <td>Email + Slack</td>
+                                <td>Next business hour</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Medium</strong></td>
+                                <td>&lt; 4 hours</td>
+                                <td>Email</td>
+                                <td>Same business day</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Low</strong></td>
+                                <td>&lt; 24 hours</td>
+                                <td>Email</td>
+                                <td>Next business day</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>🔍 Log Analysis & Queries</h2>
+
+                <div class="monitoring-section">
+                    <h3>CloudWatch Insights Queries</h3>
+                    <pre><code># Find application errors
+fields @timestamp, @message
+| filter @logStream like /zl-server/
+| filter @message like /ERROR|Exception/
+| sort @timestamp desc
+| limit 100
+
+# Monitor API response times
+fields @timestamp, response_time, request_path
+| filter ispresent(response_time)
+| filter response_time > 5000
+| sort response_time desc
+| limit 50
+
+# Track database connection issues
+fields @timestamp, @message
+| filter @message like /connection|timeout|database/
+| sort @timestamp desc
+| limit 20</code></pre>
+                </div>
+
+                <div class="monitoring-section">
+                    <h3>Log Metric Filters</h3>
+                    <pre><code># Create metric filter for application errors
+aws logs put-metric-filter \
+  --log-group-name /zl/application/server \
+  --filter-name "ApplicationErrors" \
+  --filter-pattern "ERROR" \
+  --metric-transformations \
+    metricName=ApplicationErrors,metricNamespace=ZL/Application,metricValue=1
+
+# Create metric filter for HTTP 5xx responses
+aws logs put-metric-filter \
+  --log-group-name /zl/application/server \
+  --filter-name "HTTP5xxErrors" \
+  --filter-pattern '"status": 5*' \
+  --metric-transformations \
+    metricName=HTTP5xxErrors,metricNamespace=ZL/Application,metricValue=1</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard with fallback
+function copyToClipboard(btn) {
+    const wrapper = btn.closest('.pre-wrapper');
+    const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = code.textContent;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopied(btn);
+        }).catch(() => {
+            fallbackCopy(text, btn);
+        });
+    } else {
+        fallbackCopy(text, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(btn);
+    } catch (err) {
+        btn.textContent = 'Failed';
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+
+// Add copy buttons on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (pre.parentElement.classList.contains('pre-wrapper')) return;
+        if (pre.closest('.yaml-panel')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        wrapper.style.position = 'relative';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+});
+</script>
+
+</body>
+</html>

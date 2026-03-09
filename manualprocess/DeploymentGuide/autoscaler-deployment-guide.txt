@@ -1,0 +1,649 @@
+Node Autoscaling Setup - Step-by-Step Implementation
+=======================================================
+
+ENVIRONMENT DETAILS
+===================
+Cluster Name: usw1-zlps-eks-01
+Region: us-west-1
+Account: 995553364920
+Node Group: uw1-zlps-ng-01
+ASG Name: eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b
+Current Scaling: Min=1, Max=2, Desired=2
+
+OIDC Provider: Already associated ✅
+Node Role: eksctl-usw1-zlps-eks-01-nodegroup--NodeInstanceRole-ekzJtOX3o2UN
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 1: PRE-CHECKS (VERIFICATION)
+═══════════════════════════════════════════════════════════════════
+
+1. Verify AWS identity
+-----------------------------------
+aws sts get-caller-identity
+
+Expected output:
+{
+    "UserId": "...",
+    "Account": "995553364920",
+    "Arn": "arn:aws:iam::995553364920:user/zlpsmsa"
+}
+
+
+2. List node groups
+-----------------------------------
+aws eks list-nodegroups --cluster-name usw1-zlps-eks-01 --region us-west-1
+
+Expected output:
+----------------------
+|   ListNodegroups   |
++--------------------+
+||    nodegroups    ||
+|+------------------+|
+||  uw1-zlps-ng-01  ||
+|+------------------+|
+
+
+3. Describe node group
+-----------------------------------
+aws eks describe-nodegroup --cluster-name usw1-zlps-eks-01 --nodegroup-name uw1-zlps-ng-01 --region us-west-1
+
+Key information to note:
+- Auto Scaling Group Name: eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b
+- Current scaling: minSize=1, maxSize=2, desiredSize=2
+- Node Role ARN: arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-nodegroup--NodeInstanceRole-ekzJtOX3o2UN
+
+
+4. Verify OIDC provider
+-----------------------------------
+aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+Expected: https://oidc.eks.us-west-1.amazonaws.com/id/<OIDC_ID>
+
+Extract OIDC ID from output (everything after "/id/")
+
+
+5. List OIDC providers in IAM
+-----------------------------------
+aws iam list-open-id-connect-providers
+
+Verify the OIDC provider from step 4 appears in this list ✅
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 2: CREATE IAM POLICY
+═══════════════════════════════════════════════════════════════════
+
+1. Policy file already created at:
+-----------------------------------
+C:\Projects\aws-zl\policies\ClusterAutoscalerPolicy.json
+
+This policy allows:
+- Describe Auto Scaling Groups, instances, launch configs, tags
+- Set desired capacity and terminate instances
+- Describe EC2 launch templates, instances, instance types, AZs
+- Describe EKS node groups and cluster
+
+
+2. Create IAM policy
+-----------------------------------
+aws iam create-policy --policy-name AmazonEKSClusterAutoscalerPolicy --policy-document file://C:\Projects\aws-zl\policies\ClusterAutoscalerPolicy.json --region us-west-1
+
+Expected output:
+{
+    "Policy": {
+        "PolicyName": "AmazonEKSClusterAutoscalerPolicy",
+        "PolicyId": "...",
+        "Arn": "arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy",
+        ...
+    }
+}
+
+** IMPORTANT: Note the Policy ARN for next steps **
+
+
+3. Verify policy creation
+-----------------------------------
+aws iam list-policies --query "Policies[?PolicyName=='AmazonEKSClusterAutoscalerPolicy']" --output table
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 3: CREATE IAM ROLE WITH IRSA
+═══════════════════════════════════════════════════════════════════
+
+1. Get OIDC provider details
+-----------------------------------
+aws eks describe-cluster --name usw1-zlps-eks-01 --region us-west-1 --query "cluster.identity.oidc.issuer" --output text
+
+Example output: https://oidc.eks.us-west-1.amazonaws.com/id/ABC123DEF456
+
+Extract:
+- REGION: us-west-1
+- OIDC_ID: ABC123DEF456 (everything after "/id/")
+
+
+2. Create trust policy file
+-----------------------------------
+File already exists: C:\Projects\aws-zl\ec2\trust-policy.json
+
+UPDATE this file with:
+- Replace <ACCOUNT_ID> with: 995553364920
+- Replace <REGION> with: us-west-1
+- Replace <OIDC_ID> with: (value from step 1)
+
+Expected format:
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::995553364920:oidc-provider/oidc.eks.us-west-1.amazonaws.com/id/<OIDC_ID>"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-west-1.amazonaws.com/id/<OIDC_ID>:sub": "system:serviceaccount:kube-system:cluster-autoscaler"
+        }
+      }
+    }
+  ]
+}
+
+
+3. Create IAM role
+-----------------------------------
+aws iam create-role --role-name eks-cluster-autoscaler-role --assume-role-policy-document file://C:\Projects\aws-zl\ec2\trust-policy.json --region us-west-1
+
+Expected output:
+{
+    "Role": {
+        "RoleName": "eks-cluster-autoscaler-role",
+        "Arn": "arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role",
+        ...
+    }
+}
+
+** IMPORTANT: Note the Role ARN for service account annotation **
+
+
+4. Verify role creation
+-----------------------------------
+aws iam list-roles --query "Roles[?RoleName=='eks-cluster-autoscaler-role']" --output table
+
+
+5. Attach autoscaler policy to role
+-----------------------------------
+aws iam attach-role-policy --role-name eks-cluster-autoscaler-role --policy-arn arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy --region us-west-1
+
+
+6. Verify policy attachment
+-----------------------------------
+aws iam list-attached-role-policies --role-name eks-cluster-autoscaler-role --output table
+
+Expected to see: AmazonEKSClusterAutoscalerPolicy
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 4: CREATE & CONFIGURE SERVICE ACCOUNT
+═══════════════════════════════════════════════════════════════════
+
+OPTION 1: Using eksctl (Recommended - Creates and annotates in one step)
+-----------------------------------
+eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --region us-west-1 --namespace kube-system --name cluster-autoscaler --attach-policy-arn arn:aws:iam::995553364920:policy/AmazonEKSClusterAutoscalerPolicy --approve --override-existing-serviceaccounts
+
+This command will:
+- Create service account "cluster-autoscaler" in kube-system namespace
+- Create IAM role and attach policy
+- Annotate service account with role ARN automatically
+
+Skip to PHASE 5 if using this option.
+
+
+OPTION 2: Manual creation with kubectl (if eksctl not preferred)
+-----------------------------------
+
+Step 1: Create service account
+kubectl create serviceaccount cluster-autoscaler -n kube-system
+
+Step 2: Annotate with IAM role
+kubectl annotate serviceaccount cluster-autoscaler -n kube-system eks.amazonaws.com/role-arn=arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role --overwrite
+
+
+VERIFICATION (Both Options)
+-----------------------------------
+kubectl get sa cluster-autoscaler -n kube-system -o yaml
+
+Expected output should include:
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role
+  name: cluster-autoscaler
+  namespace: kube-system
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 5: TAG AUTO SCALING GROUPS
+═══════════════════════════════════════════════════════════════════
+
+CRITICAL: The Cluster Autoscaler CANNOT discover node groups without these tags!
+
+ASG Name: eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b
+
+1. Apply required tags to ASG
+-----------------------------------
+aws autoscaling create-or-update-tags --region us-west-1 --tags `
+  Key=k8s.io/cluster-autoscaler/enabled,Value=true,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group `
+  Key=k8s.io/cluster-autoscaler/usw1-zlps-eks-01,Value=owned,PropagateAtLaunch=true,ResourceId=eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b,ResourceType=auto-scaling-group
+
+Tag Explanation:
+┌────────────────────────────────────────────┬────────┬──────────────────────────────────────┐
+│ Tag Key                                    │ Value  │ Purpose                              │
+├────────────────────────────────────────────┼────────┼──────────────────────────────────────┤
+│ k8s.io/cluster-autoscaler/enabled          │ true   │ Marks ASG as autoscaler-managed      │
+│ k8s.io/cluster-autoscaler/usw1-zlps-eks-01 │ owned  │ Associates ASG with specific cluster │
+└────────────────────────────────────────────┴────────┴──────────────────────────────────────┘
+
+NOTE: If using AWS CLI to verify tags, you'll need autoscaling:DescribeAutoScalingGroups permission.
+Alternative verification: Check tags in AWS Console → EC2 → Auto Scaling Groups
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 6: UPDATE NODE GROUP SCALING LIMITS
+═══════════════════════════════════════════════════════════════════
+
+Current limits: Min=1, Max=2, Desired=2
+
+Recommended for autoscaling: Min=2, Max=5, Desired=2
+
+OPTION 1: Using eksctl (Recommended)
+-----------------------------------
+eksctl scale nodegroup --cluster usw1-zlps-eks-01 --name uw1-zlps-ng-01 --nodes-min 2 --nodes-max 5 --nodes 2 --region us-west-1
+
+This updates both EKS and ASG configurations.
+
+
+OPTION 2: Using AWS CLI (Direct ASG update)
+-----------------------------------
+NOTE: Requires autoscaling:UpdateAutoScalingGroup permission
+
+aws autoscaling update-auto-scaling-group --auto-scaling-group-name eks-uw1-zlps-ng-01-d0cd73a2-abab-6472-fbab-1083d5c5570b --min-size 2 --max-size 5 --desired-capacity 2 --region us-west-1
+
+
+VERIFICATION
+-----------------------------------
+aws eks describe-nodegroup --cluster-name usw1-zlps-eks-01 --nodegroup-name uw1-zlps-ng-01 --region us-west-1 --query "nodegroup.scalingConfig"
+
+Expected:
+{
+    "minSize": 2,
+    "maxSize": 5,
+    "desiredSize": 2
+}
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 7: DEPLOY CLUSTER AUTOSCALER
+═══════════════════════════════════════════════════════════════════
+
+YAML file location: C:\Projects\aws-zl\yaml\EKS-AutoScaler.Yaml
+
+IMPORTANT: Update the YAML file before deploying!
+
+Required changes in EKS-AutoScaler.Yaml:
+-----------------------------------
+
+1. Update service account annotation (line 11):
+   CHANGE FROM: arn:aws:iam::194359963850:role/ClusterAutoscalerRole
+   CHANGE TO:   arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role
+
+2. Update cluster name in deployment (line 149):
+   CHANGE FROM: --cluster-name=demozleks
+   CHANGE TO:   --cluster-name=usw1-zlps-eks-01
+
+3. Update auto-discovery tag (line 150):
+   CHANGE FROM: --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/demozleks
+   CHANGE TO:   --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/usw1-zlps-eks-01
+
+4. Update AWS region environment variable (line 158):
+   CHANGE FROM: value: ap-south-2
+   CHANGE TO:   value: us-west-1
+
+5. Verify image version (line 141):
+   CURRENT: image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.30.0
+   
+   Check compatibility with EKS 1.34:
+   For EKS 1.34, use cluster-autoscaler v1.34.x
+   
+   RECOMMENDED UPDATE:
+   image: registry.k8s.io/autoscaling/cluster-autoscaler:v1.34.0
+
+
+Deploy the autoscaler
+-----------------------------------
+kubectl apply -f C:\Projects\aws-zl\yaml\EKS-AutoScaler.Yaml
+
+Expected output:
+serviceaccount/cluster-autoscaler created (or unchanged if using eksctl)
+clusterrole.rbac.authorization.k8s.io/cluster-autoscaler created
+clusterrolebinding.rbac.authorization.k8s.io/cluster-autoscaler created
+deployment.apps/cluster-autoscaler created
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 8: VERIFICATION & MONITORING
+═══════════════════════════════════════════════════════════════════
+
+1. Check autoscaler pod status
+-----------------------------------
+kubectl get pods -n kube-system | Select-String "autoscaler"
+
+Expected: 1 pod in Running state
+cluster-autoscaler-xxxxxxxxxx-xxxxx   1/1     Running   0          XXs
+
+
+2. Verify deployment
+-----------------------------------
+kubectl -n kube-system get deployment cluster-autoscaler
+
+Expected output:
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+cluster-autoscaler   1/1     1            1           XXs
+
+
+3. Check autoscaler logs
+-----------------------------------
+kubectl -n kube-system logs deployment/cluster-autoscaler --tail=50
+
+Look for:
+✅ "Successfully registered ASG" - ASG discovered
+✅ "Cluster-autoscaler status: Running" - Autoscaler active
+❌ Any permission errors (if found, check IAM role/policy)
+
+
+4. Describe autoscaler pod for details
+-----------------------------------
+kubectl describe pod -n kube-system -l app=cluster-autoscaler
+
+Check:
+- Events: Should show no errors
+- Volumes: Should show service account token
+- Environment: AWS_REGION should be us-west-1
+
+
+5. Verify service account annotation
+-----------------------------------
+kubectl get sa cluster-autoscaler -n kube-system -o yaml | Select-String "role-arn"
+
+Expected:
+    eks.amazonaws.com/role-arn: arn:aws:iam::995553364920:role/eks-cluster-autoscaler-role
+
+
+6. Watch autoscaler logs in real-time
+-----------------------------------
+kubectl -n kube-system logs -f deployment/cluster-autoscaler
+
+Watch for scaling decisions and events
+
+
+7. Check current nodes
+-----------------------------------
+kubectl get nodes
+
+Shows current worker nodes (should match desired capacity)
+
+
+8. View recent cluster events
+-----------------------------------
+kubectl get events -A --sort-by=.metadata.creationTimestamp | Select-Object -Last 20
+
+Look for autoscaler-related events
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 9: TESTING AUTOSCALER
+═══════════════════════════════════════════════════════════════════
+
+Test Scale-Up Scenario
+-----------------------------------
+
+1. Create resource-intensive deployment to trigger scale-up:
+
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-test
+  namespace: default
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: resource-test
+  template:
+    metadata:
+      labels:
+        app: resource-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+EOF
+
+
+2. Watch for pending pods:
+kubectl get pods -n default -w
+
+Some pods should show "Pending" status due to insufficient resources.
+
+
+3. Monitor autoscaler logs for scale-up decision:
+kubectl -n kube-system logs -f deployment/cluster-autoscaler | Select-String "scale up"
+
+Expected log entries:
+"Scale-up: group eks-uw1-zlps-ng-01-... size set to X"
+
+
+4. Watch nodes increase:
+kubectl get nodes -w
+
+New nodes should appear within 2-5 minutes.
+
+
+5. Cleanup test deployment:
+kubectl delete deployment resource-test -n default
+
+
+Test Scale-Down Scenario
+-----------------------------------
+
+After deleting the test deployment, autoscaler will wait ~10 minutes before scaling down underutilized nodes.
+
+Monitor with:
+kubectl -n kube-system logs -f deployment/cluster-autoscaler | Select-String "scale down"
+
+
+═══════════════════════════════════════════════════════════════════
+PHASE 10: TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+Common Issues & Solutions
+-----------------------------------
+
+Issue: Autoscaler pod in CrashLoopBackOff
+Solution: Check logs for permission errors
+kubectl logs -n kube-system -l app=cluster-autoscaler --tail=100
+
+
+Issue: "Failed to regenerate autoscaling group from Node template"
+Solution: Verify ASG tags are correctly applied
+
+
+Issue: "Failed to get aws instance types"
+Solution: Check IAM role has ec2:DescribeInstanceTypes permission
+
+
+Issue: "Unauthorized" or "Access Denied" errors
+Solution: 
+1. Verify service account annotation:
+   kubectl get sa cluster-autoscaler -n kube-system -o yaml
+2. Check IAM role has correct trust policy
+3. Verify policy is attached to role:
+   aws iam list-attached-role-policies --role-name eks-cluster-autoscaler-role
+
+
+Issue: Autoscaler not discovering ASG
+Solution:
+1. Verify ASG tags are present
+2. Check cluster name matches in:
+   - ASG tag: k8s.io/cluster-autoscaler/usw1-zlps-eks-01
+   - Deployment command: --cluster-name=usw1-zlps-eks-01
+   - Auto-discovery: --node-group-auto-discovery includes correct cluster name
+
+
+Issue: Nodes not scaling up despite pending pods
+Solution:
+1. Check max size hasn't been reached:
+   aws eks describe-nodegroup --cluster-name usw1-zlps-eks-01 --nodegroup-name uw1-zlps-ng-01 --query "nodegroup.scalingConfig"
+2. Review autoscaler logs for reasons:
+   kubectl logs -n kube-system deployment/cluster-autoscaler | Select-String "not scale"
+
+
+Useful Debug Commands
+-----------------------------------
+
+# Get all autoscaler-related resources
+kubectl get all -n kube-system | Select-String "autoscaler"
+
+# Check service account details
+kubectl describe sa cluster-autoscaler -n kube-system
+
+# View autoscaler configmap (if any)
+kubectl get configmap -n kube-system | Select-String "autoscaler"
+
+# Check pod resource requests
+kubectl describe pod <POD_NAME> -n kube-system | Select-String -Pattern "Requests|Limits" -Context 2,0
+
+# List all pending pods
+kubectl get pods --all-namespaces --field-selector=status.phase=Pending
+
+# Check node capacity and allocatable resources
+kubectl describe nodes | Select-String -Pattern "Name:|Capacity:|Allocatable:" -Context 0,3
+
+
+Pause/Resume Autoscaler (for maintenance)
+-----------------------------------
+
+Pause:
+kubectl scale deployment cluster-autoscaler -n kube-system --replicas=0
+
+Resume:
+kubectl scale deployment cluster-autoscaler -n kube-system --replicas=1
+
+
+═══════════════════════════════════════════════════════════════════
+SUMMARY CHECKLIST
+═══════════════════════════════════════════════════════════════════
+
+□ Phase 1: Pre-checks completed
+  □ OIDC provider exists
+  □ Node group identified
+  □ ASG name noted
+
+□ Phase 2: IAM Policy created
+  □ Policy ARN saved
+
+□ Phase 3: IAM Role created
+  □ Trust policy configured with correct OIDC
+  □ Policy attached to role
+  □ Role ARN saved
+
+□ Phase 4: Service Account configured
+  □ Service account created
+  □ Annotated with IAM role ARN
+
+□ Phase 5: ASG Tags applied
+  □ k8s.io/cluster-autoscaler/enabled = true
+  □ k8s.io/cluster-autoscaler/usw1-zlps-eks-01 = owned
+
+□ Phase 6: Scaling limits updated
+  □ Min size increased to 2
+  □ Max size set to 5
+
+□ Phase 7: Autoscaler deployed
+  □ YAML updated with correct values
+  □ Deployment successful
+
+□ Phase 8: Verification complete
+  □ Pod running
+  □ Logs show successful ASG registration
+  □ No permission errors
+
+□ Phase 9: Testing performed
+  □ Scale-up tested
+  □ Scale-down observed
+
+
+═══════════════════════════════════════════════════════════════════
+QUICK REFERENCE COMMANDS
+═══════════════════════════════════════════════════════════════════
+
+# Check autoscaler status
+kubectl get pods -n kube-system | Select-String "autoscaler"
+
+# View autoscaler logs
+kubectl logs -n kube-system deployment/cluster-autoscaler --tail=50
+
+# Follow logs in real-time
+kubectl logs -n kube-system -f deployment/cluster-autoscaler
+
+# Check current nodes
+kubectl get nodes
+
+# View pending pods
+kubectl get pods --all-namespaces --field-selector=status.phase=Pending
+
+# Check node group scaling config
+aws eks describe-nodegroup --cluster-name usw1-zlps-eks-01 --nodegroup-name uw1-zlps-ng-01 --region us-west-1 --query "nodegroup.scalingConfig"
+
+# List attached policies to autoscaler role
+aws iam list-attached-role-policies --role-name eks-cluster-autoscaler-role
+
+# Restart autoscaler
+kubectl rollout restart deployment cluster-autoscaler -n kube-system
+
+
+═══════════════════════════════════════════════════════════════════
+IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════
+
+1. Cluster Autoscaler Version Compatibility:
+   - EKS 1.34 requires Cluster Autoscaler v1.34.x
+   - Current YAML uses v1.30.0 - UPDATE RECOMMENDED
+
+2. Scaling Behavior:
+   - Scale-up: Triggers immediately when pods are pending
+   - Scale-down: Waits ~10 minutes of low utilization
+   - Scale-down grace period: 10 minutes (default)
+
+3. Cost Considerations:
+   - Increased max nodes = potential higher costs
+   - Monitor scaling patterns to optimize limits
+
+4. Best Practices:
+   - Set appropriate resource requests/limits on pods
+   - Use Pod Disruption Budgets for critical workloads
+   - Monitor autoscaler logs regularly
+   - Test scaling during low-traffic periods first
+
+5. Limitations:
+   - Cannot scale below minSize even if all nodes are idle
+   - Respects Pod Disruption Budgets (may prevent scale-down)
+   - Won't scale down nodes with:
+     - Local storage pods (unless --skip-nodes-with-local-storage=false)
+     - Pods with restrictive PDBs
+     - System pods without proper annotations

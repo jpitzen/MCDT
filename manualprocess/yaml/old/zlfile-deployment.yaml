@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlfile
+  name: zlfile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlfile
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlfile
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlfile
+          image: 995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlfile11.1.0-b1140
+          imagePullPolicy: Always
+          #imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlfile/WEB-INF/tmp
+              name: zlfiletemp
+      volumes:
+        - name: zlfiletemp
+          persistentVolumeClaim:
+            claimName: zlfiletemp-efs
+status: {}

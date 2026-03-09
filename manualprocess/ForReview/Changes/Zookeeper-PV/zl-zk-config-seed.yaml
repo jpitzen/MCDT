@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zl-zk-config-seed
+  labels:
+    app: zlzookeeper
+    role: zk-config-seed
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: regcred
+
+      containers:
+        - name: seed-config
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlzookeeper:11.1.0-b1140
+          imagePullPolicy: Always
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+
+              SRC=/opt/ZipLip/ZLZooKeeper/config
+              DST=/mnt/config
+
+              echo "Checking ZooKeeper config in EFS..."
+
+              if [ -f "$DST/zk.cfg" ]; then
+                echo "ZooKeeper config already present in EFS. Skipping copy."
+                exit 0
+              fi
+
+              echo "Seeding ZooKeeper config into EFS"
+              mkdir -p "$DST"
+              cp -r "$SRC"/* "$DST"/
+
+              echo "ZooKeeper config seed completed successfully"
+
+          volumeMounts:
+            - name: zk-config
+              mountPath: /mnt/config
+
+      volumes:
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs

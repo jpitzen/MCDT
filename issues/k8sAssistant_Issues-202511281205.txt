@@ -1,0 +1,2724 @@
+Cloud K8s deployment Platform.
+
+=============================
+
+Instructions
+
+=============================
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+DB access must be through the pod.
+
+The Frontend and Backend dev servers are running in external powershell windows.
+
+Advise on when I should restart the dev servers.
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+
+Only fix items that are broken.
+
+==================
+Issue Description
+==================
+
+The deployment occurs, but the pod errors out.
+
+==================
+Browser Error
+==================
+
+
+
+==================
+Deployment Monitor Output
+==================
+
+E:\images\zltika>kubectl get pods -n default
+NAME                            READY   STATUS             RESTARTS      AGE
+usw1-deptest-69b5ff6595-ptz9k   0/1     CrashLoopBackOff   2 (21s ago)   37s
+
+
+
+==================
+Browser Console
+==================
+
+content-scripts.js:1 CONTENT_SHELL: Page is excluded. Skipping shell protection.
+content-scripts.js:1 TSS: excluded result:  true
+content-scripts.js:1 SCHJK: Search Hijacking notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Sending response back to page context: {isAllowListed: false, isProtectionEnabled: true, isScamsProtectionEnabled: true}
+content-scripts.js:1 Content Script Bridge: Unknown message type,  MSG_CHECK_DOMAIN_ALLOW_LIST_RESPONSE
+injection-tss-mv3.js:1 injection-tss TSS: hosted page injected
+injection-tss-mv3.js:1 injection-tss MBTSS: Nonce:  nonce
+react refresh:37 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:26
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+warnOnce @ deprecations.ts:9
+logDeprecation @ deprecations.ts:13
+logV6DeprecationWarnings @ deprecations.ts:37
+(anonymous) @ index.tsx:816
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+content-scripts.js:1 DFP: Breach notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackOk
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+favicon.ico:1   GET http://localhost:3000/favicon.ico 404 (Not Found)
+injection-tss-mv3.js:1 TSS: Counted history being pushed
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  {}
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] 'message' handler took <N>ms
+[Violation] Forced reflow while executing JavaScript took 73ms
+content-scripts.js:1 [Violation] 'setTimeout' handler took 74ms
+
+
+
+
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+fetch("http://localhost:3000/", {
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.googleapis.com/icon?family=Material+Icons", {
+  "headers": {
+    "accept": "text/css,*/*;q=0.1",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "style",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-storage-access": "active",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/static/js/bundle.js", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "script",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("ws://localhost:3000/ws", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "zdUw2LLQf0CEOcJC0onHZQ==",
+    "sec-websocket-version": "13",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/status/dashboard", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"1682-o6DntFyPe3RyB9QaEG//mTW0vnA\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("https://fonts.gstatic.com/s/roboto/v50/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "priority": "u=0",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "font",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "Referer": "https://fonts.googleapis.com/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/injection-topics.js", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("chrome-extension://bojobppfploabceghnmlahpoonbcbacn/app/content-style.css", {
+  "headers": {
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/manifest.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "manifest",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/favicon.ico", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/context", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/local-images", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/containers", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/info", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/credentials", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/deployments", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/services", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/pods", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/configmaps", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/secrets", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/events", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/resources", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/context", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"2e9-/QmKg2gezdbsExXXTa1CN8l9zSI\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/local-images", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"11aa5-0MDorlasthdJi7wl5/J/AF09tL8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/containers", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"4f5-BiiGIN9mP9yvZ2i4vydsFT4J4O0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/docker/info", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"2b7-NNehwDkI55fZQ6Z4M7d53r6PBMw\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/credentials", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"3b7-sfcj3ZHA08ahMZQqtWdUDQ4khXo\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/deployments", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"69-Ih8MV9gbq7AQ6gXlYdk3y+6QS0o\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/services", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"316-5OILJD+B6S3mTcGDlzo0TKAwBWQ\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/pods", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"62-p1/k7UnZwiYF9TI3uYvVUGlYx50\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/configmaps", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"d2-RFDPmY8EXkFBgLaFXSTK8RNZOp0\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/secrets", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"65-Tvs9vFaQe+owiIKpce4IUZAmi+g\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/events", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"1055-3GqEfKg3N8O6lZLIfuQ0A42lJeY\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/resources", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"a1-6duFDK9+vtU/4AOwTHEN++VvycI\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/regions/12296ec4-48b4-437c-9ae8-4285a4696f10", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10?region=us-west-1", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10?region=us-west-1", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10/connect", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": "{\"clusterName\":\"us1-zlps-k8s-01\",\"region\":\"us-west-1\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/context", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"2e9-fAa5wTfSspYRw4KZnYnM8HcNZyg\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"2b7-23YVtI2JaaKJYCj1hclLKKhpznw\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/authenticate", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": "{\"registryUri\":\"995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01\"}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/images?registryUri=995553364920.dkr.ecr.us-west-1.amazonaws.com%2Fuw1-zlps-ecr-01&region=us-west-1", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/quick-deploy", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": "{\"imageName\":\"995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper11.1.0-b1140\",\"imageTag\":\"zlzookeeper11.1.0-b1140\",\"deploymentName\":\"usw1-deptest\",\"namespace\":\"default\",\"replicas\":1,\"containerPort\":8080,\"servicePort\":80,\"serviceType\":\"ClusterIP\",\"createService\":true,\"envVars\":[],\"resourceRequests\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"},\"resourceLimits\":{\"cpu\":\"500m\",\"memory\":\"512Mi\"}}",
+  "method": "POST"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/deployments", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"69-vZoKWgVotb5erEKCVauCH2FZKK8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/services", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"316-YbPei6nljG67bEIS3k3/SjWOCdg\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/pods", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"62-zd45DMzaKkZByrnc05F8/ViTSx8\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/configmaps", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"d2-d40VcfhKlnGdXsZiwsApEe0KOVA\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/secrets", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"65-94lB+t7IjK4e66JOM3F1NPoIPlg\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+}); ;
+fetch("http://localhost:3000/api/container-deployments/k8s/namespaces/default/events", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NjgxNWZkZC1iMmZiLTQzYzktOTJhMi1lNzEwZTI0OThiOGQiLCJlbWFpbCI6ImpwaXR6ZW5Aemx0aS5jb20iLCJyb2xlIjoiYWRtaW4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzY0MzM5MzE2LCJleHAiOjE3NjQ0MjU3MTZ9.jRyXswekH4yaJQ7GJwg3I2ybllEpBeXYv69f-r10vMk",
+    "if-none-match": "W/\"1055-upJAe8JzhNaUzFwov4i9vvKS/i4\"",
+    "sec-ch-ua": "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "cookie": "ajs_anonymous_id=c1c62422-653b-4bca-8875-1a901c76d6ad",
+    "Referer": "http://localhost:3000/k8s-assistant"
+  },
+  "body": null,
+  "method": "GET"
+});
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:70500) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:70500) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled successfully!
+
+You can now view k8s-deployer-frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.21:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+(node:70500) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+Proxy error: Could not proxy request /api/container-deployments/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/authenticate from localhost:3000 to http://localhost:5000/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNRESET).
+
+
+
+
+
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-11-28 13:47:46 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-28 13:47:46 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-28 13:47:46 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-28 13:47:46 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-28 13:47:46 [info]: DeploymentTemplateService initialized with builtin templates
+(node:71568) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71568) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-28 13:47:47 [info]: Database connection authenticated
+2025-11-28 13:47:47 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-28 13:47:47 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+2025-11-28 13:47:58 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/main.09f68237145a51178fe2.hot-update.json"
+}
+2025-11-28 13:47:59 [info]: GET /main.09f68237145a51178fe2.hot-update.json {
+  "method": "GET",
+  "path": "/main.09f68237145a51178fe2.hot-update.json",
+  "statusCode": 404,
+  "duration": "17ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:47:59 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:48:05 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "27ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:48:05 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:48:05 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "15ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:48:05 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:48:06 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "9ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:48:06 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:48:06 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "8ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:48:06 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:44 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "119ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:44 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "581ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:44 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:47 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "3106ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:47 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "3664ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:47 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "2888ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:47 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "3904ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "4055ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:48 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "70ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:48 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "9ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:48 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:49 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "198ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:50 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "2332ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:50 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "2306ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:50 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "2341ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:50 [error]: Failed to get events {
+  "namespace": "default",
+  "error": "Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n"
+}
+2025-11-28 13:49:50 [error]: Unhandled error {
+  "error": "Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n",
+  "stack": "Error: Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n\n    at ContainerDeploymentService.getEvents (C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\services\\containerDeploymentService.js:2368:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\routes\\containerDeployments.js:666:20",
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:50 [info]: GET /api/container-deployments/k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "statusCode": 500,
+  "duration": "2304ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:50 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:50 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:50 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:50 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:51 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "2170ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:52 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:52 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "57ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:52 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:52 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "1904ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:53 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:53 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "2494ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:53 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "2505ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:53 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:53 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:53 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "2883ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:54 [info]: GET /cloud/regions/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/regions/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "9ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:54 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:54 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1950ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:54 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:49:54 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "cluster",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:49:54 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1850ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:55 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "2020ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:55 [error]: Failed to get events {
+  "namespace": "default",
+  "error": "Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n"
+}
+2025-11-28 13:49:55 [error]: Unhandled error {
+  "error": "Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n",
+  "stack": "Error: Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n\n    at ContainerDeploymentService.getEvents (C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\services\\containerDeploymentService.js:2368:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\routes\\containerDeployments.js:666:20",
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:55 [info]: GET /api/container-deployments/k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "statusCode": 500,
+  "duration": "2059ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:56 [info]: GET /cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "2199ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:49:58 [info]: GET /cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "3676ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:03 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "cluster",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:04 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:05 [info]: Connected to EKS cluster {
+  "clusterName": "us1-zlps-k8s-01",
+  "region": "us-west-1"
+}
+2025-11-28 13:50:05 [info]: POST /cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10/connect {
+  "method": "POST",
+  "path": "/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10/connect",
+  "statusCode": 200,
+  "duration": "2074ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:06 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:07 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "1977ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:08 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:08 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:09 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "auth",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:10 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "1679ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:10 [info]: GET /cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/images {
+  "method": "GET",
+  "path": "/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/images",
+  "statusCode": 200,
+  "duration": "1903ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:13 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "9760ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:13 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "29725ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:34 [info]: Quick deploy starting {
+  "fullImage": "995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper11.1.0-b1140",
+  "name": "uw1adt",
+  "namespace": "default"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:34 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:37 [info]: Quick deploy completed {
+  "name": "uw1adt",
+  "namespace": "default",
+  "output": "deployment.apps/uw1adt created\nservice/uw1adt-svc created\n"
+}
+2025-11-28 13:50:37 [info]: POST /k8s/quick-deploy {
+  "method": "POST",
+  "path": "/k8s/quick-deploy",
+  "statusCode": 201,
+  "duration": "2853ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:37 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:39 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "1574ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:39 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1653ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:39 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1652ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:39 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1661ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:39 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "1681ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:50:39 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:50:41 [error]: Failed to get events {
+  "namespace": "default",
+  "error": "Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n"
+}
+2025-11-28 13:50:41 [error]: Unhandled error {
+  "error": "Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n",
+  "stack": "Error: Failed to get events: Command failed: kubectl get events -n default --sort-by='.lastTimestamp' -o json\nerror: couldn't find any field with path \"{.'.lastTimestamp'}\" in the list of objects\n\n    at ContainerDeploymentService.getEvents (C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\services\\containerDeploymentService.js:2368:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\src\\routes\\containerDeployments.js:666:20",
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:50:41 [info]: GET /api/container-deployments/k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/api/container-deployments/k8s/namespaces/default/events",
+  "statusCode": 500,
+  "duration": "1878ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/server.js`
+2025-11-28 13:54:49 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-28 13:54:49 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-28 13:54:49 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-28 13:54:49 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-28 13:54:49 [info]: DeploymentTemplateService initialized with builtin templates
+(node:71104) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71104) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-28 13:54:50 [info]: Database connection authenticated
+2025-11-28 13:54:50 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-28 13:54:50 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/server.js`
+2025-11-28 13:54:57 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-28 13:54:57 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-28 13:54:57 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-28 13:54:57 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-28 13:54:57 [info]: DeploymentTemplateService initialized with builtin templates
+(node:10188) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10188) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-28 13:54:58 [info]: Database connection authenticated
+2025-11-28 13:54:58 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-28 13:54:58 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:12 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "44ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:12 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:12 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "12ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:12 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:21 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "15ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count(*) AS "count" FROM "users" AS "User";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'running' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT count(*) AS "count" FROM "deployments" AS "Deployment" WHERE "Deployment"."status" = 'failed' AND "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d';
+Executing (default): SELECT "id", "cluster_name" AS "clusterName", "status", "cloud_provider" AS "cloudProvider", "configuration", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' ORDER BY "createdAt" DESC LIMIT 5;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:21 [info]: GET /dashboard {
+  "method": "GET",
+  "path": "/dashboard",
+  "statusCode": 200,
+  "duration": "13ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:21 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/favicon.ico"
+}
+2025-11-28 13:56:21 [info]: GET /favicon.ico {
+  "method": "GET",
+  "path": "/favicon.ico",
+  "statusCode": 404,
+  "duration": "4ms"
+}
+2025-11-28 13:56:21 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:23 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "32ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:23 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "456ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:23 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:26 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "3331ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:26 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "2880ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:26 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:26 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "3987ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:26 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "4011ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:26 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:27 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "4167ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:27 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:27 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "63ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:29 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "2457ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:29 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "2238ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:29 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "2175ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:29 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "2265ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT count(*) AS "count" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true;
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."user_id" = '86815fdd-b2fb-43c9-92a2-e710e2498b8d' AND "Credential"."is_active" = true ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:30 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "42ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:30 [info]: GET /docker/containers {
+  "method": "GET",
+  "path": "/docker/containers",
+  "statusCode": 200,
+  "duration": "240ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:32 [info]: GET /docker/local-images {
+  "method": "GET",
+  "path": "/docker/local-images",
+  "statusCode": 200,
+  "duration": "2301ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:32 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "2966ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:33 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "2977ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:33 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "2653ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:33 [info]: GET /k8s/namespaces/default/resources {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/resources",
+  "statusCode": 200,
+  "duration": "35ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:33 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "3238ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:33 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:35 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1733ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:35 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "1750ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:35 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1661ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:35 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "1741ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:42 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:49 [info]: GET /cloud/regions/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/regions/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "7ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:49 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "cluster",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:51 [info]: GET /cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "1969ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:53 [info]: GET /cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10 {
+  "method": "GET",
+  "path": "/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10",
+  "statusCode": 200,
+  "duration": "3384ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:53 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "30552ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:56:53 [info]: GET /docker/info {
+  "method": "GET",
+  "path": "/docker/info",
+  "statusCode": 200,
+  "duration": "10615ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:54 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "cluster",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:56 [info]: Connected to EKS cluster {
+  "clusterName": "us1-zlps-k8s-01",
+  "region": "us-west-1"
+}
+2025-11-28 13:56:56 [info]: POST /cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10/connect {
+  "method": "POST",
+  "path": "/cloud/clusters/12296ec4-48b4-437c-9ae8-4285a4696f10/connect",
+  "statusCode": 200,
+  "duration": "1402ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:56 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:57 [info]: GET /k8s/context {
+  "method": "GET",
+  "path": "/k8s/context",
+  "statusCode": 200,
+  "duration": "1655ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:58 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:58 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "auth",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "id", "user_id" AS "userId", "name", "description", "cloud_provider" AS "cloudProvider", "vault_type" AS "vaultType", "secret_ref_id" AS "secretRefId", "cloud_account_id" AS "cloudAccountId", "cloud_region" AS "cloudRegion", "aws_account_id" AS "awsAccountId", "aws_region" AS "awsRegion", "encrypted_access_key_id" AS "encryptedAccessKeyId", "encrypted_secret_access_key" AS "encryptedSecretAccessKey", "encryption_iv" AS "encryptionIv", "auth_tag" AS "authTag", "encrypted_credential_data" AS "encryptedCredentialData", "credential_data_iv" AS "credentialDataIv", "credential_data_auth_tag" AS "credentialDataAuthTag", "additional_regions" AS "additionalRegions", "is_valid" AS "isValid", "last_validated_at" AS "lastValidatedAt", "validation_error" AS "validationError", "last_rotated_at" AS "lastRotatedAt", "rotation_scheduled_at" AS "rotationScheduledAt", "tags", "metadata", "is_active" AS "isActive", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "credentials" AS "Credential" WHERE "Credential"."id" = '12296ec4-48b4-437c-9ae8-4285a4696f10';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:56:59 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:56:59 [info]: GET /k8s/namespaces {
+  "method": "GET",
+  "path": "/k8s/namespaces",
+  "statusCode": 200,
+  "duration": "1507ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:01 [info]: GET /cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/images {
+  "method": "GET",
+  "path": "/cloud/registries/12296ec4-48b4-437c-9ae8-4285a4696f10/images",
+  "statusCode": 200,
+  "duration": "1600ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:24 [info]: Quick deploy starting {
+  "fullImage": "995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper11.1.0-b1140",
+  "name": "usw1-deptest",
+  "namespace": "default"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:57:26 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:57:30 [info]: Quick deploy completed {
+  "name": "usw1-deptest",
+  "namespace": "default",
+  "output": "deployment.apps/usw1-deptest created\nservice/usw1-deptest-svc created\n"
+}
+2025-11-28 13:57:30 [info]: POST /k8s/quick-deploy {
+  "method": "POST",
+  "path": "/k8s/quick-deploy",
+  "statusCode": 201,
+  "duration": "6204ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:57:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:57:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:57:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:57:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:57:32 [info]: GET /k8s/namespaces/default/services {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/services",
+  "statusCode": 200,
+  "duration": "1668ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:32 [info]: GET /k8s/namespaces/default/deployments {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/deployments",
+  "statusCode": 200,
+  "duration": "1677ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:32 [info]: GET /k8s/namespaces/default/configmaps {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/configmaps",
+  "statusCode": 200,
+  "duration": "1668ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:32 [info]: GET /k8s/namespaces/default/secrets {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/secrets",
+  "statusCode": 200,
+  "duration": "1669ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-28 13:57:32 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d",
+  "changes": null,
+  "status": "success"
+}
+2025-11-28 13:57:32 [info]: GET /k8s/namespaces/default/pods {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/pods",
+  "statusCode": 200,
+  "duration": "2123ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}
+2025-11-28 13:57:33 [info]: GET /k8s/namespaces/default/events {
+  "method": "GET",
+  "path": "/k8s/namespaces/default/events",
+  "statusCode": 200,
+  "duration": "1293ms",
+  "userId": "86815fdd-b2fb-43c9-92a2-e710e2498b8d"
+}

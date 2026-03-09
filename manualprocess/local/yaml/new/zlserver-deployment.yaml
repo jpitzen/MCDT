@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlserver
+  name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: zlserver:20251220
+          imagePullPolicy: Never
+          command: ["/bin/bash", "-c"]
+          args:
+            - apt-get update && apt-get install -y openjdk-21-jre-headless && /opt/ZipLip/bin/zlserver-startup.sh
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          env:
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: PATH
+              value: "/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zlservertemp
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/config/app/sheet/DocumentConversion.xml
+              name: docconvert-config
+              subPath: DocumentConversion.xml
+            - mountPath: /opt/ZipLip/logs
+              name: zlserverlogs
+            - mountPath: /opt/var/zlvault
+              name: zlvault
+            - mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              name: zkclient-config
+              subPath: zkQuorum.cfg
+            - mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              name: zkclient-config
+              subPath: tcdb.cfg
+            - mountPath: /opt/ZipLip/config/pmapp.cfg
+              name: pmapp-config
+              subPath: pmapp.cfg
+            - mountPath: /opt/ZipLip/config/pmappIncludes.cfg
+              name: pmapp-config
+              subPath: pmappIncludes.cfg
+            - mountPath: /opt/ZipLip/config/pmappURL.cfg
+              name: pmapp-config
+              subPath: pmappURL.cfg
+      volumes:
+        - name: zlservertemp
+          persistentVolumeClaim:
+            claimName: zlservertemp-pvc
+        - name: docconvert-config
+          configMap:
+            name: docconvert-config
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-pvc
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-pvc
+        - name: pmapp-config
+          configMap:
+            name: pmapp-config
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config

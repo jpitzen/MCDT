@@ -1,0 +1,30 @@
+node_modules
+.venv
+logs
+frontend/build
+*.log
+.env
+
+# Terraform provider binaries & state
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Large binaries & archives
+*.exe
+*.zip
+*.tar
+*.tar.gz
+*.pem
+*.key
+*.crt
+
+# NIST / model blobs
+manualprocess/zlmodel/
+manualprocess/eksctl/
+
+# Credential and issue files with potential secrets
+manualprocess/zlak/
+issues/
+*.csv

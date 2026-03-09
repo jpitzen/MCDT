@@ -1,0 +1,484 @@
+Cloud K8s deployment Platform.
+
+Do not overwrite this file, track updates and fixes in .\logs\changelog-$Issuename-iter##-YYYYMMDDHHMMSS.log
+
+
+
+Facts:
+
+1. I've logged out of the former session
+2. I've EMPTIED THE CACHE AND PERFORMED A HARD RELOAD.
+3. I logged in after step 2
+4. The browser timestamps are EST
+
+Only fix items that are broken.
+
+
+=================
+Resolved
+=================
+
+
+==================
+Issue Description
+==================
+
+Test Results modal doesn't display full result set as described.
+
+==================
+Browser Error
+==================
+
+No error, the message displayed:
+
+Test Results:
+
+Red oblong card: "Some Checks Failed"
+
+
+==================
+Terraform Logs
+==================
+
+
+
+Cloud Provider: • Region: N/A
+
+Deployment Monitor: 8f1d8812-4cb3-48bc-9da6-f54cad9b9c63
+Created: Nov 26, 2025 16:22:28
+✓ connected
+Deployment Progress
+
+30%
+
+Current Phase
+
+Terraform Plan
+Deployment Logs
+[LOG]
+Terraform initialized successfully
+
+16:22:27
+[TERRAFORM-OUTPUT]
+Terraform initialized
+
+16:22:27
+[INFO]
+Terraform variables written
+
+16:22:27
+[PHASE-TRANSITION]
+Phase: terraform-plan
+
+16:22:27
+[LOG]
+Validation failed: invalid input value for enum enum_deployments_deployment_phase: "terraform-validate"
+
+16:22:27
+[DEPLOYMENT-FAILED]
+invalid input value for enum enum_deployments_deployment_phase: "terraform-validate"
+
+16:22:27
+
+
+
+
+==================
+Browser Console
+==================
+
+content-scripts.js:1 CONTENT_SHELL: Page is excluded. Skipping shell protection.
+content-scripts.js:1 TSS: excluded result:  true
+content-scripts.js:1 SCHJK: Search Hijacking notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Sending response back to page context: Object
+content-scripts.js:1 Content Script Bridge: Unknown message type,  MSG_CHECK_DOMAIN_ALLOW_LIST_RESPONSE
+injection-tss-mv3.js:1 injection-tss TSS: hosted page injected
+injection-tss-mv3.js:1 injection-tss MBTSS: Nonce:  nonce
+react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+injection-tss-mv3.js:1 TSS: Counted history being replaced
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  Object
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+warnOnce @ deprecations.ts:9
+deprecations.ts:9  ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+warnOnce @ deprecations.ts:9
+content-scripts.js:1 DFP: Breach notification feature flag is enabled. true
+content-scripts.js:1 Content Script Bridge: Unknown message type,  webpackWarnings
+injection-tss-mv3.js:1 TSS: Counted history being pushed
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  Object
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+injection-tss-mv3.js:1 TSS: Counted history being pushed
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  {lastTime: 1764192031899, lastCount: 1}
+[Violation] 'click' handler took <N>ms
+[Violation] 'click' handler took <N>ms
+[Violation] 'click' handler took <N>ms
+[Violation] 'click' handler took <N>ms
+[Violation] 'click' handler took <N>ms
+[Violation] 'click' handler took <N>ms
+content-scripts.js:1 [Violation] 'setTimeout' handler took 57ms
+content-scripts.js:1 [Violation] 'setTimeout' handler took 56ms
+[Violation] Forced reflow while executing JavaScript took 46ms
+injection-tss-mv3.js:1 TSS: Counted history being pushed
+injection-tss-mv3.js:1 TSS: Caught history
+injection-tss-mv3.js:1 TSS: Checking if repeated 500 times for interval 1000 against data:  {lastTime: 1764192053107, lastCount: 1}
+useDeploymentSocket.js:70 Connection attempt 1/10
+useDeploymentSocket.js:318 Disconnecting WebSocket
+useDeploymentSocket.js:333  WebSocket connection to 'ws://localhost:5000/socket.io/?deploymentId=8f1d8812-4cb3-48bc-9da6-f54cad9b9c63&EIO=4&transport=websocket' failed: WebSocket is closed before the connection is established.
+doClose @ websocket.js:81
+close @ transport.js:55
+_onClose @ socket.js:512
+close @ socket.js:448
+close @ socket.js:477
+onclose @ manager.js:305
+_close @ manager.js:283
+_destroy @ manager.js:251
+destroy @ socket.js:632
+disconnect @ socket.js:655
+(anonymous) @ useDeploymentSocket.js:333
+(anonymous) @ useDeploymentSocket.js:420
+safelyCallDestroy @ react-dom.development.js:22971
+commitHookEffectListUnmount @ react-dom.development.js:23139
+invokePassiveEffectUnmountInDEV @ react-dom.development.js:25246
+invokeEffectsInDev @ react-dom.development.js:27390
+commitDoubleInvokeEffectsInDEV @ react-dom.development.js:27363
+flushPassiveEffectsImpl @ react-dom.development.js:27095
+flushPassiveEffects @ react-dom.development.js:27023
+(anonymous) @ react-dom.development.js:26808
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+useDeploymentSocket.js:70 Connection attempt 1/10
+useDeploymentSocket.js:92 WebSocket connected: sLj4icNZzGj0IE65AAAC
+useDeploymentSocket.js:101 Successfully subscribed to deployment: 8f1d8812-4cb3-48bc-9da6-f54cad9b9c63
+DeploymentStatusViewer.jsx:88 Loaded deployment status: {success: true, status: {…}}
+DeploymentStatusViewer.jsx:93 Initializing progress from status: 15
+DeploymentStatusViewer.jsx:96 Initializing phase from status: terraform-init
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.645Z', data: {…}}
+useDeploymentSocket.js:172 Progress update received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'progress-update', timestamp: '2025-11-26T21:22:27.647Z', data: {…}}
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.796Z', data: {…}}
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.837Z', data: {…}}
+useDeploymentSocket.js:155 Phase update received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'phase-update', timestamp: '2025-11-26T21:22:27.872Z', data: {…}}
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.874Z', data: {…}}
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.922Z', data: {…}}
+useDeploymentSocket.js:139 Deployment log received: {deploymentId: '8f1d8812-4cb3-48bc-9da6-f54cad9b9c63', eventType: 'log', timestamp: '2025-11-26T21:22:27.961Z', data: {…}}
+
+
+
+
+==================
+Browser network node.js Fetch
+==================
+
+FFrontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:57004) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:57004) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled with warnings.
+
+[eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 86:6:  React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 86:6:  React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning
+(node:57004) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+s
+
+
+
+
+
+=======================
+
+Frontend console log
+
+======================
+
+Frontend Dev Server
+
+> k8s-deployer-frontend@1.0.0 start
+> react-scripts start
+
+(node:104188) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:104188) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled with warnings.
+
+[eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 38:13:   'RejectIcon' is defined but never used                                                                          no-unused-vars
+  Line 45:10:   'deploymentsApi' is defined but never used                                                                      no-unused-vars
+  Line 84:6:    React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 181:13:  'response' is assigned a value but never used                                                                   no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src\pages\DeploymentDrafts.jsx
+  Line 38:13:   'RejectIcon' is defined but never used                                                                          no-unused-vars
+  Line 45:10:   'deploymentsApi' is defined but never used                                                                      no-unused-vars
+  Line 84:6:    React Hook useEffect has a missing dependency: 'fetchDrafts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 181:13:  'response' is assigned a value but never used                                                                   no-unused-vars
+
+webpack compiled with 1 warning
+(node:104188) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+
+
+=========================
+
+Backend Console log
+
+========================
+
+Backend Dev Server
+
+> eks-deployer-backend@1.0.0 dev
+> nodemon src/server.js
+
+[nodemon] 3.1.11
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/server.js`
+2025-11-23 07:29:24 [warn]: Email transporter not configured (SMTP_HOST not set)
+2025-11-23 07:29:25 [warn]: SECURE_ENCRYPTION_KEY not set. Using default key for development only. This is insecure for production!
+2025-11-23 07:29:25 [warn]: SECURE_ENCRYPTION_KEY environment variable not set
+2025-11-23 07:29:25 [warn]: Encryption key not properly configured. Set SECURE_ENCRYPTION_KEY environment variable for production.
+2025-11-23 07:29:25 [info]: DeploymentTemplateService initialized with builtin templates
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:637:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at parseOptions (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:750:16)
+    at rateLimit (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:831:18)
+    at Object.<anonymous> (C:\Projects\ZLAWS\automated-eks-deployer\backend\src\middleware\rateLimiter.js:54:27)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:637:13)
+    at wrappedValidations.<computed> [as keyGeneratorIpFallback] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at parseOptions (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:750:16)
+    at rateLimit (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:831:18)
+    at Object.<anonymous> (C:\Projects\ZLAWS\automated-eks-deployer\backend\src\middleware\rateLimiter.js:79:27)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+(node:60112) Warning: Accessing non-existent property 'logger' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60112) NOTE: The AWS SDK for JavaScript (v2) is in maintenance mode.
+ SDK releases are limited to address critical bug fixes and security issues only.
+
+Please migrate your code to use AWS SDK for JavaScript (v3).
+For more information, check the blog post at https://a.co/cUPnyil
+Executing (default): SELECT 1+1 AS result
+2025-11-23 07:29:26 [info]: Database connection authenticated
+2025-11-23 07:29:26 [info]: [WebSocket] Server initialized {
+  "origins": "http://localhost:3000"
+}
+2025-11-23 07:29:26 [info]: EKS Deployer API server started {
+  "port": "5000",
+  "environment": "development",
+  "nodeVersion": "v22.14.0",
+  "websocketEnabled": true
+}
+2025-11-23 07:30:16 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/main.c4ac9e6a020ef7a80e63.hot-update.json"
+}
+2025-11-23 07:30:16 [info]: GET /main.c4ac9e6a020ef7a80e63.hot-update.json {
+  "method": "GET",
+  "path": "/main.c4ac9e6a020ef7a80e63.hot-update.json",
+  "statusCode": 404,
+  "duration": "58ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:16 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+2025-11-23 07:30:30 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/main.c4ac9e6a020ef7a80e63.hot-update.json"
+}
+2025-11-23 07:30:30 [info]: GET /main.c4ac9e6a020ef7a80e63.hot-update.json {
+  "method": "GET",
+  "path": "/main.c4ac9e6a020ef7a80e63.hot-update.json",
+  "statusCode": 404,
+  "duration": "14ms"
+}
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:30 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+ValidationError: The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users. See https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/ for more information.
+    at Object.xForwardedForHeader (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:366:13)
+    at wrappedValidations.<computed> [as xForwardedForHeader] (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:680:22)
+    at Object.keyGenerator (C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:783:20)
+    at C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:844:32
+    at async C:\Projects\ZLAWS\automated-eks-deployer\backend\node_modules\express-rate-limit\dist\index.cjs:825:5 {
+  code: 'ERR_ERL_UNEXPECTED_X_FORWARDED_FOR',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_UNEXPECTED_X_FORWARDED_FOR/'
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:32 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "154ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-23 07:30:32 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:32 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "60ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-23 07:30:32 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:40 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 200,
+  "duration": "98ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-23 07:30:40 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT count("DeploymentDraft"."id") AS "count" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."name" AS "credential.name", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."is_valid" AS "credential.isValid", "approver"."id" AS "approver.id", "approver"."email" AS "approver.email", "approver"."first_name" AS "approver.firstName", "approver"."last_name" AS "approver.lastName" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" LEFT OUTER JOIN "users" AS "approver" ON "DeploymentDraft"."approved_by" = "approver"."id" WHERE "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065' ORDER BY "createdAt" DESC LIMIT 20 OFFSET 0;
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:41 [error]: Unhandled error {
+  "error": "ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "stack": "Error: ENOENT: no such file or directory, stat 'C:\\Projects\\ZLAWS\\automated-eks-deployer\\backend\\frontend\\build\\index.html'",
+  "method": "GET",
+  "path": "/favicon.ico"
+}
+2025-11-23 07:30:41 [info]: GET /favicon.ico {
+  "method": "GET",
+  "path": "/favicon.ico",
+  "statusCode": 404,
+  "duration": "32ms"
+}
+2025-11-23 07:30:41 [info]: GET / {
+  "method": "GET",
+  "path": "/",
+  "statusCode": 304,
+  "duration": "95ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-23 07:30:41 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-23 07:30:41 [info]: AUDIT: GET {
+  "action": "GET",
+  "resourceType": "unknown",
+  "resourceId": null,
+  "changes": null,
+  "status": "success"
+}
+Executing (default): SELECT "DeploymentDraft"."id", "DeploymentDraft"."user_id" AS "userId", "DeploymentDraft"."credential_id" AS "credentialId", "DeploymentDraft"."name", "DeploymentDraft"."description", "DeploymentDraft"."cluster_name" AS "clusterName", "DeploymentDraft"."cloud_provider" AS "cloudProvider", "DeploymentDraft"."configuration", "DeploymentDraft"."estimated_monthly_cost" AS "estimatedMonthlyCost", "DeploymentDraft"."cost_breakdown" AS "costBreakdown", "DeploymentDraft"."status", "DeploymentDraft"."approved_by" AS "approvedBy", "DeploymentDraft"."approved_at" AS "approvedAt", "DeploymentDraft"."approval_comment" AS "approvalComment", "DeploymentDraft"."rejection_reason" AS "rejectionReason", "DeploymentDraft"."test_results" AS "testResults", "DeploymentDraft"."tested_at" AS "testedAt", "DeploymentDraft"."deployment_id" AS "deploymentId", "DeploymentDraft"."tags", "DeploymentDraft"."metadata", "DeploymentDraft"."created_at" AS "createdAt", "DeploymentDraft"."updated_at" AS "updatedAt", "credential"."id" AS "credential.id", "credential"."user_id" AS "credential.userId", "credential"."name" AS "credential.name", "credential"."description" AS "credential.description", "credential"."cloud_provider" AS "credential.cloudProvider", "credential"."vault_type" AS "credential.vaultType", "credential"."secret_ref_id" AS "credential.secretRefId", "credential"."cloud_account_id" AS "credential.cloudAccountId", "credential"."cloud_region" AS "credential.cloudRegion", "credential"."aws_account_id" AS "credential.awsAccountId", "credential"."aws_region" AS "credential.awsRegion", "credential"."encrypted_access_key_id" AS "credential.encryptedAccessKeyId", "credential"."encrypted_secret_access_key" AS "credential.encryptedSecretAccessKey", "credential"."encryption_iv" AS "credential.encryptionIv", "credential"."auth_tag" AS "credential.authTag", "credential"."is_valid" AS "credential.isValid", "credential"."last_validated_at" AS "credential.lastValidatedAt", "credential"."validation_error" AS "credential.validationError", "credential"."last_rotated_at" AS "credential.lastRotatedAt", "credential"."rotation_scheduled_at" AS "credential.rotationScheduledAt", "credential"."tags" AS "credential.tags", "credential"."metadata" AS "credential.metadata", "credential"."is_active" AS "credential.isActive", "credential"."created_at" AS "credential.createdAt", "credential"."updated_at" AS "credential.updatedAt" FROM "deployment_drafts" AS "DeploymentDraft" LEFT OUTER JOIN "credentials" AS "credential" ON "DeploymentDraft"."credential_id" = "credential"."id" WHERE "DeploymentDraft"."id" = '1684e897-be5c-4213-868b-89a6bd3feb3a' AND "DeploymentDraft"."user_id" = '2d84782e-4bf9-49ab-a57f-201db3c30065';
+Executing (default): INSERT INTO "audit_logs" ("id","user_id","action","resource_type","resource_id","action_status","changes","ip_address","user_agent","request_path","request_method","context","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING "id","user_id","action","resource_type","resource_id","resource_name","action_status","changes","error_message","ip_address","user_agent","request_path","request_method","context","created_at","updated_at";
+2025-11-23 07:30:46 [info]: AUDIT: POST {
+  "action": "POST",
+  "resourceType": "unknown",
+  "resourceId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065",
+  "changes": null,
+  "status": "success"
+}
+2025-11-23 07:30:46 [error]: AWS Secrets Manager access validation failed {
+  "error": "User: arn:aws:iam::995553364920:user/zlpsmsa is not authorized to perform: secretsmanager:ListSecrets because no identity-based policy allows the secretsmanager:ListSecrets action"
+}
+2025-11-23 07:30:46 [warn]: Cloud credentials validation failed {
+  "cloudProvider": "aws",
+  "error": "Access validation failed: User: arn:aws:iam::995553364920:user/zlpsmsa is not authorized to perform: secretsmanager:ListSecrets because no identity-based policy allows the secretsmanager:ListSecrets action"
+}
+Executing (default): SELECT "id", "credential_id" AS "credentialId", "user_id" AS "userId", "cloud_provider" AS "cloudProvider", "cluster_name" AS "clusterName", "cluster_arn" AS "clusterArn", "status", "progress", "current_phase" AS "currentPhase", "configuration", "parameters", "results", "error_message" AS "errorMessage", "error_stack" AS "errorStack", "started_at" AS "startedAt", "paused_at" AS "pausedAt", "completed_at" AS "completedAt", "estimated_duration" AS "estimatedDuration", "rolled_back_at" AS "rolledBackAt", "rolled_back_reason" AS "rolledBackReason", "terraform_working_dir" AS "terraformWorkingDir", "terraform_state" AS "terraformState", "terraform_outputs" AS "terraformOutputs", "deployment_phase" AS "deploymentPhase", "terraform_version" AS "terraformVersion", "deployment_logs" AS "deploymentLogs", "tags", "created_at" AS "createdAt", "updated_at" AS "updatedAt" FROM "deployments" AS "Deployment" WHERE "Deployment"."cluster_name" = 'zlps-autodeploy-test-01' AND "Deployment"."cloud_provider" = 'aws' LIMIT 1;
+Executing (default): UPDATE "deployment_drafts" SET "test_results"=$1,"tested_at"=$2,"updated_at"=$3 WHERE "id" = $4
+2025-11-23 07:30:46 [info]: Deployment draft tested {
+  "draftId": "1684e897-be5c-4213-868b-89a6bd3feb3a",
+  "passed": true,
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}
+2025-11-23 07:30:46 [info]: POST /1684e897-be5c-4213-868b-89a6bd3feb3a/test {
+  "method": "POST",
+  "path": "/1684e897-be5c-4213-868b-89a6bd3feb3a/test",
+  "statusCode": 200,
+  "duration": "517ms",
+  "userId": "2d84782e-4bf9-49ab-a57f-201db3c30065"
+}

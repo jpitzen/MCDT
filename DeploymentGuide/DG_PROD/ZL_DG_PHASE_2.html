@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 2</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 2: ECR & Image Management</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 2</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 2: ECR & Image Management</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">6</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Overview & Repository Info</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 2</strong> sets up Amazon Elastic Container Registry (ECR) repositories and manages container images for the ZL application deployment.</p>
+                
+                <div class="info" style="margin-top: 15px; background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px;">
+                    <h4>📘 Deployment Scenarios</h4>
+                    <p>This guide supports two infrastructure scenarios:</p>
+                    <ul>
+                        <li><strong>New Infrastructure:</strong> Follow all steps to create a new ECR repository</li>
+                        <li><strong>Existing Infrastructure:</strong> If your AWS account already has an ECR repository, you can use it instead of creating a new one. Simply use your existing repository name and URI in Steps 3-4.</li>
+                    </ul>
+                    <p><strong>Registry ID:</strong> The registry ID is your 12-digit AWS Account ID. Find it with: <code>aws sts get-caller-identity --query Account --output text</code></p>
+                </div>
+                
+                <div class="warning" style="margin-top: 15px;">
+                    <strong>📌 Version Note:</strong> This guide uses ZL Version 11.1.0 (Build 1140). Ensure your Docker images match your target ZL version before pushing to ECR. Update image tags in all Kubernetes manifests accordingly.
+                </div>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Create ECR repositories for application images</li>
+                    <li data-steps="2">Configure repository policies and lifecycle rules</li>
+                    <li data-steps="3,4">Push container images to ECR</li>
+                    <li data-steps="5">Verify image integrity and security scanning</li>
+                    <li data-steps="6">Set up automated image builds and deployments</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+        // Step data for Phase 2
+        const stepData = {
+            1: {
+                title: "Overview & Repository Info",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 1: ECR Setup Overview</h3>
+                        <div class="step-description">Amazon Elastic Container Registry (ECR) provides secure, private Docker image storage integrated with AWS IAM.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <p>Amazon Elastic Container Registry (ECR) provides secure, private Docker image storage integrated with AWS IAM.</p>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>🔴 IMAGE UPDATE - December 22, 2025</h4>
+                        <p>New K8s-optimized images are available with pre-installed dependencies and health check utilities.</p>
+                    </div>
+
+                    <div class="table-section">
+                        <h4>Current Images (K8s-Optimized - Recommended)</h4>
+                        <table>
+                            <tr><th>Image Tag</th><th>Size</th><th>Purpose</th><th>Changes from Original</th></tr>
+                            <tr><td><code>zlserver-k8s-20251222</code></td><td>~1.2GB</td><td>ZL Server/UI/Search (Java 21)</td><td>Java 21 pre-installed, K8s startup script, TIKA_HOST templating</td></tr>
+                            <tr><td><code>zltika-k8s-20251222</code></td><td>~600MB</td><td>Document conversion (Apache Tika)</td><td>nc/curl added for health checks</td></tr>
+                            <tr><td><code>zlzookeeper-k8s-20251222</code></td><td>~250MB</td><td>ZooKeeper coordination service</td><td>Auto myid creation from hostname, netcat added</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="table-section">
+                        <h4>Legacy Images (Original - For Reference)</h4>
+                        <table>
+                            <tr><th>Image Tag</th><th>Size</th><th>Purpose</th></tr>
+                            <tr><td><code>zlserver20251219</code></td><td>~1GB</td><td>ZL Server application (requires runtime Java install)</td></tr>
+                            <tr><td><code>zlui20251219</code></td><td>~1GB</td><td>ZL UI application (requires runtime Java install)</td></tr>
+                            <tr><td><code>zltika20251219</code></td><td>~580MB</td><td>Document conversion (no health check utilities)</td></tr>
+                            <tr><td><code>zlzookeeper20251219</code></td><td>~230MB</td><td>ZooKeeper (requires manual myid setup)</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>💡 K8s-Optimized Image Benefits</h4>
+                        <ul>
+                            <li><strong>Faster startup:</strong> No runtime apt-get/Java installation needed</li>
+                            <li><strong>Simpler config:</strong> TIKA_HOST env var replaces static DocumentConversion.xml</li>
+                            <li><strong>Better health checks:</strong> nc/curl pre-installed for liveness/readiness probes</li>
+                            <li><strong>Auto configuration:</strong> ZooKeeper myid auto-created from StatefulSet hostname</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 1: ECR Setup Overview</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            2: {
+                title: "Create ECR Repository",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 2: Create ECR Repository</h3>
+                        <div class="step-description">Creates a private ECR repository for storing container images with automatic security scanning.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates a private ECR repository for storing container images</li>
+                            <li>Enables automatic security scanning on image push</li>
+                            <li>Sets up the repository with proper configurations</li>
+                        </ul>
+                    </div>
+
+                    <div class="info" style="margin-top: 15px;">
+                        <h4>ℹ️ Using Existing ECR Repository</h4>
+                        <p><strong>If you already have an ECR repository:</strong></p>
+                        <ul>
+                            <li>Skip this step and use your existing repository name</li>
+                            <li>Verify it has scan-on-push enabled: <code>aws ecr describe-repositories --repository-names &lt;YOUR_REPO_NAME&gt;</code></li>
+                            <li>Use your existing repository URI format: <code>&lt;ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com/&lt;YOUR_REPO_NAME&gt;</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ecr create-repository --repository-name ue1-zlps-ecr-01 --region us-east-1 --image-scanning-configuration scanOnPush=true')">Copy</button>
+                            <pre><code>aws ecr create-repository --repository-name ue1-zlps-ecr-01 --region us-east-1 --image-scanning-configuration scanOnPush=true</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>The ECR repository configuration is stored in <code>zl-ecr-repository-config.json</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleJsonContent('zl-ecr-repository-config')">📄 Show/Hide JSON</button>
+                            <button class="action-btn" onclick="downloadJsonFile('zl-ecr-repository-config.json')">📥 Download</button>
+                        </div>
+                        <div id="json-content-zl-ecr-repository-config" class="json-content" style="display: none;">
+                            <div class="json-header">
+                                <span class="filename">zl-ecr-repository-config.json</span>
+                                <button class="copy-btn" onclick="copyJsonContent('zl-ecr-repository-config')">📋 Copy</button>
+                            </div>
+                            <pre><code id="json-code-zl-ecr-repository-config">// Loading JSON content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Note:</strong> The repository URI will be used for tagging and pushing images. Save this URI for later steps.
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 2: Create ECR Repository</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            3: {
+                title: "Authenticate Docker to ECR",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 3: Authenticate Docker to ECR</h3>
+                        <div class="step-description">Authenticate Docker CLI with ECR to enable pushing and pulling images.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Retrieves temporary authentication token from ECR</li>
+                            <li>Configures Docker to authenticate with ECR registry</li>
+                            <li>Enables secure image push/pull operations</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com')">Copy</button>
+                            <pre><code>aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin &lt;YOUR_ACCOUNT_ID&gt;.dkr.ecr.us-east-1.amazonaws.com</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info" style="margin-top: 15px;">
+                        <h4>💡 ECR Registry URL Format</h4>
+                        <p>The correct format is: <code>&lt;ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com</code></p>
+                        <p><strong>Example:</strong> <code>123456789012.dkr.ecr.us-east-1.amazonaws.com</code></p>
+                        <p>Get your Account ID: <code>aws sts get-caller-identity --query Account --output text</code></p>
+                    </div>
+
+                    <div class="output-section">
+                        <h4>Expected Output:</h4>
+                        <div class="output-block">
+                            <code>Login Succeeded</code>
+                        </div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Important</h4>
+                        <ul>
+                            <li>Authentication tokens expire after 12 hours</li>
+                            <li>Re-run this command if you get authentication errors</li>
+                            <li>This authenticates for the specific repository URI</li>
+                        </ul>
+                    </div>
+
+                    <div class="info" style="margin-top: 15px;">
+                        <h4>💡 ECR Registry URL Format</h4>
+                        <p>The correct format is: <code>&lt;ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com</code></p>
+                        <p><strong>Example:</strong> <code>123456789012.dkr.ecr.us-east-1.amazonaws.com</code></p>
+                        <p>Get your Account ID: <code>aws sts get-caller-identity --query Account --output text</code></p>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 3: Authenticate Docker to ECR</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            4: {
+                title: "Push Images to ECR",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 4: Push Images to ECR</h3>
+                        <div class="step-description">Tag and push the ZL application images to the ECR repository.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Tags local images with ECR repository URI</li>
+                            <li>Pushes images to ECR for storage and deployment</li>
+                            <li>Triggers automatic security scanning</li>
+                        </ul>
+                    </div>
+
+                    <div class="info" style="margin-top: 15px;">
+                        <h4>💡 Repository Name</h4>
+                        <p><strong>Using the new repository:</strong> <code>ue1-zlps-ecr-01</code></p>
+                        <p><strong>Using existing repository:</strong> Replace <code>ue1-zlps-ecr-01</code> with your repository name</p>
+                        <p><strong>Full URI format:</strong> <code>&lt;ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com/&lt;REPOSITORY_NAME&gt;:&lt;IMAGE_TAG&gt;</code></p>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Tag Images (K8s-Optimized - Recommended):</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Tag K8s-optimized images with ECR URI
+docker tag zlserver:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+docker tag zltika:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika-k8s-20251222
+docker tag zlzookeeper:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper-k8s-20251222')">Copy</button>
+                            <pre><code># Tag K8s-optimized images with ECR URI
+docker tag zlserver:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+docker tag zltika:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika-k8s-20251222
+docker tag zlzookeeper:k8s-20251222 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper-k8s-20251222</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Tag Images (Legacy - Original):</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Tag all images with ECR URI
+docker tag zlserver:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+docker tag zlui:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+docker tag zltika:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika20251219
+docker tag zlzookeeper:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper20251219')">Copy</button>
+                            <pre><code># Tag all images with ECR URI
+docker tag zlserver:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+docker tag zlui:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+docker tag zltika:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika20251219
+docker tag zlzookeeper:20251219 <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper20251219</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Push Images:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('# Push images to ECR
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper20251219')">Copy</button>
+                            <pre><code># Push images to ECR
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlui20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika20251219
+docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper20251219</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <h4>Expected Output:</h4>
+                        <div class="output-block">
+                            <pre><code>The push refers to repository [&lt;YOUR_ACCOUNT_ID&gt;.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01]
+zlserver20251219: digest: sha256:... size: ...
+zlui20251219: digest: sha256:... size: ...
+zltika20251219: digest: sha256:... size: ...
+zlzookeeper20251219: digest: sha256:... size: ...
+</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 4: Push Images to ECR</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            5: {
+                title: "Verify Images in ECR",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 5: Verify Images in ECR</h3>
+                        <div class="step-description">Confirm that all images have been successfully pushed and are available in ECR.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ecr describe-images --repository-name ue1-zlps-ecr-01 --region us-east-1 --query "imageDetails[*].{Tag:imageTags[0],Size:imageSizeInBytes,Pushed:imagePushedAt}" --output table')">Copy</button>
+                            <pre><code>aws ecr describe-images --repository-name ue1-zlps-ecr-01 --region us-east-1 --query "imageDetails[*].{Tag:imageTags[0],Size:imageSizeInBytes,Pushed:imagePushedAt}" --output table</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <h4>Expected Output:</h4>
+                        <div class="output-block">
+                            <pre><code>-----------------------------------------------------------------------------------------------
+|                                       DescribeImages                                       |
++-----------------------------+------------------+-----------------------------------+
+|             Pushed          |       Size       |               Tag                |
++-----------------------------+------------------+-----------------------------------+
+| 2025-12-16T21:15:00+00:00  |    838860800     |   zlserver-11.0.1-b123           |
+| 2025-12-16T21:15:00+00:00  |    629145600     |   zltika-11.0.1-b123             |
+| 2025-12-16T21:15:00+00:00  |    419430400     |   zlzookeeper-11.0.1-b123        |
++-----------------------------+------------------+-----------------------------------+</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Check Scan Status:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws ecr describe-image-scan-findings --repository-name ue1-zlps-ecr-01 --image-id imageTag=zlserver20251219 --region us-east-1 --query "imageScanStatus.status" --output text')">Copy</button>
+                            <pre><code>aws ecr describe-image-scan-findings --repository-name ue1-zlps-ecr-01 --image-id imageTag=zlserver20251219 --region us-east-1 --query "imageScanStatus.status" --output text</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <code>COMPLETE</code>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 5: Verify Images in ECR</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            6: {
+                title: 'Phase 2 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 2 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 3, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> ECR repository 'ue1-zlps-ecr-01' created successfully</label><br>
+                            <label><input type="checkbox"> Docker images tagged and pushed to ECR</label><br>
+                            <label><input type="checkbox"> ECR vulnerability scanning enabled (AWS Inspector2)</label><br>
+                            <label><input type="checkbox"> Image scan results reviewed</label><br>
+                            <label><input type="checkbox"> ECR pull secrets created in kube-system namespace</label><br>
+                            <label><input type="checkbox"> ECR pull secrets created in default namespace</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 3:</strong> Once all items are checked, you can proceed to Phase 3 (EBS CSI Driver).
+                        </div>
+
+                        <!-- Bottom Pagination Controls -->
+                        <div class="pagination-controls bottom-controls">
+                            <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                                ← Previous Step
+                            </button>
+                            <div class="step-title">Phase 2 Completion Checklist</div>
+                            <a href="ZL_DG_PHASE_3.html" class="nav-btn next-btn" style="text-decoration: none; display: inline-block; text-align: center; background: var(--success-color);">
+                                Next Phase →
+                            </a>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'zl-ecr-repository-config.json': `{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:us-west-1:995553364920:repository/uw1-zlps-ecr-01",
+        "registryId": "995553364920",
+        "repositoryName": "uw1-zlps-ecr-01",
+        "repositoryUri": "995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01",
+        "createdAt": "2025-12-16T21:15:00.000Z",
+        "imageScanningConfiguration": {
+            "scanOnPush": true
+        },
+        "imageTagMutability": "MUTABLE",
+        "encryptionConfiguration": {
+            "encryptionType": "AES256"
+        }
+    }
+}`
+        };
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 6;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+
+            // Update URL hash
+            window.location.hash = `step-${stepNum}`;
+
+            // Save to localStorage
+            localStorage.setItem('zl-phase2-current-step', stepNum);
+
+            // Update step content
+            const stepContainer = document.getElementById('step-container');
+            stepContainer.innerHTML = stepData[stepNum].content;
+
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+
+            // Update step title
+            document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+            // Update progress bar
+            const progressPercent = ((stepNum - 1) / 5) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Update step counter
+            document.getElementById('current-step').textContent = stepNum;
+
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === stepNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < stepNum) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(stepNum)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = stepNum === 1;
+            nextBtn.disabled = stepNum === totalSteps;
+
+            if (stepNum === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for hash in URL or localStorage
+            const hash = window.location.hash;
+            if (hash.startsWith('#step-')) {
+                const step = parseInt(hash.replace('#step-', ''));
+                if (step >= 1 && step <= totalSteps) {
+                    currentStep = step;
+                }
+            } else {
+                const savedStep = localStorage.getItem('zl-phase2-current-step');
+                if (savedStep && savedStep >= 1 && savedStep <= totalSteps) {
+                    currentStep = parseInt(savedStep);
+                }
+            }
+
+            showStep(currentStep);
+
+            // Add copy buttons to initial content
+            initializeCopyButtons();
+
+            // Add event listeners
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+            
+            // Add step dot click listeners
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => showStep(index + 1));
+            });
+        });
+
+        // Toggle JSON content visibility
+        function toggleJsonContent(id) {
+            const contentDiv = document.getElementById(`json-content-${id}`);
+            const codeElement = document.getElementById(`json-code-${id}`);
+            const filename = id + '.json';
+
+            if (contentDiv.style.display === 'none') {
+                // Load from inline fileContents
+                if (fileContents[filename]) {
+                    codeElement.textContent = fileContents[filename];
+                    contentDiv.style.display = 'block';
+                } else {
+                    codeElement.textContent = `Error: ${filename} content not found`;
+                    contentDiv.style.display = 'block';
+                }
+            } else {
+                // Hide content
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy JSON content to clipboard
+        function copyJsonContent(id) {
+            const codeElement = document.getElementById(`json-code-${id}`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Download JSON file
+        function downloadJsonFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard(buttonOrText) {
+            let text, button;
+            
+            // Handle both static button calls (with text string) and dynamic button calls (with button element)
+            if (typeof buttonOrText === 'string') {
+                // Static button: parameter is the text to copy, button is event.target
+                text = buttonOrText;
+                button = event.target;
+            } else {
+                // Dynamic button: parameter is the button element
+                button = buttonOrText;
+                const wrapper = button.closest('.pre-wrapper');
+                const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+                text = codeBlock.textContent || codeBlock.innerText;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopied(button);
+                }).catch(function() {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+
+        function fallbackCopy(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(button);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                button.textContent = 'FAILED';
+                setTimeout(() => {
+                    button.textContent = 'COPY';
+                }, 2000);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showCopied(button) {
+            button.textContent = 'COPIED';
+            button.style.background = '#28a745';
+
+            setTimeout(function() {
+                button.textContent = 'COPY';
+                button.style.background = '';
+            }, 2000);
+        }
+
+        // Add copy buttons to code blocks
+        function initializeCopyButtons() {
+            const pres = document.querySelectorAll('pre');
+            
+            pres.forEach((pre, index) => {
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('pre-wrapper')) {
+                    return;
+                }
+                if (pre.closest('.yaml-panel')) {
+                    return;
+                }
+                // Skip if parent already has a copy button (static HTML)
+                if (pre.parentElement.querySelector('.copy-btn')) {
+                    return;
+                }
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+
+        function toggleYaml(btn) {
+            const content = btn.nextElementSibling;
+            const isVisible = content.style.display !== 'none';
+            content.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? '📄 View YAML' : '📄 Hide YAML';
+        }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>

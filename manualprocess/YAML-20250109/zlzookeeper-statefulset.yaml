@@ -1,0 +1,104 @@
+# ZL ZooKeeper StatefulSet - us-east-1
+# Last Updated: December 22, 2025
+# 3-node ZooKeeper ensemble with EBS storage
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zlzookeeper
+  labels:
+    app: zlzookeeper
+spec:
+  serviceName: zk-hs
+  replicas: 3
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: zlzookeeper
+  template:
+    metadata:
+      labels:
+        app: zlzookeeper
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      initContainers:
+        - name: init-myid
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              ORDINAL=$(echo $HOSTNAME | sed 's/.*-//')
+              MYID=$((ORDINAL + 1))
+              echo "Creating myid=$MYID for $HOSTNAME"
+              mkdir -p /data
+              echo $MYID > /data/myid
+              cat /data/myid
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /data
+      containers:
+        - name: zlzookeeper
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlzookeeper11.1.0-b1140
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: client
+              containerPort: 2181
+            - name: server
+              containerPort: 2888
+            - name: leader-election
+              containerPort: 3888
+          env:
+            - name: ZOO_SERVERS
+              value: "zlzookeeper-0 zlzookeeper-1 zlzookeeper-2"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            tcpSocket:
+              port: 2181
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 2181
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: zlzkdata
+              mountPath: /var/ZipLip/DATA/ZooKeeper
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zk.cfg
+              subPath: zk.cfg
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zk-config
+          configMap:
+            name: zk-config
+  volumeClaimTemplates:
+    - metadata:
+        name: zlzkdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ebs-sc
+        resources:
+          requests:
+            storage: 10Gi

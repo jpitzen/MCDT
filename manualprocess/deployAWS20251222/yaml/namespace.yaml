@@ -1,0 +1,8 @@
+# Namespace for ZL Application (optional - deploy to default or create dedicated namespace)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zl-app
+  labels:
+    app: zlserver
+    environment: production

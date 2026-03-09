@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 1</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 1: EKS Cluster Creation</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 1</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 1: EKS Cluster Creation</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">5</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">EKS Cluster Creation Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 1</strong> creates the Amazon EKS cluster with managed node groups, configures OIDC provider for IAM roles, and retrieves essential cluster information for subsequent phases.</p>
+            </div>
+            
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Create EKS cluster with managed node groups</li>
+                    <li data-steps="2">Associate IAM OIDC provider for service accounts</li>
+                    <li data-steps="3">Retrieve OIDC issuer URL for IAM trust policies</li>
+                    <li data-steps="4">Get VPC and subnet information for resource configuration</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<script>
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// Copy to clipboard functionality
+function copyToClipboard(button) {
+    const wrapper = button.closest('.pre-wrapper');
+    const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+    const text = codeBlock.textContent || codeBlock.innerText;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function() {
+            showCopied(button);
+        }).catch(function() {
+            fallbackCopy(text, button);
+        });
+    } else {
+        fallbackCopy(text, button);
+    }
+}
+
+function fallbackCopy(text, button) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopied(button);
+    } catch (err) {
+        console.error('Copy failed:', err);
+        button.textContent = 'FAILED';
+        setTimeout(() => {
+            button.textContent = 'COPY';
+        }, 2000);
+    }
+    document.body.removeChild(textArea);
+}
+
+function showCopied(button) {
+    button.textContent = 'COPIED';
+    button.style.background = '#28a745';
+
+    setTimeout(function() {
+        button.textContent = 'COPY';
+        button.style.background = '';
+    }, 2000);
+}
+
+// Add copy buttons to code blocks
+function initializeCopyButtons() {
+    const pres = document.querySelectorAll('pre');
+    
+    pres.forEach((pre, index) => {
+        // Skip if already wrapped
+        if (pre.parentElement.classList.contains('pre-wrapper')) {
+            return;
+        }
+        if (pre.closest('.yaml-panel')) {
+            return;
+        }
+        // Skip if parent already has a copy button (static HTML)
+        if (pre.parentElement.querySelector('.copy-btn')) {
+            return;
+        }
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pre-wrapper';
+        
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'COPY';
+        copyBtn.type = 'button';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            copyToClipboard(this);
+        };
+        
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(pre);
+    });
+}
+
+// Shell tab switching
+function showShell(button, tabId) {
+    // Remove active class from all buttons and contents
+    const buttons = button.parentElement.querySelectorAll('.shell-tab-btn');
+    const contents = button.parentElement.parentElement.querySelectorAll('.shell-content');
+
+    buttons.forEach(btn => btn.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+
+    // Add active class to clicked button and corresponding content
+    button.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Pagination variables
+let currentStep = 1;
+const totalSteps = 5;
+
+// Step data for Phase 1
+const stepData = {
+    1: {
+        title: 'Step 1.1: Create EKS Cluster',
+        content: `
+            <div class="step">
+                <h3>Step 1.1: Create EKS Cluster</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <ul>
+                        <li>Provisions a fully managed Kubernetes control plane in AWS</li>
+                        <li>Creates a managed node group with EC2 instances as worker nodes</li>
+                        <li>Sets up networking, IAM roles, and security groups automatically</li>
+                        <li>Configures kubectl context for cluster access</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📌 Prerequisites</h4>
+                    <ul>
+                        <li>AWS CLI configured with appropriate credentials</li>
+                        <li>eksctl installed on local machine</li>
+                        <li>IAM user/role with permissions to create EKS clusters</li>
+                    </ul>
+                </div>
+                <div class="step-section">
+                    <h4>📄 Configuration File</h4>
+                    <p>The EKS cluster configuration is stored in <code>zl-eks-cluster-config.yaml</code></p>
+                    <div class="file-controls">
+                        <button class="action-btn" onclick="toggleYamlContent('zl-eks-cluster-config')">📄 Show/Hide YAML Config</button>
+                        <button class="action-btn" onclick="downloadYamlFile('zl-eks-cluster-config.yaml')">📥 Download</button>
+                    </div>
+                    <div id="yaml-content-zl-eks-cluster-config" class="yaml-content" style="display: none;">
+                        <div class="yaml-header">
+                            <span class="filename">zl-eks-cluster-config.yaml</span>
+                            <button class="copy-btn" onclick="copyYamlContent('zl-eks-cluster-config')">📋 Copy</button>
+                        </div>
+                        <pre><code id="yaml-code-zl-eks-cluster-config">// Loading YAML content...</code></pre>
+                    </div>
+                </div>
+                <h4>💻 Commands</h4>
+                <div class="shell-tabs">
+                    <div class="shell-tab-buttons">
+                        <button class="shell-tab-btn active" onclick="showShell(this, 'step1-ps')">PowerShell</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step1-bash')">Bash</button>
+                        <button class="shell-tab-btn" onclick="showShell(this, 'step1-cmd')">CMD</button>
+                    </div>
+                    <div id="step1-ps" class="shell-content active">
+                        <pre><code>eksctl create cluster -f zl-eks-cluster-config.yaml</code></pre>
+                    </div>
+                    <div id="step1-bash" class="shell-content">
+                        <pre><code>eksctl create cluster -f zl-eks-cluster-config.yaml</code></pre>
+                    </div>
+                    <div id="step1-cmd" class="shell-content">
+                        <pre><code>eksctl create cluster -f zl-eks-cluster-config.yaml</code></pre>
+                    </div>
+                </div>
+                <h4>Parameter Details</h4>
+                <p>All cluster configuration parameters are defined in <code>zl-eks-cluster-config.yaml</code>. The YAML file includes:</p>
+                <ul>
+                    <li>Cluster name: <code>use1-zlps-eks-01</code></li>
+                    <li>Kubernetes version: <code>1.31</code></li>
+                    <li>AWS region: <code>us-east-1</code></li>
+                    <li>Node group configuration: <code>m5.xlarge</code> instances, 2 initial nodes</li>
+                    <li>Auto-scaling: 1-2 nodes</li>
+                </ul>
+                <div class="info">
+                    <strong>⚠️ Important:</strong> This command takes 10-15 minutes to complete. The cluster creation process provisions the control plane, worker nodes, and networking infrastructure.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 1.1: Create EKS Cluster</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    2: {
+        title: 'Step 1.2: Associate OIDC Provider',
+        content: `
+            <div class="step">
+                <h3>Step 1.2: Associate OIDC Provider</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <p>Associates an IAM OpenID Connect (OIDC) identity provider with the EKS cluster to enable IAM roles for Kubernetes service accounts.</p>
+                </div>
+                <div class="step-section">
+                    <h4>❓ Why It's Needed</h4>
+                    <p>Without OIDC association, Kubernetes pods cannot use IAM roles for AWS service access. Required for EBS/EFS/S3 CSI drivers.</p>
+                </div>
+                <h4>💻 Command</h4>
+                <pre><code>eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster use1-zlps-eks-01 --approve</code></pre>
+                <div class="info">
+                    <strong>💡 Note:</strong> This command creates the OIDC provider in IAM and associates it with your EKS cluster. It's required before creating IAM roles for service accounts.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 1.2: Associate OIDC Provider</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    3: {
+        title: 'Step 1.3: Get Cluster OIDC Issuer',
+        content: `
+            <div class="step">
+                <h3>Step 1.3: Get Cluster OIDC Issuer</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <p>Retrieves the OIDC issuer URL from the EKS cluster, needed for creating IAM trust policies.</p>
+                </div>
+                <h4>💻 Command</h4>
+                <pre><code>aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.identity.oidc.issuer" --output text</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>https://oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE1234567890ABCDEF</code></pre>
+                <div class="info">
+                    <strong>💡 Note:</strong> Save this OIDC issuer URL - you'll need it when creating IAM trust policies for service accounts in later phases.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 1.3: Get Cluster OIDC Issuer</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    4: {
+        title: 'Step 1.4: Get Cluster VPC Information',
+        content: `
+            <div class="step">
+                <h3>Step 1.4: Get Cluster VPC Information</h3>
+                <div class="step-section">
+                    <h4>📋 What It Does</h4>
+                    <p>Retrieves the VPC ID and subnet IDs for configuring additional AWS resources like EFS and RDS.</p>
+                </div>
+                <h4>💻 Command</h4>
+                <pre><code>aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.resourcesVpcConfig.{VPC: vpcId, Subnets: subnetIds}" --output table</code></pre>
+                <div class="info">
+                    <strong>💡 Note:</strong> The VPC and subnet information will be needed when configuring EFS file systems, RDS databases, and other AWS services that integrate with your EKS cluster.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Step 1.4: Get Cluster VPC Information</div>
+                    <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+        `
+    },
+    5: {
+        title: 'Phase 1 Completion Checklist',
+        content: `
+            <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                <h3>✅ Phase 1 Completion Checklist</h3>
+                <p><strong>Before proceeding to Phase 2, verify the following:</strong></p>
+
+                <div class="checklist">
+                    <label><input type="checkbox"> EKS cluster 'use1-zlps-eks-01' created successfully</label><br>
+                    <label><input type="checkbox"> Worker nodes are running and healthy</label><br>
+                    <label><input type="checkbox"> kubectl configured and can access the cluster</label><br>
+                    <label><input type="checkbox"> OIDC provider associated with the cluster</label><br>
+                    <label><input type="checkbox"> VPC and subnet IDs retrieved and saved</label><br>
+                    <label><input type="checkbox"> OIDC issuer URL retrieved and saved</label><br>
+                </div>
+
+                <div class="info">
+                    <strong>💡 Ready for Phase 2:</strong> Once all items are checked, you can proceed to Phase 2 (ECR & Image Management).
+                    Your EKS cluster is now ready to host containerized workloads.
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div class="pagination-controls bottom-controls">
+                    <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                        ← Previous Step
+                    </button>
+                    <div class="step-title">Phase 1 Completion Checklist</div>
+                    <button class="nav-btn next-btn" disabled style="background: var(--success-color);">
+                        Phase Complete ✓
+                    </button>
+                </div>
+            </div>
+        `
+    }
+};
+
+function initializePagination() {
+    // Add click handlers to existing step dots
+    const dots = document.querySelectorAll('.step-dot');
+    dots.forEach((dot, index) => {
+        dot.onclick = () => showStep(index + 1);
+    });
+
+    // Load saved step from localStorage
+    const savedStep = localStorage.getItem('zl-phase1-current-step');
+    if (savedStep && savedStep >= 1 && savedStep <= totalSteps) {
+        currentStep = parseInt(savedStep);
+    }
+
+    // Show initial step
+    showStep(currentStep);
+
+    // Add event listeners
+    document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+    document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+}
+
+function showStep(stepNum) {
+    currentStep = stepNum;
+
+    // Update step content
+    const stepContainer = document.getElementById('step-container');
+    stepContainer.innerHTML = stepData[stepNum].content;
+
+    // Initialize copy buttons for new content
+    initializeCopyButtons();
+
+    // Update progress
+    const progressPercent = ((stepNum - 1) / (totalSteps - 1)) * 100;
+    document.getElementById('progress-fill').style.width = progressPercent + '%';
+    document.getElementById('current-step').textContent = stepNum;
+
+    // Update step title
+    document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+    // Update step indicators
+    const dots = document.querySelectorAll('.step-dot');
+    dots.forEach((dot, index) => {
+        const step = index + 1;
+        if (step === stepNum) {
+            dot.classList.add('active');
+            dot.classList.remove('completed');
+        } else if (step < stepNum) {
+            dot.classList.remove('active');
+            dot.classList.add('completed');
+        } else {
+            dot.classList.remove('active');
+            dot.classList.remove('completed');
+        }
+    });
+
+    // Highlight current objectives
+    document.querySelectorAll('#objectives-list li').forEach(li => {
+        const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+        if (steps.includes(stepNum)) {
+            li.style.fontWeight = 'bold';
+            li.style.color = '#0066cc';
+            li.style.backgroundColor = '#e6f2ff';
+            li.style.padding = '4px 8px';
+            li.style.borderRadius = '4px';
+            li.style.transition = 'all 0.3s ease';
+        } else {
+            li.style.fontWeight = 'normal';
+            li.style.color = '';
+            li.style.backgroundColor = '';
+            li.style.padding = '';
+            li.style.borderRadius = '';
+        }
+    });
+
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    prevBtn.disabled = stepNum === 1;
+    nextBtn.disabled = stepNum === totalSteps;
+
+    if (stepNum === totalSteps) {
+        nextBtn.textContent = 'Phase Complete ✓';
+        nextBtn.style.background = 'var(--success-color)';
+    } else {
+        nextBtn.textContent = 'Next Step →';
+        nextBtn.style.background = '';
+    }
+
+    // Save current step to localStorage
+    localStorage.setItem('zl-phase1-current-step', stepNum);
+
+    // Scroll to top of content
+    document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function navigateStep(direction) {
+    const newStep = currentStep + direction;
+    if (newStep >= 1 && newStep <= totalSteps) {
+        showStep(newStep);
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializePagination();
+    
+    // Add copy buttons to initial content
+    initializeCopyButtons();
+});
+
+// Toggle YAML content visibility
+function toggleYamlContent(fileId) {
+    const filename = fileId + '.yaml';
+    const contentDiv = document.getElementById(`yaml-content-${fileId}`);
+    const codeElement = document.getElementById(`yaml-code-${fileId}`);
+
+    if (contentDiv.style.display === 'none') {
+        // Load and display YAML
+        fetch(filename)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${filename}`);
+                }
+                return response.text();
+            })
+            .then(yamlText => {
+                codeElement.textContent = yamlText;
+                contentDiv.style.display = 'block';
+            })
+            .catch(error => {
+                codeElement.textContent = `Error loading ${filename}: ${error.message}`;
+                contentDiv.style.display = 'block';
+            });
+    } else {
+        // Hide content
+        contentDiv.style.display = 'none';
+    }
+}
+
+// Copy YAML content to clipboard
+function copyYamlContent(fileId) {
+    const codeElement = document.getElementById(`yaml-code-${fileId}`);
+    const text = codeElement.textContent || codeElement.innerText;
+    
+    navigator.clipboard.writeText(text).then(function() {
+        const contentDiv = document.getElementById(`yaml-content-${fileId}`);
+        const copyBtn = contentDiv.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied!';
+        copyBtn.style.background = 'var(--success-color)';
+        
+        setTimeout(function() {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = '';
+        }, 2000);
+    });
+}
+
+// Legacy function for backward compatibility
+function showYamlContent(filename) {
+    const fileId = filename.replace('.yaml', '');
+    toggleYamlContent(fileId);
+}
+
+// Download YAML file
+function downloadYamlFile(filename) {
+    fetch(filename)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load ${filename}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            alert(`Error downloading ${filename}: ${error.message}`);
+        });
+}
+</script>
+
+</body>
+</html>
+
+
+

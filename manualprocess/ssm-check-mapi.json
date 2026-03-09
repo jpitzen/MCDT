@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "Get-Service -Name '*MAPI*','*ZL*' | Format-Table Name, Status, StartType -AutoSize",
+    "Get-Process -Name '*MAPI*','*ZL*' -ErrorAction SilentlyContinue | Format-Table Name, Id, Path -AutoSize",
+    "netstat -ano | Select-String ':8091|:8092|MAPI'"
+  ]
+}

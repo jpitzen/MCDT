@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: zlserver
+  name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver20251219
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              apt-get update && apt-get install -y openjdk-21-jre-headless
+              # Copy config files from ConfigMap templates to writable locations (ConfigMap mounts are read-only)
+              cp /opt/ZipLip/config-templates/tcdb.cfg /opt/ZipLip/bin/zk/tcdb.cfg
+              cp /opt/ZipLip/config-templates/zkQuorum.cfg /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              /opt/ZipLip/bin/zlserver-startup.sh
+          resources:
+            limits:
+              cpu: 250m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          ports:
+            - containerPort: 9972
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          env:
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: PATH
+              value: "/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          volumeMounts:
+            - mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              name: zlservertemp
+            - mountPath: /opt/ZipLip/logs
+              name: zlserverlogs
+            - mountPath: /var/ZipLip/Vault
+              name: zlvault
+            - mountPath: /opt/ZipLip/config-templates/tcdb.cfg
+              name: zkclient-config
+              subPath: tcdb.cfg
+            - mountPath: /opt/ZipLip/config-templates/zkQuorum.cfg
+              name: zkclient-config
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zlservertemp
+          persistentVolumeClaim:
+            claimName: zlservertemp-pvc
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-pvc
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-pvc
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config

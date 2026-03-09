@@ -1,0 +1,83 @@
+# ZL Server Deployment - us-east-1
+# Last Updated: December 22, 2025
+# Image: zlserver-k8s-20251222 (Java 21 pre-installed)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlserver
+  labels:
+    app: zlserver
+    name: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: CLUSTER_NAME
+              value: "MP"
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: PATH
+              value: "/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            - name: TIKA_HOST
+              value: "zltika-service"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          volumeMounts:
+            - name: zlservertemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+            - name: zlserverlogs
+              mountPath: /opt/ZipLip/logs
+            - name: zlvault
+              mountPath: /var/opt/zlvault
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              subPath: tcdb.cfg
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zlservertemp
+          emptyDir: {}
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config

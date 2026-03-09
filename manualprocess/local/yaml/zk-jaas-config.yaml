@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-jaas-config
+data:
+  zookeeper_jaas.conf: |
+    Server {
+        org.apache.zookeeper.server.auth.DigestLoginModule required
+        user_super="adminsecret"
+        user_zluser="zlpassword";
+    };
+    Client {
+        org.apache.zookeeper.server.auth.DigestLoginModule required
+        username="zluser"
+        password="zlpassword";
+    };

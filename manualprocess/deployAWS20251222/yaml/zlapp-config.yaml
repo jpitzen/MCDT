@@ -1,0 +1,37 @@
+# ZLApp ConfigMap - Main application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zlapp-config
+data:
+  ZLApp.cfg: |
+    // ZLApp Configuration File
+    // Application startup configuration for ZLServer pods
+
+    #ifndef _ZL_APP_CONFIG_FILE_IS_INCLUDED
+    #define _ZL_APP_CONFIG_FILE_IS_INCLUDED = true
+
+    // Include ZooKeeper configuration
+    _zkClientConfig = /opt/ZipLip/ZLZooKeeper/config/zkClient.cfg
+
+    // Site Configuration
+    _cfg.site.name = K8S
+
+    // Cluster Configuration - Set via CLUSTER_NAME environment variable
+    // Values: MP (zlserver), UI (zlui), SEARCH (zlsearch)
+    // _cfg.cluster.name = MP
+
+    // Thread Pool Settings
+    _cfg.thread.pool.core = 10
+    _cfg.thread.pool.max = 50
+    _cfg.thread.pool.queue = 100
+
+    // Memory Settings
+    _cfg.memory.min = 512m
+    _cfg.memory.max = 4g
+
+    // Logging
+    _cfg.log.level = INFO
+    _cfg.log.dir = /var/opt/zlserverlogs
+
+    #endif

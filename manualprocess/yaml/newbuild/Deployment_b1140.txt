@@ -1,0 +1,127 @@
+# ZipLip 11.1.0-b1140 Deployment Files
+
+## Overview
+This folder contains all Kubernetes YAML files for deploying ZipLip build **11.1.0-b1140** to AWS EKS.
+
+## Image Versions
+All images updated to build 1140:
+- **zlserver**: `zlserver11.1.0-b1140`
+- **zlui**: `zlserver11.1.0-b1140` (uses zlserver image)
+- **zltika**: `zltika11.1.0-b1140`
+- **zlzookeeper**: `zlzookeeper11.1.0-b1140`
+
+## Deployment Order
+
+### 1. ConfigMaps (Apply First)
+```bash
+kubectl apply -f db-config.yaml
+kubectl apply -f db-secret.yaml
+kubectl apply -f zlapp-config.yaml
+kubectl apply -f docconvert-configmap.yaml
+```
+
+### 2. ZooKeeper Services
+```bash
+kubectl apply -f zk-hs.yaml
+kubectl apply -f zk-cs.yaml
+```
+
+### 3. ZooKeeper StatefulSet
+```bash
+kubectl apply -f zlzookeeper-statefulset.yaml
+```
+
+Wait for all 3 ZooKeeper pods to be running:
+```bash
+kubectl get pods -l app=zlzookeeper -w
+```
+
+### 4. Application Deployments
+```bash
+# Tika (document conversion service)
+kubectl apply -f zltika-deployment.yaml
+kubectl apply -f zltika-service.yaml
+
+# ZL Server (backend)
+kubectl apply -f zlserver-deployment.yaml
+
+# ZL UI (frontend)
+kubectl apply -f zlui-deployment.yaml
+kubectl apply -f zlui-service.yaml
+```
+
+### 5. Verify Deployment
+```bash
+# Check all pods
+kubectl get pods -n default
+
+# Check services
+kubectl get svc -n default
+
+# Check logs
+kubectl logs deployment/zlserver
+kubectl logs deployment/zlui
+kubectl logs deployment/zltika
+```
+
+## Rollback Plan
+To rollback to previous version (11.0.1-b123):
+```bash
+# Update image tags back to b123
+kubectl set image deployment/zlserver zlserver=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+kubectl set image deployment/zlui zlui=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlserver-11.0.1-b123
+kubectl set image deployment/zltika zltika=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zltika-11.0.1-b123
+kubectl set image statefulset/zlzookeeper zlzookeeper=995553364920.dkr.ecr.us-west-1.amazonaws.com/uw1-zlps-ecr-01:zlzookeeper-11.0.1-b123
+```
+
+## Quick Deploy All
+```bash
+# From the newbuild folder
+kubectl apply -f db-config.yaml
+kubectl apply -f db-secret.yaml
+kubectl apply -f zlapp-config.yaml
+kubectl apply -f docconvert-configmap.yaml
+kubectl apply -f zk-hs.yaml
+kubectl apply -f zk-cs.yaml
+kubectl apply -f zlzookeeper-statefulset.yaml
+
+# Wait for ZooKeeper pods (2-3 minutes)
+sleep 180
+
+kubectl apply -f zltika-deployment.yaml
+kubectl apply -f zltika-service.yaml
+kubectl apply -f zlserver-deployment.yaml
+kubectl apply -f zlui-deployment.yaml
+kubectl apply -f zlui-service.yaml
+```
+
+## Files Included
+- `db-config.yaml` - Database connection configuration
+- `db-secret.yaml` - Database password (base64 encoded)
+- `zlapp-config.yaml` - Application configuration (ZooKeeper, Tika)
+- `docconvert-configmap.yaml` - Document conversion service config
+- `zk-hs.yaml` - ZooKeeper headless service
+- `zk-cs.yaml` - ZooKeeper client service
+- `zlzookeeper-statefulset.yaml` - ZooKeeper cluster (3 replicas)
+- `zltika-deployment.yaml` - Tika document conversion service
+- `zltika-service.yaml` - Tika service endpoint
+- `zlserver-deployment.yaml` - ZipLip backend server
+- `zlui-deployment.yaml` - ZipLip web UI
+- `zlui-service.yaml` - ZipLip UI LoadBalancer service
+
+## Notes
+- All deployments use existing PersistentVolumeClaims (PVCs) for EFS storage
+- ServiceAccount `zlapp-sa` must exist before deployment
+- ECR pull secret `docker-secret` must exist before deployment
+- Database must be initialized and accessible before deploying zlserver/zlui
+
+## Post-Deployment Verification
+```bash
+# Check image versions deployed
+kubectl get deployment zlserver -o jsonpath='{.spec.template.spec.containers[0].image}'
+kubectl get deployment zlui -o jsonpath='{.spec.template.spec.containers[0].image}'
+kubectl get deployment zltika -o jsonpath='{.spec.template.spec.containers[0].image}'
+kubectl get statefulset zlzookeeper -o jsonpath='{.spec.template.spec.containers[0].image}'
+
+# Expected output should show build 1140
+```

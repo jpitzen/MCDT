@@ -1,0 +1,177 @@
+S3 Storage Deployment Commands
+================================
+
+ENVIRONMENT DETAILS
+===================
+Cluster: usw1-zlps-eks-01
+Region: us-west-1
+Account: 995553364920
+Bucket: usw1-zlps-app-storage
+IAM Role: eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-bFTIIAIpDdYp
+IAM Policy: ZLPS_S3_CSI_Driver_Policy
+
+PHASE 1: S3 BUCKET SETUP
+=========================
+
+1. Create S3 bucket:
+aws s3api create-bucket --bucket usw1-zlps-app-storage --region us-west-1 --create-bucket-configuration LocationConstraint=us-west-1
+
+2. Enable versioning (recommended):
+aws s3api put-bucket-versioning --bucket usw1-zlps-app-storage --versioning-configuration Status=Enabled --region us-west-1
+
+3. Verify bucket:
+aws s3 ls | Select-String "usw1-zlps-app-storage"
+aws s3 ls s3://usw1-zlps-app-storage
+
+
+PHASE 2: IAM POLICY CREATION
+=============================
+
+1. Policy file already created at:
+C:\Projects\aws-zl\policies\S3-CSI-Driver-Policy.json
+
+2. Create IAM policy:
+aws iam create-policy --policy-name ZLPS_S3_CSI_Driver_Policy --policy-document file://C:\Projects\aws-zl\policies\S3-CSI-Driver-Policy.json --region us-west-1
+
+3. Verify policy:
+aws iam list-policies --query "Policies[?PolicyName=='ZLPS_S3_CSI_Driver_Policy']" --output table
+
+
+PHASE 3: IAM SERVICE ACCOUNT (IRSA)
+====================================
+
+1. OIDC already associated (verified earlier)
+
+2. Create service account with IRSA:
+eksctl create iamserviceaccount --cluster usw1-zlps-eks-01 --namespace kube-system --name s3-csi-controller-sa --attach-policy-arn arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy --approve --override-existing-serviceaccounts --region us-west-1
+
+3. Verify service account:
+kubectl get serviceaccount s3-csi-controller-sa -n kube-system -o yaml
+
+
+PHASE 4: INSTALL S3 CSI DRIVER ✅ COMPLETE
+===========================================
+
+1. Add Helm repo:
+helm repo add aws-s3-csi https://awslabs.github.io/mountpoint-s3-csi-driver
+helm repo update
+
+2. Install CSI driver:
+helm upgrade --install aws-mountpoint-s3-csi-driver --namespace kube-system aws-s3-csi/aws-mountpoint-s3-csi-driver --set node.serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::995553364920:role/eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-bFTIIAIpDdYp" --set node.tolerations[0].key=node-role.kubernetes.io/master --set node.tolerations[0].operator=Exists --set node.tolerations[0].effect=NoSchedule
+
+3. Attach S3 policy to node group role (CRITICAL):
+aws iam attach-role-policy --role-name eksctl-usw1-zlps-eks-01-nodegroup--NodeInstanceRole-ekzJtOX3o2UN --policy-arn arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy --region us-west-1
+
+4. Verify installation:
+kubectl get pods -n kube-system | Select-String "s3"
+kubectl get csidrivers | Select-String "s3"
+
+Expected output:
+- s3-csi-controller-xxxxx (1/1 Running)
+- s3-csi-node-xxxxx (3/3 Running) - one per worker node
+
+IMPORTANT: The Mountpoint S3 CSI driver requires BOTH:
+- Service account with IRSA (for pod-level access)
+- Node group IAM role with S3 policy (for mount operations)
+
+
+PHASE 5: CREATE STORAGE RESOURCES ✅ COMPLETE
+==============================================
+
+1. Deploy PersistentVolume:
+kubectl apply -f C:\Projects\aws-zl\yaml\s3-pv-archive.yaml
+
+2. Deploy PersistentVolumeClaim:
+kubectl apply -f C:\Projects\aws-zl\yaml\s3-pvc-archive.yaml
+
+3. Verify PV/PVC status:
+kubectl get pv | Select-String "s3"
+kubectl get pvc -n default | Select-String "s3"
+
+Expected: PVC status should show "Bound" (may take 5-10 seconds)
+
+
+PHASE 6: VERIFICATION & TESTING ✅ COMPLETE
+============================================
+
+1. Create test pod:
+Get-Content C:\Projects\aws-zl\yaml\s3-test-pod.yaml | kubectl apply -f -
+
+2. Wait for pod to be ready:
+kubectl wait --for=condition=Ready pod/s3-test-pod -n default --timeout=120s
+
+3. Test write to S3:
+kubectl exec -n default s3-test-pod -- sh -c "echo 'Test from EKS pod at $(date)' > /s3-data/test-file.txt"
+
+4. Verify file in S3:
+aws s3 ls s3://usw1-zlps-app-storage/
+Expected: test-file.txt appears in bucket
+
+5. Test read from S3 mount:
+kubectl exec -n default s3-test-pod -- cat /s3-data/test-file.txt
+
+6. Test read from S3 directly:
+aws s3 cp s3://usw1-zlps-app-storage/test-file.txt -
+
+7. Verify mount details:
+kubectl exec -n default s3-test-pod -- df -h | Select-String "/s3-data"
+Expected: mountpoint-s3 with 8.0E capacity
+
+8. Cleanup test pod:
+kubectl delete pod s3-test-pod -n default
+
+RESULTS:
+✅ Write test successful
+✅ File visible in S3 bucket (test-file.txt, 41 bytes)
+✅ Read from mount successful
+✅ Read from S3 matches mount content
+✅ Mount shows as "mountpoint-s3" filesystem
+
+
+TROUBLESHOOTING
+===============
+
+Check S3 CSI driver logs:
+kubectl logs -n kube-system deployment/s3-csi-controller --tail=50
+kubectl logs -n kube-system daemonset/s3-csi-node --tail=50
+
+Check IAM role permissions:
+aws iam get-role --role-name eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-bFTIIAIpDdYp
+aws iam list-attached-role-policies --role-name eksctl-usw1-zlps-eks-01-addon-iamserviceaccou-Role1-bFTIIAIpDdYp
+
+Describe PVC for details:
+kubectl describe pvc s3-archive-pvc -n default
+
+Check pod events:
+kubectl describe pod s3-test-pod -n default
+
+
+CLEANUP (if needed)
+===================
+
+1. Delete test resources:
+kubectl delete pod s3-test-pod -n default
+kubectl delete pvc s3-archive-pvc -n default
+kubectl delete pv s3-pv-archive
+
+2. Uninstall Helm chart:
+helm uninstall aws-mountpoint-s3-csi-driver -n kube-system
+
+3. Delete service account:
+eksctl delete iamserviceaccount --cluster usw1-zlps-eks-01 --namespace kube-system --name s3-csi-controller-sa --region us-west-1
+
+4. Delete IAM policy:
+aws iam delete-policy --policy-arn arn:aws:iam::995553364920:policy/ZLPS_S3_CSI_Driver_Policy
+
+5. Delete S3 bucket (WARNING: deletes all data):
+aws s3 rb s3://usw1-zlps-app-storage --force
+
+
+NOTES
+=====
+- S3 CSI driver v2.2.1 installed
+- ReadWriteMany (RWX) access mode supported
+- Objects stored in S3 appear as files in mounted path
+- Bucket name must be globally unique
+- IAM role linked via IRSA for secure access
+- PersistentVolumeReclaimPolicy set to "Retain" preserves data

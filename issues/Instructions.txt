@@ -1,0 +1,25 @@
+I do an "Empty Cache and Hard refresh" and still do not see the changes; however, the password change is functional.
+
+This is iteration 4 of DeploymentWizard-issues-202511221003.txt
+The .\issues\DeploymentWizard-issues-202511221003.txt file is updated with the browser console log, and the fetch node.js data, the frontend console log, and the backend console log.
+
+
+
+
+This is iteration 1 of SaveDraftEdit-202512032003.txt, review instruction section.
+The .\issues\SaveDraftEdit-202512032003.txt file is updated with the browser console log, and the fetch node.js data, the frontend console log, and the backend console log. Added Deployment Logs.
+
+Let's include the image version output for all pods in the restart-frontend.bat output.
+
+
+ldap://bvhm-dc-02.castle.in
+
+DC=CASTLE,DC=IN
+
+
+ "D:\PostgreSQL\17\bin\pg_ctl" -D "E:\postgreSQL\data\zlms" -l logfile 
+ 
+ us1-zlps-01
+ 
+ 
+ aws ssm start-session --target i-05f0a52e05bddf73b --document-name AWS-StartPortForwardingSession --parameters portNumber=1433,localPortNumber=1433                                                                                                                                                                                                                                                                                                                      

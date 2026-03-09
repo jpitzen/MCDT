@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docconvert-config
+  namespace: default
+data:
+  TIKA_HOST: zltika
+  TIKA_PORT: "9972"

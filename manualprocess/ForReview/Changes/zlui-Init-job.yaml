@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zl-zk-client-init
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+
+      containers:
+        - name: zl-zk-client-init
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlserver:11.1.0-b1140
+          imagePullPolicy: Always
+
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+
+          volumeMounts:
+            # ZK client binaries & configs (EFS)
+            - name: zlserver-zk
+              mountPath: /opt/ZipLip/bin/zk
+              subPath: ZipLip/bin/zk
+
+            # ZooKeeper CONFIG (READ-ONLY)
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config
+              readOnly: true
+
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "===== ZL SERVER ZK INIT ====="
+
+              echo "DEBUG: listing /opt/ZipLip/bin/zk"
+              ls -l /opt/ZipLip/bin/zk
+
+              ZKCLIENT=/opt/ZipLip/bin/zk/zkClient.cfg
+              TCDB=/opt/ZipLip/bin/zk/tcdb.cfg
+              ZKUTIL=/opt/ZipLip/bin/zkutil.sh
+
+              [ -f "$TCDB" ] || exit 1
+
+              $ZKUTIL -keyinit "$ZKCLIENT"
+              $ZKUTIL -loadconfig "$ZKCLIENT" "$TCDB"
+
+              echo "===== ZL SERVER ZK INIT COMPLETE ====="
+
+      volumes:
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs
+
+        - name: zlserver-zk
+          persistentVolumeClaim:
+            claimName: zlserver-binzk-efs

@@ -1,0 +1,24 @@
+TRUNCATE TABLE pfuser01.InPlaceFileItemStaticTag
+TRUNCATE TABLE pfuser01.InPlaceTag
+TRUNCATE TABLE pfuser01.InPlaceFileScheduledRuns
+TRUNCATE TABLE pfuser01.InPlaceFileDispositionRuns
+TRUNCATE TABLE pfuser01.InPlaceFileAuditTrail
+TRUNCATE TABLE pfuser01.InPlaceFileItem
+TRUNCATE TABLE pfuser01.StorageItemLink
+TRUNCATE TABLE pfuser01.StorageItemRelationship
+TRUNCATE TABLE pfuser01.StorageItemStats
+TRUNCATE TABLE pfuser01.FileSingleInstanceDigest
+TRUNCATE TABLE pfuser01.StorageViolation
+TRUNCATE TABLE pfuser01.StorageViolationTranscript
+TRUNCATE TABLE pfuser01.StorageUserSubscription
+TRUNCATE TABLE pfuser01.StorageAuditTrail
+TRUNCATE TABLE pfuser01.StorageItemPart
+TRUNCATE TABLE pfuser01.StorageItemSisHeader
+TRUNCATE TABLE pfuser01.StorageItemVersion
+TRUNCATE TABLE pfuser01.StorageItem
+TRUNCATE TABLE pfuser01.StorageFolderProp
+TRUNCATE TABLE pfuser01.StorageFolder
+TRUNCATE TABLE pfuser01.StorageProjectPrivileges
+TRUNCATE TABLE pfuser01.StorageProject
+
+

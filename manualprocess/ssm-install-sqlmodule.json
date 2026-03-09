@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser",
+    "Install-Module -Name SqlServer -Force -AllowClobber -Scope CurrentUser",
+    "Import-Module SqlServer"
+  ]
+}

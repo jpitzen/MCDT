@@ -1,0 +1,16 @@
+DROP TABLE pfuser01.ArchiveRepositoryInfo
+DROP TABLE pfuser01.ArchivePointUsageHistory
+DROP SEQUENCE pfuser01.APUsage_seq
+DROP TABLE pfuser01.ArchivePointUsage
+DROP SEQUENCE pfuser01.FileAgentRuns_seq
+DROP TABLE pfuser01.FileAgentRuns
+DROP TABLE pfuser01.ArchivePointEntryAuditTrail
+DROP TABLE pfuser01.ArchivePointEntrySync
+DROP TABLE pfuser01.ArchivePointFolderProp
+DROP SEQUENCE pfuser01.ArchivePointFolderSync_seq
+DROP TABLE pfuser01.ArchivePointFolderSync
+DROP TABLE pfuser01.ArchiveStorageProject
+DROP TABLE pfuser01.ZLDUAL
+DROP SEQUENCE pfuser01.ArchiveStorageProjectCrawlState_seq
+DROP TABLE pfuser01.ArchiveStorageProjectCrawlState
+

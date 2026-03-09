@@ -1,0 +1,133 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: zl-mcdt-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mcdt_user
+      POSTGRES_PASSWORD: mcdt_password_123
+      POSTGRES_DB: zl_mcdt
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - zl-mcdt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcdt_user -d zl_mcdt"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # HashiCorp Vault (for secrets management)
+  vault:
+    image: vault:1.15.0
+    container_name: zl-mcdt-vault
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - zl-mcdt-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for caching and job queue)
+  redis:
+    image: redis:7-alpine
+    container_name: zl-mcdt-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - zl-mcdt-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zl-mcdt-backend
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: postgresql://mcdt_user:mcdt_password_123@postgres:5432/zl_mcdt
+      JWT_SECRET: your-secret-key-change-in-production
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: myroot
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: info
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+      - ./logs:/app/logs
+    networks:
+      - zl-mcdt-network
+    command: sh -c "npm run db:migrate && npm run dev"
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: zl-mcdt-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_LOG_LEVEL: info
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src
+      - /app/node_modules
+    networks:
+      - zl-mcdt-network
+    command: npm start
+
+  # PostgreSQL Admin UI (pgAdmin)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: zl-mcdt-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - zl-mcdt-network
+
+networks:
+  zl-mcdt-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

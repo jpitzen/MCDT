@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 6</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 6: Database Configuration</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 6</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 6: Database Configuration</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">10</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                    <span class="step-dot" data-step="8"></span>
+                    <span class="step-dot" data-step="9"></span>
+                    <span class="step-dot" data-step="10"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Database Configuration Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 6</strong> creates an Amazon RDS SQL Server Express instance in the same VPC as the EKS cluster for application data storage.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Gather VPC and subnet information</li>
+                    <li data-steps="2">Create DB subnet group for RDS</li>
+                    <li data-steps="3">Configure RDS security group</li>
+                    <li data-steps="4">Create RDS SQL Server Express instance</li>
+                    <li data-steps="5">Get RDS endpoint for connection</li>
+                    <li data-steps="6">Create application database user</li>
+                    <li data-steps="7,8">Configure Kubernetes database ConfigMap and Secret</li>
+                    <li data-steps="9">Set up SSM port forwarding for database access</li>
+                    <li data-steps="10">Deploy database schemas via sqlcmd</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            
+            <!-- Bottom Navigation Controls (Always visible) -->
+            <div class="pagination-controls bottom-controls" id="bottom-nav">
+                <button class="nav-btn prev-btn" id="prev-btn-bottom" onclick="navigateStep(-1)">
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="bottom-step-title">Step 1 of 9</div>
+                <button class="nav-btn next-btn" id="next-btn-bottom" onclick="navigateStep(1)">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stepData = {
+            1: {
+                title: "Get VPC and Subnet Information",
+                content: `
+                    <h3>Step 29: Get VPC and Subnet Information</h3>
+                    <p>Retrieve the VPC ID and private subnet IDs from your EKS cluster (reuse from Phase 4):</p>
+                    <pre><code># Get VPC ID
+aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.resourcesVpcConfig.vpcId" --output text
+
+# List private subnets (use the same ones from EFS setup)
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=&lt;YOUR_VPC_ID&gt;" --region us-east-1 \\
+  --query "Subnets[?contains(Tags[?Key=='Name'].Value|[0], 'Private')].[SubnetId,AvailabilityZone]" --output table</code></pre>
+                    <p><strong>Expected:</strong> 2 private subnets across different AZs</p>
+                `
+            },
+            2: {
+                title: "Create DB Subnet Group",
+                content: `
+                    <h3>Step 30: Create DB Subnet Group</h3>
+                    <p>Create a subnet group for RDS using the private subnets:</p>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step30-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step30-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step30-cmd')">CMD</button>
+                        </div>
+                        <div id="step30-ps" class="shell-content active">
+                            <pre><code>aws rds create-db-subnet-group \`
+  --db-subnet-group-name use1-zlps-db-subnet-group \`
+  --db-subnet-group-description "Subnet group for ZL application RDS instances" \`
+  --subnet-ids &lt;YOUR_PRIVATE_SUBNET_1&gt; &lt;YOUR_PRIVATE_SUBNET_2&gt; \`
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step30-bash" class="shell-content">
+                            <pre><code>aws rds create-db-subnet-group \\
+  --db-subnet-group-name use1-zlps-db-subnet-group \\
+  --db-subnet-group-description "Subnet group for ZL application RDS instances" \\
+  --subnet-ids &lt;YOUR_PRIVATE_SUBNET_1&gt; &lt;YOUR_PRIVATE_SUBNET_2&gt; \\
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step30-cmd" class="shell-content">
+                            <pre><code>aws rds create-db-subnet-group --db-subnet-group-name use1-zlps-db-subnet-group --db-subnet-group-description "Subnet group for ZL application RDS instances" --subnet-ids &lt;YOUR_PRIVATE_SUBNET_1&gt; &lt;YOUR_PRIVATE_SUBNET_2&gt; --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    <p><strong>Verify:</strong></p>
+                    <pre><code>aws rds describe-db-subnet-groups --db-subnet-group-name use1-zlps-db-subnet-group --region us-east-1</code></pre>
+                `
+            },
+            3: {
+                title: "Create RDS Security Group",
+                content: `
+                    <h3>Step 31: Create RDS Security Group</h3>
+                    <p>Create a security group to allow SQL Server traffic from the EKS cluster and SSM host:</p>
+                    
+                    <h4>Step 31a: Get EKS Cluster Security Group</h4>
+                    <pre><code># Get EKS Cluster Security Group ID (reuse from Phase 4)
+aws eks describe-cluster --name use1-zlps-eks-01 --region us-east-1 --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text</code></pre>
+                    <p><strong>Output Example:</strong> <code>&lt;YOUR_EKS_CLUSTER_SG_ID&gt;</code></p>
+
+                    <h4>Step 31b: Create RDS Security Group</h4>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step31b-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step31b-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step31b-cmd')">CMD</button>
+                        </div>
+                        <div id="step31b-ps" class="shell-content active">
+                            <pre><code>aws ec2 create-security-group \`
+  --group-name use1-zlps-rds-sg \`
+  --description "Security group for RDS SQL Server instances" \`
+  --vpc-id &lt;YOUR_VPC_ID&gt; \`
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step31b-bash" class="shell-content">
+                            <pre><code>aws ec2 create-security-group \\
+  --group-name use1-zlps-rds-sg \\
+  --description "Security group for RDS SQL Server instances" \\
+  --vpc-id &lt;YOUR_VPC_ID&gt; \\
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step31b-cmd" class="shell-content">
+                            <pre><code>aws ec2 create-security-group --group-name use1-zlps-rds-sg --description "Security group for RDS SQL Server instances" --vpc-id &lt;YOUR_VPC_ID&gt; --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    <p><strong>Output:</strong> Save the <code>GroupId</code> (e.g., <code>sg-0a1b2c3d4e5f6g7h8</code>)</p>
+                    
+                    <h4>Step 31c: Add Inbound Rule for SQL Server (Port 1433)</h4>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step31c-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step31c-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step31c-cmd')">CMD</button>
+                        </div>
+                        <div id="step31c-ps" class="shell-content active">
+                            <pre><code># Allow SQL Server from EKS cluster security group
+aws ec2 authorize-security-group-ingress \`
+  --group-id &lt;RDS_SG_ID&gt; \`
+  --protocol tcp \`
+  --port 1433 \`
+  --source-group &lt;EKS_CLUSTER_SG_ID&gt; \`
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step31c-bash" class="shell-content">
+                            <pre><code># Allow SQL Server from EKS cluster security group
+aws ec2 authorize-security-group-ingress \\
+  --group-id &lt;RDS_SG_ID&gt; \\
+  --protocol tcp \\
+  --port 1433 \\
+  --source-group &lt;EKS_CLUSTER_SG_ID&gt; \\
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step31c-cmd" class="shell-content">
+                            <pre><code>REM Allow SQL Server from EKS cluster security group
+aws ec2 authorize-security-group-ingress --group-id &lt;RDS_SG_ID&gt; --protocol tcp --port 1433 --source-group &lt;EKS_CLUSTER_SG_ID&gt; --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="info">
+                        <strong>Security Group Rules:</strong>
+                        <table>
+                            <tr><th>Type</th><th>Protocol</th><th>Port</th><th>Source</th><th>Description</th></tr>
+                            <tr><td>Inbound</td><td>TCP</td><td>1433</td><td>EKS Cluster SG</td><td>SQL Server from EKS pods</td></tr>
+                        </table>
+                    </div>
+                    
+                    <p><strong>Verify:</strong></p>
+                    <pre><code>aws ec2 describe-security-groups --group-ids &lt;RDS_SG_ID&gt; --region us-east-1 --query "SecurityGroups[0].IpPermissions"</code></pre>
+                `
+            },
+            4: {
+                title: "Create RDS SQL Server Express Instance",
+                content: `
+                    <h3>Step 32: Create RDS SQL Server Express Instance</h3>
+                    <p>Create the RDS instance in the private subnets with the DB subnet group and security group:</p>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step32-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step32-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step32-cmd')">CMD</button>
+                        </div>
+                        <div id="step32-ps" class="shell-content active">
+                            <pre><code>aws rds create-db-instance \`
+  --db-instance-identifier use1-zlps-msexpsql-01-eks \`
+  --db-instance-class db.t3.small \`
+  --engine sqlserver-ex \`
+  --master-username admin \`
+  --master-user-password &lt;STRONG_PASSWORD&gt; \`
+  --allocated-storage 20 \`
+  --storage-type gp3 \`
+  --db-subnet-group-name use1-zlps-db-subnet-group \`
+  --vpc-security-group-ids &lt;RDS_SG_ID&gt; \`
+  --no-publicly-accessible \`
+  --backup-retention-period 7 \`
+  --preferred-backup-window "03:00-04:00" \`
+  --preferred-maintenance-window "sun:04:00-sun:05:00" \`
+  --enable-cloudwatch-logs-exports error \`
+  --storage-encrypted \`
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step32-bash" class="shell-content">
+                            <pre><code>aws rds create-db-instance \\
+  --db-instance-identifier use1-zlps-msexpsql-01-eks \\
+  --db-instance-class db.t3.small \\
+  --engine sqlserver-ex \\
+  --master-username admin \\
+  --master-user-password &lt;STRONG_PASSWORD&gt; \\
+  --allocated-storage 20 \\
+  --storage-type gp3 \\
+  --db-subnet-group-name use1-zlps-db-subnet-group \\
+  --vpc-security-group-ids &lt;RDS_SG_ID&gt; \\
+  --no-publicly-accessible \\
+  --backup-retention-period 7 \\
+  --preferred-backup-window "03:00-04:00" \\
+  --preferred-maintenance-window "sun:04:00-sun:05:00" \\
+  --enable-cloudwatch-logs-exports error \\
+  --storage-encrypted \\
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step32-cmd" class="shell-content">
+                            <pre><code>aws rds create-db-instance --db-instance-identifier use1-zlps-msexpsql-01-eks --db-instance-class db.t3.small --engine sqlserver-ex --master-username admin --master-user-password &lt;STRONG_PASSWORD&gt; --allocated-storage 20 --storage-type gp3 --db-subnet-group-name use1-zlps-db-subnet-group --vpc-security-group-ids &lt;RDS_SG_ID&gt; --no-publicly-accessible --backup-retention-period 7 --preferred-backup-window "03:00-04:00" --preferred-maintenance-window "sun:04:00-sun:05:00" --enable-cloudwatch-logs-exports error --storage-encrypted --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>Important:</strong>
+                        <ul>
+                            <li>Replace <code>&lt;STRONG_PASSWORD&gt;</code> with a secure password (min 8 chars, uppercase, lowercase, number, special char)</li>
+                            <li>Save the password securely - you'll need it for application configuration</li>
+                            <li>Creation takes 10-15 minutes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info">
+                        <strong>SQL Server Express Edition:</strong>
+                        <ul>
+                            <li>Free tier eligible for testing/development</li>
+                            <li>Limited to 10 GB database size per database</li>
+                            <li>1 GB RAM limit per instance (AWS allows 2 GB for t3.small)</li>
+                            <li>For production, consider Standard or Enterprise editions</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Monitor Creation Status:</strong></p>
+                    <pre><code># Check status (wait for "available")
+aws rds describe-db-instances --db-instance-identifier use1-zlps-msexpsql-01-eks --region us-east-1 --query "DBInstances[0].DBInstanceStatus" --output text</code></pre>
+                `
+            },
+            5: {
+                title: "Get RDS Endpoint",
+                content: `
+                    <h3>Step 33: Get RDS Endpoint</h3>
+                    <p>Once the instance is available, retrieve the connection endpoint:</p>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step33-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step33-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step33-cmd')">CMD</button>
+                        </div>
+                        <div id="step33-ps" class="shell-content active">
+                            <pre><code>aws rds describe-db-instances --db-instance-identifier use1-zlps-msexpsql-01-eks --region us-east-1 \`
+  --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,Engine:Engine,Status:DBInstanceStatus}" --output json</code></pre>
+                        </div>
+                        <div id="step33-bash" class="shell-content">
+                            <pre><code>aws rds describe-db-instances --db-instance-identifier use1-zlps-msexpsql-01-eks --region us-east-1 \\
+  --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,Engine:Engine,Status:DBInstanceStatus}" --output json</code></pre>
+                        </div>
+                        <div id="step33-cmd" class="shell-content">
+                            <pre><code>aws rds describe-db-instances --db-instance-identifier use1-zlps-msexpsql-01-eks --region us-east-1 --query "DBInstances[0].{Endpoint:Endpoint.Address,Port:Endpoint.Port,Engine:Engine,Status:DBInstanceStatus}" --output json</code></pre>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Example Output:</strong></p>
+                    <pre><code>{
+  "Endpoint": "&lt;YOUR_RDS_ENDPOINT&gt;",
+  "Port": 1433,
+  "Engine": "sqlserver-ex",
+  "Status": "available"
+}</code></pre>
+                    
+                    <div class="warning">Save the <code>Endpoint</code> address - you'll use it in the Kubernetes ConfigMap (Step 35).</div>
+                `
+            },
+            6: {
+                title: "Create Application Database User",
+                content: `
+                    <h3>Step 34: Create Application Database User</h3>
+                    <p>Connect to the RDS instance and create the application database and user. You can use:</p>
+                    <ul>
+                        <li><strong>SQL Server Management Studio (SSMS)</strong> - via SSM port forwarding (see Step 37)</li>
+                        <li><strong>Azure Data Studio</strong> - cross-platform alternative</li>
+                        <li><strong>sqlcmd</strong> - command-line tool</li>
+                    </ul>
+                    
+                    <h4>SQL Script to Execute:</h4>
+                    <pre><code>-- Create database
+CREATE DATABASE ZLDB;
+GO
+
+USE ZLDB;
+GO
+
+-- Create login and user
+CREATE LOGIN pfuser WITH PASSWORD = '&lt;APP_USER_PASSWORD&gt;';
+GO
+
+CREATE USER pfuser FOR LOGIN pfuser;
+GO
+
+-- Grant db_owner role
+ALTER ROLE db_owner ADD MEMBER pfuser;
+GO
+
+-- Verify
+SELECT name, type_desc FROM sys.database_principals WHERE name = 'pfuser';
+GO</code></pre>
+                    
+                    <div class="info">
+                        <strong>Note:</strong> The application user (<code>pfuser</code>) should have a different password than the RDS master user (<code>admin</code>).
+                    </div>
+                `
+            },
+            7: {
+                title: "Create Database ConfigMap and Secret",
+                content: `
+                    <h3>Step 35: Create Database ConfigMap</h3>
+                    <pre><code>kubectl apply -f yaml/zldb-config.yaml</code></pre>
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zldb-config.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zldb-config')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zldb-config.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zldb-config" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zldb-config.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zldb-config')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zldb-config">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Step 36: Create Database Secret</h3>
+                    <p>Create a Kubernetes secret containing the database password for the application user (pfuser).</p>
+                    
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zldb-secret.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zldb-secret')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zldb-secret.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zldb-secret" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zldb-secret.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zldb-secret')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zldb-secret">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>Security Note:</strong> Update the password in <code>zldb-secret.yaml</code> with your actual base64-encoded pfuser password before applying. The default password shown is from the database creation scripts.
+                    </div>
+                    
+                    <h4>Encode Your Password:</h4>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step36-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step36-bash')">Bash</button>
+                        </div>
+                        <div id="step36-ps" class="shell-content active">
+                            <pre><code># Encode the pfuser password
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("&lt;YOUR_DB_PASSWORD&gt;"))
+
+# Or encode a custom password
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("YourCustomPassword"))</code></pre>
+                        </div>
+                        <div id="step36-bash" class="shell-content">
+                            <pre><code># Encode the pfuser password
+echo -n "&lt;YOUR_DB_PASSWORD&gt;" | base64
+
+# Or encode a custom password
+echo -n "YourCustomPassword" | base64</code></pre>
+                        </div>
+                    </div>
+                    
+                    <h4>Apply the Secret:</h4>
+                    <pre><code>kubectl apply -f yaml/zldb-secret.yaml</code></pre>
+                    
+                    <h4>Verify the Secret:</h4>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step36verify-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step36verify-bash')">Bash</button>
+                        </div>
+                        <div id="step36verify-ps" class="shell-content active">
+                            <pre><code># Check if secret exists
+kubectl get secret zldb-secret -n default
+
+# Verify the password (decode to check)
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((kubectl get secret zldb-secret -n default -o jsonpath='{.data.password}')))</code></pre>
+                        </div>
+                        <div id="step36verify-bash" class="shell-content">
+                            <pre><code># Check if secret exists
+kubectl get secret zldb-secret -n default
+
+# Verify the password (decode to check)
+kubectl get secret zldb-secret -n default -o jsonpath='{.data.password}' | base64 --decode</code></pre>
+                        </div>
+                    </div>
+                `
+            },
+            8: {
+                title: "SSM Port Forwarding Setup",
+                content: `
+                    <h3>Step 37: SSM Port Forwarding for Database Access</h3>
+                    <p>Create a Windows EC2 instance with SSM agent to serve as a jump box, then establish a secure tunnel to access RDS from your local machine without VPN or bastion.</p>
+                    
+                    <div class="step-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates a Windows Server instance in a public subnet</li>
+                            <li>Configures SSM agent for remote management</li>
+                            <li>Sets up security groups for database access</li>
+                            <li>Enables port forwarding to private RDS instances</li>
+                        </ul>
+                    </div>
+                    
+                    <h4>Step 37a: Create IAM Role for SSM Host</h4>
+                    <p>Create an IAM role that allows the EC2 instance to use Systems Manager:</p>
+                    
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>ssm-trust-policy.json</code> trust policy:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleJsonContent('ssm-trust-policy')">📄 Show/Hide JSON Config</button>
+                            <button class="action-btn" onclick="downloadJsonFile('ssm-trust-policy.json')">📥 Download</button>
+                        </div>
+                        <div id="json-content-ssm-trust-policy" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">ssm-trust-policy.json</span>
+                                <button class="copy-btn" onclick="copyJsonContent('ssm-trust-policy')">📋 Copy</button>
+                            </div>
+                            <pre><code id="json-code-ssm-trust-policy">// Loading JSON content...</code></pre>
+                        </div>
+                    </div>
+                    
+                    <pre><code># Create trust policy file (or use ec2/trust-policy.json from workspace)
+cat > ssm-trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+
+# Validate JSON syntax
+cat ssm-trust-policy.json | python -m json.tool
+
+# Create the IAM role
+aws iam create-role --role-name SSMHostRole --assume-role-policy-document file://ssm-trust-policy.json
+
+# Attach required managed policies
+aws iam attach-role-policy --role-name SSMHostRole --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+aws iam attach-role-policy --role-name SSMHostRole --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+
+# Create instance profile
+aws iam create-instance-profile --instance-profile-name SSMHostProfile
+
+# Add role to instance profile
+aws iam add-role-to-instance-profile --instance-profile-name SSMHostProfile --role-name SSMHostRole</code></pre>
+                    
+                    <div class="info">
+                        <strong>Validation Tips:</strong>
+                        <ul>
+                            <li>Use <code>python -m json.tool</code> to validate JSON syntax</li>
+                            <li>Alternative: <code>jq '.' ssm-trust-policy.json</code> (if jq is installed)</li>
+                            <li>The trust policy file is also available in <code>ec2/trust-policy.json</code></li>
+                        </ul>
+                    </div>
+                    
+                    <h4>Step 37b: Create Security Group for SSM Host and Configure RDS Access</h4>
+                    <p>Create a security group for the SSM Host, then add an inbound rule to the RDS security group to allow SQL Server traffic from the SSM Host:</p>
+                    
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step37b-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37b-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37b-cmd')">CMD</button>
+                        </div>
+                        <div id="step37b-ps" class="shell-content active">
+                            <pre><code># Create SSM Host security group (adjust VPC ID and region)
+# us-east-1: &lt;YOUR_VPC_ID&gt;
+# us-east-1: &lt;YOUR_VPC_ID&gt;
+$ssmSg = aws ec2 create-security-group \`
+  --group-name use1-zlps-ssmhost-sg \`
+  --description "Security group for SSM jump host" \`
+  --vpc-id &lt;YOUR_VPC_ID&gt; \`
+  --region us-east-1 \`
+  --query 'GroupId' \`
+  --output text
+
+Write-Host "SSM Host Security Group: $ssmSg"
+
+# Get RDS security group ID
+$rdsSg = aws rds describe-db-instances \`
+  --db-instance-identifier use1-zlps-msexpsql-01-eks \`
+  --region us-east-1 \`
+  --query "DBInstances[0].VpcSecurityGroups[0].VpcSecurityGroupId" \`
+  --output text
+
+Write-Host "RDS Security Group: $rdsSg"
+
+# Add inbound rule to RDS security group allowing port 1433 from SSM Host
+aws ec2 authorize-security-group-ingress \`
+  --group-id $rdsSg \`
+  --protocol tcp \`
+  --port 1433 \`
+  --source-group $ssmSg \`
+  --region us-east-1
+
+Write-Host "Inbound rule added to RDS security group"</code></pre>
+                        </div>
+                        <div id="step37b-bash" class="shell-content">
+                            <pre><code># Create SSM Host security group (adjust VPC ID and region)
+# us-east-1: &lt;YOUR_VPC_ID&gt;
+# us-east-1: &lt;YOUR_VPC_ID&gt;
+SSM_SG=$(aws ec2 create-security-group \\
+  --group-name use1-zlps-ssmhost-sg \\
+  --description "Security group for SSM jump host" \\
+  --vpc-id &lt;YOUR_VPC_ID&gt; \\
+  --region us-east-1 \\
+  --query 'GroupId' \\
+  --output text)
+
+echo "SSM Host Security Group: $SSM_SG"
+
+# Get RDS security group ID
+RDS_SG=$(aws rds describe-db-instances \\
+  --db-instance-identifier use1-zlps-msexpsql-01-eks \\
+  --region us-east-1 \\
+  --query "DBInstances[0].VpcSecurityGroups[0].VpcSecurityGroupId" \\
+  --output text)
+
+echo "RDS Security Group: $RDS_SG"
+
+# Add inbound rule to RDS security group allowing port 1433 from SSM Host
+aws ec2 authorize-security-group-ingress \\
+  --group-id $RDS_SG \\
+  --protocol tcp \\
+  --port 1433 \\
+  --source-group $SSM_SG \\
+  --region us-east-1
+
+echo "Inbound rule added to RDS security group"</code></pre>
+                        </div>
+                        <div id="step37b-cmd" class="shell-content">
+                            <pre><code>REM Create SSM Host security group (adjust VPC ID and region)
+REM us-east-1: &lt;YOUR_VPC_ID&gt;
+REM us-east-1: &lt;YOUR_VPC_ID&gt;
+FOR /F "tokens=*" %%i IN ('aws ec2 create-security-group --group-name use1-zlps-ssmhost-sg --description "Security group for SSM jump host" --vpc-id &lt;YOUR_VPC_ID&gt; --region us-east-1 --query "GroupId" --output text') DO SET SSM_SG=%%i
+
+ECHO SSM Host Security Group: %SSM_SG%
+
+REM Get RDS security group ID
+FOR /F "tokens=*" %%i IN ('aws rds describe-db-instances --db-instance-identifier use1-zlps-msexpsql-01-eks --region us-east-1 --query "DBInstances[0].VpcSecurityGroups[0].VpcSecurityGroupId" --output text') DO SET RDS_SG=%%i
+
+ECHO RDS Security Group: %RDS_SG%
+
+REM Add inbound rule to RDS security group allowing port 1433 from SSM Host
+aws ec2 authorize-security-group-ingress --group-id %RDS_SG% --protocol tcp --port 1433 --source-group %SSM_SG% --region us-east-1
+
+ECHO Inbound rule added to RDS security group</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>Critical:</strong> The inbound rule on the RDS security group is <strong>required</strong> for the SSM Host to access the RDS instance via port forwarding. Without this rule, you'll get "Connection to destination port failed" errors.
+                    </div>
+                    
+                    <div class="info">
+                        <strong>What This Does:</strong>
+                        <ol>
+                            <li>Creates a security group for the SSM Host (no inbound rules needed - SSM uses outbound HTTPS)</li>
+                            <li>Retrieves the RDS instance's security group ID automatically</li>
+                            <li>Adds an inbound rule to the RDS security group allowing TCP port 1433 from the SSM Host security group</li>
+                        </ol>
+                    </div>
+                    
+                    <h4>Step 37c: Launch Windows Server Instance</h4>
+                    <p>Get the latest Windows Server 2022 AMI ID and launch the instance:</p>
+                    
+                    <div class="info">
+                        <strong>Subnet Selection:</strong> The SSM Host must be launched in a <strong>public subnet</strong> to enable outbound HTTPS connectivity to AWS Systems Manager endpoints. For us-east-1 deployments, use <code>&lt;YOUR_PUBLIC_SUBNET&gt;</code> (public subnet in us-east-1d, CIDR 192.168.0.0/19). For us-east-1 deployments, use <code>&lt;YOUR_PUBLIC_SUBNET&gt;</code> (public subnet in us-east-1a, CIDR 192.168.0.0/19). The instance doesn't need a public IP address because the SSM agent communicates via the subnet's NAT gateway.
+                    </div>
+                    
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step37c-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37c-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37c-cmd')">CMD</button>
+                        </div>
+                        <div id="step37c-ps" class="shell-content active">
+                            <pre><code># Get latest Windows Server 2022 AMI (adjust region as needed)
+$amiId = aws ssm get-parameters --names /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base --region us-east-1 --query "Parameters[0].Value" --output text
+
+# Launch instance (replace &lt;SSM_SG_ID&gt; and adjust subnet/region for your deployment)
+# us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1d)
+# us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1a)
+aws ec2 run-instances \`
+  --image-id $amiId \`
+  --instance-type t3.medium \`
+  --iam-instance-profile Name=SSMHostProfile \`
+  --security-group-ids &lt;SSM_SG_ID&gt; \`
+  --subnet-id &lt;YOUR_PUBLIC_SUBNET&gt; \`
+  --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=use1-zlps-ssmhost-01}]" \`
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step37c-bash" class="shell-content">
+                            <pre><code># Get latest Windows Server 2022 AMI (adjust region as needed)
+AMI_ID=$(aws ssm get-parameters --names /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base --region us-east-1 --query "Parameters[0].Value" --output text)
+
+# Launch instance (replace &lt;SSM_SG_ID&gt; and adjust subnet/region for your deployment)
+# us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1d)
+# us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1a)
+aws ec2 run-instances \\
+  --image-id $AMI_ID \\
+  --instance-type t3.medium \\
+  --iam-instance-profile Name=SSMHostProfile \\
+  --security-group-ids &lt;SSM_SG_ID&gt; \\
+  --subnet-id &lt;YOUR_PUBLIC_SUBNET&gt; \\
+  --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=use1-zlps-ssmhost-01}]" \\
+  --region us-east-1</code></pre>
+                        </div>
+                        <div id="step37c-cmd" class="shell-content">
+                            <pre><code>REM Get latest Windows Server 2022 AMI (adjust region as needed)
+FOR /F "tokens=*" %%i IN ('aws ssm get-parameters --names /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base --region us-east-1 --query "Parameters[0].Value" --output text') DO SET AMI_ID=%%i
+
+REM Launch instance (replace &lt;SSM_SG_ID&gt; and adjust subnet/region for your deployment)
+REM us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1d)
+REM us-east-1: use &lt;YOUR_PUBLIC_SUBNET&gt; (public subnet in us-east-1a)
+aws ec2 run-instances --image-id %AMI_ID% --instance-type t3.medium --iam-instance-profile Name=SSMHostProfile --security-group-ids &lt;SSM_SG_ID&gt; --subnet-id &lt;YOUR_PUBLIC_SUBNET&gt; --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=use1-zlps-ssmhost-01}]" --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="info">
+                        <strong>Instance Details:</strong>
+                        <table>
+                            <tr><th>Property</th><th>Value</th></tr>
+                            <tr><td>Name</td><td>use1-zlps-ssmhost-01</td></tr>
+                            <tr><td>Type</td><td>t3.medium (2 vCPU, 4 GB RAM)</td></tr>
+                            <tr><td>OS</td><td>Windows Server 2022</td></tr>
+                            <tr><td>Subnet</td><td>Public subnet (for NAT access)</td></tr>
+                        </table>
+                    </div>
+                    
+                    <h4>Step 37d: Install Session Manager Plugin (First Time Only)</h4>
+                    <p>The AWS CLI requires the Session Manager plugin to establish SSM sessions. Install it once on your local workstation:</p>
+                    
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step37d-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37d-bash')">Bash/macOS</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37d-cmd')">Linux</button>
+                        </div>
+                        <div id="step37d-ps" class="shell-content active">
+                            <pre><code># Windows: Download and install the Session Manager plugin
+# Download URL: https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe
+
+# Option 1: Download via PowerShell
+Invoke-WebRequest -Uri "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe" \`
+  -OutFile "$env:USERPROFILE\\Downloads\\SessionManagerPluginSetup.exe"
+
+# Option 2: Install via Chocolatey
+choco install awscli-session-manager
+
+# Verify installation
+session-manager-plugin</code></pre>
+                        </div>
+                        <div id="step37d-bash" class="shell-content">
+                            <pre><code># macOS: Install via Homebrew
+brew install --cask session-manager-plugin
+
+# Or download directly
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip" -o "sessionmanager-bundle.zip"
+unzip sessionmanager-bundle.zip
+sudo ./sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin
+
+# Verify installation
+session-manager-plugin</code></pre>
+                        </div>
+                        <div id="step37d-cmd" class="shell-content">
+                            <pre><code># Linux (Ubuntu/Debian)
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+sudo dpkg -i session-manager-plugin.deb
+
+# Linux (Amazon Linux/RHEL/CentOS)
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm" -o "session-manager-plugin.rpm"
+sudo yum install -y session-manager-plugin.rpm
+
+# Verify installation
+session-manager-plugin</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>Important:</strong> After installing the plugin, close and reopen your terminal/PowerShell window for the PATH changes to take effect.
+                    </div>
+                    
+                    <h4>Step 37e: Verify SSM Agent Registration</h4>
+                    <p>Wait 2-3 minutes for the instance to boot and SSM agent to register, then verify:</p>
+                    <pre><code># Get instance ID from previous step output, then check SSM status
+aws ssm describe-instance-information --filters "Key=InstanceIds,Values=i-0xxxxxxxxxx" --region us-east-1</code></pre>
+                    <p><strong>Expected:</strong> <code>PingStatus: Online</code> and <code>PlatformType: Windows</code></p>
+                    
+                    <h4>Step 37f: Start Port Forwarding Session</h4>
+                    <p>Once the SSM host is online, establish the port forwarding tunnel to RDS:</p>
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step37f-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37f-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step37f-cmd')">CMD</button>
+                        </div>
+                        <div id="step37f-ps" class="shell-content active">
+                            <pre><code># PowerShell requires escaped quotes in JSON
+# Replace &lt;INSTANCE_ID&gt; and &lt;RDS_ENDPOINT&gt; with your values
+aws ssm start-session \`
+  --target &lt;INSTANCE_ID&gt; \`
+  --document-name AWS-StartPortForwardingSessionToRemoteHost \`
+  --parameters '{\"host\":[\"&lt;RDS_ENDPOINT&gt;\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}' \`
+  --region us-east-1
+
+# Example for us-east-1:
+# aws ssm start-session \`
+#   --target i-0c4a7fcbb2ec5890c \`
+#   --document-name AWS-StartPortForwardingSessionToRemoteHost \`
+#   --parameters '{\"host\":[\"&lt;YOUR_RDS_ENDPOINT&gt;\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}' \`
+#   --region us-east-1</code></pre>
+                        </div>
+                        <div id="step37f-bash" class="shell-content">
+                            <pre><code># Bash accepts single quotes for JSON
+# Replace &lt;INSTANCE_ID&gt; and &lt;RDS_ENDPOINT&gt; with your values
+aws ssm start-session \\
+  --target &lt;INSTANCE_ID&gt; \\
+  --document-name AWS-StartPortForwardingSessionToRemoteHost \\
+  --parameters '{"host":["&lt;RDS_ENDPOINT&gt;"],"portNumber":["1433"],"localPortNumber":["1433"]}' \\
+  --region us-east-1
+
+# Example for us-east-1:
+# aws ssm start-session \\
+#   --target i-0c4a7fcbb2ec5890c \\
+#   --document-name AWS-StartPortForwardingSessionToRemoteHost \\
+#   --parameters '{"host":["&lt;YOUR_RDS_ENDPOINT&gt;"],"portNumber":["1433"],"localPortNumber":["1433"]}' \\
+#   --region us-east-1</code></pre>
+                        </div>
+                        <div id="step37f-cmd" class="shell-content">
+                            <pre><code>REM CMD requires escaped quotes in JSON
+REM Replace &lt;INSTANCE_ID&gt; and &lt;RDS_ENDPOINT&gt; with your values
+aws ssm start-session --target &lt;INSTANCE_ID&gt; --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{\"host\":[\"&lt;RDS_ENDPOINT&gt;\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}" --region us-east-1
+
+REM Example for us-east-1:
+REM aws ssm start-session --target i-0c4a7fcbb2ec5890c --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters "{\"host\":[\"&lt;YOUR_RDS_ENDPOINT&gt;\"],\"portNumber\":[\"1433\"],\"localPortNumber\":[\"1433\"]}" --region us-east-1</code></pre>
+                        </div>
+                    </div>
+                    <div class="success">
+                        <strong>Session Active:</strong> Port forwarding is now active. Keep this terminal window open while deploying the database.
+                    </div>
+                `
+            },
+            9: {
+                title: "Deploy Database Schemas via SQLCMD",
+                content: `
+                    <h3>Step 38: Deploy Database Schemas via SQLCMD</h3>
+                    <p>With the SSM port forwarding session active from Step 37f, deploy the database schemas by running the SQL scripts in the <code>setuporder</code> folder sequentially using sqlcmd from your <strong>local machine</strong>. The port forwarding tunnel allows localhost:1433 on your machine to connect directly to the RDS instance.</p>
+                    
+                    <div class="info-section">
+                        <h4>📋 Prerequisites</h4>
+                        <ul>
+                            <li>SSM port forwarding session active (Step 37f) - Keep that terminal window open</li>
+                            <li>SQL Server Command Line Utilities installed on your local machine</li>
+                            <li><code>setuporder</code> folder available on your local machine</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="success">
+                        <strong>💡 No RDP Required:</strong> Because you're using SSM port forwarding, you can run sqlcmd directly from your local machine. The connection to localhost:1433 is automatically tunneled to the RDS instance through the SSM host.
+                    </div>
+                    
+                    <h4>Step 38a: Install SQL Server Command Line Utilities (if needed)</h4>
+                    <p>If sqlcmd is not installed on your local machine, install SQL Server Command Line Utilities:</p>
+                    <ul>
+                        <li><strong>Windows:</strong> Download from <a href="https://aka.ms/ssmsfullsetup" target="_blank">Microsoft SQL Server Downloads</a> or use <code>winget install Microsoft.SQLServerManagementStudio</code></li>
+                        <li><strong>macOS:</strong> <code>brew install mssql-tools</code></li>
+                        <li><strong>Linux:</strong> Follow <a href="https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools" target="_blank">Microsoft docs</a></li>
+                    </ul>
+                    
+                    <h4>Step 38b: Verify Port Forwarding Connection</h4>
+                    <p>Before running scripts, verify the port forwarding tunnel is working:</p>
+                    <pre><code># Test connection (should succeed if Step 37f session is active)
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -Q "SELECT @@VERSION"</code></pre>
+                    
+                    <div class="step-section">
+                        <h4>📁 SQL Scripts in setuporder Folder</h4>
+                        <p>The setuporder folder contains 20 SQL scripts that must be executed in numerical order:</p>
+                        <div class="warning" style="margin-bottom: 10px;">
+                            <strong>📌 Version Note:</strong> These SQL scripts are for ZL Version 11.1.0 (Build 1140). Script #20 includes the upgrade path 11.1.01090 → 11.1.11140. For different ZL versions, ensure you use the appropriate SQL scripts matching your target build.
+                        </div>
+                        <ol>
+                            <li>01-CreateDB.sql - Create ZLDB database and pfuser login</li>
+                            <li>02-ZLSystemMsSql.sql - System tables and schemas</li>
+                            <li>03-AddrBookMsSql.sql - Address book module</li>
+                            <li>04-ClassifierMsSql.sql - Classification module</li>
+                            <li>05-CoordinatorMsSql.sql - Coordination module</li>
+                            <li>06-SearchMsSql.sql - Search module</li>
+                            <li>07-StorageMsSql.sql - Storage module</li>
+                            <li>08-ArchiveStorageMsSql.sql - Archive storage</li>
+                            <li>09-InsightStorageMsSql.sql - Insight storage</li>
+                            <li>10-TrackerMsSql.sql - Tracker module</li>
+                            <li>11-VaultMsSql.sql - Vault module</li>
+                            <li>12-ZLHubMsSql.sql - Hub module</li>
+                            <li>13-ZLPlusMsSql.sql - Plus features</li>
+                            <li>14-ArchiveMsSql.sql - Archive module</li>
+                            <li>15-zViteMsSql.sql - Vite module</li>
+                            <li>16-CaseMgmtMsSql.sql - Case management</li>
+                            <li>17-RecordsMsSql.sql - Records module</li>
+                            <li>18-LogEventMsSql.sql - Logging module</li>
+                            <li>19-UContextMsSql.sql - User context</li>
+                            <li>20-UpgradeNoFileGroup-11.1.01090--TO--11.1.11140-20251106MsSql.sql - Upgrade script</li>
+                        </ol>
+                    </div>
+                    
+                    <h4>Step 38c: Run SQL Scripts via SQLCMD from Your Local Machine</h4>
+                    <p>From your local machine's terminal (PowerShell, CMD, or Bash), navigate to the setuporder folder and execute each script sequentially:</p>
+                    
+                    <div class="shell-tabs">
+                        <div class="shell-tab-buttons">
+                            <button class="shell-tab-btn active" onclick="showShell(this, 'step38c-ps')">PowerShell</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step38c-bash')">Bash</button>
+                            <button class="shell-tab-btn" onclick="showShell(this, 'step38c-cmd')">CMD</button>
+                        </div>
+                        <div id="step38c-ps" class="shell-content active">
+                            <pre><code># PowerShell - Navigate to setuporder folder
+cd .\setuporder
+
+# Execute scripts in order (localhost:1433 tunnels through SSM to RDS)
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 01-CreateDB.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 02-ZLSystemMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 03-AddrBookMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 04-ClassifierMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 05-CoordinatorMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 06-SearchMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 07-StorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 08-ArchiveStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 09-InsightStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 10-TrackerMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 11-VaultMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 12-ZLHubMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 13-ZLPlusMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 14-ArchiveMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 15-zViteMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 16-CaseMgmtMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 17-RecordsMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 18-LogEventMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 19-UContextMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 20-UpgradeNoFileGroup-11.1.01090--TO--11.1.11140-20251106MsSql.sql</code></pre>
+                        </div>
+                        <div id="step38c-bash" class="shell-content">
+                            <pre><code># Bash - Navigate to setuporder folder
+cd ./setuporder
+
+# Execute scripts in order (localhost:1433 tunnels through SSM to RDS)
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 01-CreateDB.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 02-ZLSystemMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 03-AddrBookMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 04-ClassifierMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 05-CoordinatorMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 06-SearchMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 07-StorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 08-ArchiveStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 09-InsightStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 10-TrackerMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 11-VaultMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 12-ZLHubMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 13-ZLPlusMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 14-ArchiveMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 15-zViteMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 16-CaseMgmtMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 17-RecordsMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 18-LogEventMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 19-UContextMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 20-UpgradeNoFileGroup-11.1.01090--TO--11.1.11140-20251106MsSql.sql</code></pre>
+                        </div>
+                        <div id="step38c-cmd" class="shell-content">
+                            <pre><code>REM CMD - Navigate to setuporder folder
+cd setuporder
+
+REM Execute scripts in order (localhost:1433 tunnels through SSM to RDS)
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 01-CreateDB.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 02-ZLSystemMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 03-AddrBookMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 04-ClassifierMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 05-CoordinatorMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 06-SearchMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 07-StorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 08-ArchiveStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 09-InsightStorageMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 10-TrackerMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 11-VaultMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 12-ZLHubMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 13-ZLPlusMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 14-ArchiveMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 15-zViteMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 16-CaseMgmtMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 17-RecordsMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 18-LogEventMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 19-UContextMsSql.sql
+sqlcmd -S localhost,1433 -U admin -P &lt;ADMIN_PASSWORD&gt; -i 20-UpgradeNoFileGroup-11.1.01090--TO--11.1.11140-20251106MsSql.sql</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="warning-section">
+                        <h4>⚠️ CRITICAL: Execute Scripts in Order</h4>
+                        <p>The SQL scripts have dependencies and MUST be executed in numerical order (01 through 20). Executing them out of order will cause schema errors.</p>
+                    </div>
+                    
+                    <div class="info">
+                        <strong>Alternative: Automated Script Execution</strong>
+                        <p><strong>PowerShell:</strong> Run all scripts with error checking:</p>
+                        <pre><code># run-all-scripts.ps1
+$server = "localhost,1433"
+$user = "admin"
+$pass = "&lt;ADMIN_PASSWORD&gt;"
+
+Get-ChildItem -Filter "*.sql" | Sort-Object Name | ForEach-Object {
+    Write-Host "Executing $($_.Name)..." -ForegroundColor Cyan
+    sqlcmd -S $server -U $user -P $pass -i $_.Name
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "ERROR in $($_.Name)" -ForegroundColor Red
+        exit 1
+    }
+}
+Write-Host "All scripts executed successfully!" -ForegroundColor Green</code></pre>
+                        <p><strong>Batch (CMD):</strong> Windows batch alternative:</p>
+                        <pre><code>@echo off
+REM run-all-scripts.bat
+SET SERVER=localhost,1433
+SET USER=admin
+SET PASS=&lt;ADMIN_PASSWORD&gt;
+
+FOR %%f IN (*.sql) DO (
+    echo Executing %%f...
+    sqlcmd -S %SERVER% -U %USER% -P %PASS% -i %%f
+    if errorlevel 1 (
+        echo ERROR in %%f
+        pause
+        exit /b 1
+    )
+)
+echo All scripts executed successfully!
+pause</code></pre>
+                    </div>
+                    
+                    <h4>Step 38d: Verify Database Schema</h4>
+                    <p>After running all scripts, verify the database schema was created successfully:</p>
+                    <pre><code>sqlcmd -S localhost,1433 -U pfuser -P &lt;APP_USER_PASSWORD&gt; -d ZLDB -Q "SELECT name FROM sys.schemas WHERE name NOT IN ('dbo','guest','INFORMATION_SCHEMA','sys')"</code></pre>
+                    
+                    <div class="success">
+                        <strong>Expected Result:</strong> You should see schemas for each module (ZLSystem, AddrBook, Classifier, Coordinator, Search, Storage, etc.)
+                    </div>
+                `
+            },
+            10: {
+                title: "Phase 6 Completion Checklist",
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 6 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 7, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> VPC and subnet information gathered</label><br>
+                            <label><input type="checkbox"> DB subnet group created with private subnets</label><br>
+                            <label><input type="checkbox"> RDS security group configured with EKS and SSM access</label><br>
+                            <label><input type="checkbox"> RDS SQL Server Express instance created and available</label><br>
+                            <label><input type="checkbox"> RDS endpoint retrieved and saved</label><br>
+                            <label><input type="checkbox"> Application database user (pfuser) created with db_owner role</label><br>
+                            <label><input type="checkbox"> Database ConfigMap applied to Kubernetes</label><br>
+                            <label><input type="checkbox"> Database Secret created with base64-encoded password</label><br>
+                            <label><input type="checkbox"> SSM port forwarding configured for database access</label><br>
+                            <label><input type="checkbox"> All 20 SQL scripts from setuporder folder executed via sqlcmd</label><br>
+                            <label><input type="checkbox"> Database schemas verified (ZLSystem, AddrBook, Classifier, etc.)</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 7:</strong> Once all items are checked, you can proceed to Phase 7 (Application Deployment).
+                            The database is now ready to receive application data.
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'zldb-config.yaml': `kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: db-config
+data:
+  DB_HOST: "usw1-zlps-msexpsql-01-eks.c5s06occm2dn.us-west-1.rds.amazonaws.com"
+  DB_NAME: ZLDB
+  DB_PORT: '1433'
+  DB_TYPE: mssql
+  DB_USER: pfuser`,
+            'zldb-secret.yaml': `apiVersion: v1
+kind: Secret
+metadata:
+  name: zldb-secret
+  namespace: default
+type: Opaque
+data:
+  # Base64 encoded password for pfuser
+  # Default password: <YOUR_DB_PASSWORD>
+  # To encode: [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("YourPassword"))
+  password: <YOUR_BASE64_ENCODED_PASSWORD>`,
+            'trust-policy.json': `{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}`,
+            'ssm-trust-policy.json': `{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}`
+        };
+
+        // Download JSON file
+        function downloadJsonFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Download YAML file
+        function downloadYamlFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'text/yaml' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Toggle YAML content visibility (standard format)
+        function toggleYamlContent(id) {
+            const contentDiv = document.getElementById(`yaml-content-${id}`);
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            
+            if (contentDiv.style.display === 'none') {
+                // Load content from fileContents if not already loaded
+                if (codeElement.textContent === '// Loading YAML content...') {
+                    const possibleFilenames = [
+                        id + '.yaml',
+                        id.replace(/-/g, '') + '.yaml',
+                        id.replace(/_/g, '-') + '.yaml'
+                    ];
+                    
+                    let content = null;
+                    for (const fn of possibleFilenames) {
+                        if (fileContents[fn]) {
+                            content = fileContents[fn];
+                            break;
+                        }
+                    }
+                    
+                    if (content) {
+                        codeElement.textContent = content;
+                    } else {
+                        codeElement.textContent = `// Error: Content for ${id} not found`;
+                    }
+                }
+                contentDiv.style.display = 'block';
+            } else {
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Toggle JSON content visibility (standard format)
+        function toggleJsonContent(id) {
+            const contentDiv = document.getElementById(`json-content-${id}`);
+            const codeElement = document.getElementById(`json-code-${id}`);
+            
+            if (contentDiv.style.display === 'none') {
+                // Load content from fileContents if not already loaded
+                if (codeElement.textContent === '// Loading JSON content...') {
+                    const possibleFilenames = [
+                        id + '.json',
+                        id.replace(/-/g, '') + '.json',
+                        id.replace(/_/g, '-') + '.json'
+                    ];
+                    
+                    let content = null;
+                    for (const fn of possibleFilenames) {
+                        if (fileContents[fn]) {
+                            content = fileContents[fn];
+                            break;
+                        }
+                    }
+                    
+                    if (content) {
+                        codeElement.textContent = content;
+                    } else {
+                        codeElement.textContent = `// Error: Content for ${id} not found`;
+                    }
+                }
+                contentDiv.style.display = 'block';
+            } else {
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy YAML content to clipboard (standard format)
+        function copyYamlContent(id) {
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            if (codeElement) {
+                navigator.clipboard.writeText(codeElement.textContent).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        // Copy JSON content to clipboard (standard format)
+        function copyJsonContent(id) {
+            const codeElement = document.getElementById(`json-code-${id}`);
+            if (codeElement) {
+                navigator.clipboard.writeText(codeElement.textContent).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        const totalSteps = 10;
+        let currentStep = 1;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+
+            // Update URL hash
+            window.location.hash = `step-${stepNum}`;
+
+            // Save to localStorage
+            localStorage.setItem('zl-phase6-current-step', stepNum);
+
+            // Update step content
+            const stepContainer = document.getElementById('step-container');
+            stepContainer.innerHTML = stepData[stepNum].content;
+
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+
+            // Update step title
+            document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+            // Update progress bar
+            const progressPercent = ((stepNum - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Update step counter
+            document.getElementById('current-step').textContent = stepNum;
+
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === stepNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < stepNum) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(stepNum)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = stepNum === 1;
+            nextBtn.disabled = stepNum === totalSteps;
+
+            if (stepNum === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+            
+            // Update bottom navigation buttons
+            document.getElementById('prev-btn-bottom').disabled = stepNum === 1;
+            if (stepNum === totalSteps) {
+                document.getElementById('next-btn-bottom').innerHTML = '<a href="ZL_DG_PHASE_7.html" style="color: inherit; text-decoration: none;">Next Phase →</a>';
+            } else {
+                document.getElementById('next-btn-bottom').innerHTML = 'Next Step →';
+                document.getElementById('next-btn-bottom').disabled = false;
+            }
+            document.getElementById('bottom-step-title').textContent = 'Step ' + stepNum + ' of ' + totalSteps;
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved progress
+            const savedStep = localStorage.getItem('zl-phase6-current-step');
+            if (savedStep && savedStep >= 1 && savedStep <= totalSteps) {
+                currentStep = parseInt(savedStep);
+            }
+
+            // Show initial step
+            showStep(currentStep);
+
+            // Initialize copy buttons
+            initializeCopyButtons();
+
+            // Add event listeners
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+
+            // Add step dot click listeners
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => showStep(index + 1));
+            });
+
+            // Handle URL hash for direct linking
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#step-')) {
+                const stepNum = parseInt(hash.replace('#step-', ''));
+                if (stepNum >= 1 && stepNum <= totalSteps) {
+                    showStep(stepNum);
+                }
+            }
+
+            // Add copy buttons to code blocks
+            document.querySelectorAll('pre').forEach(pre => {
+                // Skip if already wrapped or inside yaml-panel
+                if (pre.parentElement.classList.contains('pre-wrapper')) return;
+                if (pre.closest('.yaml-panel')) return;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                wrapper.style.position = 'relative';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) { 
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this); 
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        });
+    </script>
+
+            <div class="page-nav">
+                <button class="nav-btn" onclick="window.location.href='ZL_DG_PHASE_5.html'">← Previous: Phase 5</button>
+                <button class="nav-btn" onclick="window.location.href='ZL_DG_PHASE_7.html'">Next: Phase 7 →</button>
+            </div>
+        </section>
+        </div>
+    </main>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            window.location.href = pageId + '.html';
+        }
+
+        // Shell tabs
+        function showShell(btn, contentId) {
+            const parent = btn.closest('.shell-tabs');
+            parent.querySelectorAll('.shell-tab-btn').forEach(b => b.classList.remove('active'));
+            parent.querySelectorAll('.shell-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(contentId).classList.add('active');
+        }
+
+        // YAML panel toggle
+        function toggleYaml(btn) {
+            const panel = btn.nextElementSibling;
+            if (panel && panel.classList.contains('yaml-panel')) {
+                panel.classList.toggle('show');
+                btn.classList.toggle('active');
+                btn.textContent = panel.classList.contains('show') ? 'Hide YAML' : 'View YAML';
+            }
+        }
+
+        // Copy YAML/JSON content from panel
+        function copyYamlContent(btn) {
+            const panel = btn.closest('.yaml-panel');
+            const code = panel.querySelector('pre code') || panel.querySelector('pre');
+            const text = code.textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard(buttonOrText) {
+            let text, button;
+            
+            // Handle both static button calls (with text string) and dynamic button calls (with button element)
+            if (typeof buttonOrText === 'string') {
+                // Static button: parameter is the text to copy, button is event.target
+                text = buttonOrText;
+                button = event.target;
+            } else {
+                // Dynamic button: parameter is the button element
+                button = buttonOrText;
+                const wrapper = button.closest('.pre-wrapper');
+                const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+                text = codeBlock.textContent || codeBlock.innerText;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopied(button);
+                }).catch(function() {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+        
+        // Fallback copy method for older browsers or non-HTTPS
+        function fallbackCopy(text, btn) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                btn.textContent = 'FAILED';
+                setTimeout(() => {
+                    btn.textContent = 'COPY';
+                }, 2000);
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopied(btn) {
+            btn.textContent = 'COPIED';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Add copy buttons to code blocks
+        function initializeCopyButtons() {
+            const pres = document.querySelectorAll('pre');
+            
+            pres.forEach((pre, index) => {
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('pre-wrapper')) {
+                    return;
+                }
+                if (pre.closest('.yaml-panel')) {
+                    return;
+                }
+                // Skip if parent already has a copy button (static HTML)
+                if (pre.parentElement.querySelector('.copy-btn')) {
+                    return;
+                }
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+    </script>
+</body>
+</html>
+

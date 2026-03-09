@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlui-service
+  labels:
+    app: zlui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:995553364920:certificate/6382491b-2624-4933-bd8f-aa0b0578a657
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+spec:
+  type: LoadBalancer
+  selector:
+    app: zlui
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 80
+      protocol: TCP

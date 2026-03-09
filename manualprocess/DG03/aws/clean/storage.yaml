@@ -1,0 +1,73 @@
+# ZL Persistent Volume Claims - us-east-1
+# Last Updated: December 22, 2025
+#
+# EFS File System: fs-0a2b69e49fe46c1f6 (use1-zlps-efs-01)
+#
+# IMPORTANT: Before applying these PVCs, ensure:
+# 1. EFS CSI Driver is installed on the cluster
+# 2. Storage classes (efs-sc, ebs-sc) are created
+# 3. EFS Access Points are configured for the mount targets
+---
+# EFS Storage Class
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-0a2b69e49fe46c1f6
+  directoryPerms: "700"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+---
+# EBS Storage Class for ZooKeeper
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3
+  fsType: ext4
+  encrypted: "true"
+---
+# PVC for ZLServer Logs (EFS - shared)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-zlserverlogs
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 50Gi
+---
+# PVC for ZLServer Vault (EFS - shared)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-zlservervault
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 100Gi
+---
+# PVC for ZLServer Doc Convert Output (EFS - shared)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-docconvert-output
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 50Gi

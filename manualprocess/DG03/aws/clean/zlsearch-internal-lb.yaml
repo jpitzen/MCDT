@@ -1,0 +1,24 @@
+# ZLSearch Internal LoadBalancer Service
+# Exposes zlsearch to EC2 instances within the VPC only
+# Does NOT affect existing zlui LoadBalancer access
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zlsearch-internal-lb
+  annotations:
+    # Use NLB (Network Load Balancer) for better performance
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    # INTERNAL - only accessible within VPC, not from internet
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # Use instance mode for compatibility
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+spec:
+  type: LoadBalancer
+  selector:
+    app: zlsearch
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 80
+      protocol: TCP

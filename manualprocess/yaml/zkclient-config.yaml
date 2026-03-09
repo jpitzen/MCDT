@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zkclient-config
+data:
+  zkclient.cfg: |
+    # ZooKeeper Client Configuration
+    # Client connection settings
+    zk.client.servers=zlzookeeper-0.zk-hs.default.svc.cluster.local:2181,zlzookeeper-1.zk-hs.default.svc.cluster.local:2181,zlzookeeper-2.zk-hs.default.svc.cluster.local:2181
+    zk.client.timeout=30000
+    zk.client.session.timeout=60000
+
+    # Authentication
+    zk.auth.enabled=true
+    zk.auth.scheme=digest
+    zk.auth.user=zluser
+    zk.auth.password=zlpassword
+
+    # Connection retry settings
+    zk.retry.count=3
+    zk.retry.interval=1000
+
+    # Watch settings
+    zk.watch.enabled=true
+    zk.watch.timeout=30000
+
+  tcdb.cfg: |
+    # TCDB Configuration for ZooKeeper
+    # Database connection for ZooKeeper metadata
+    db.type=mssql
+    db.host=zldb-service
+    db.port=1433
+    db.name=ziplip
+    db.user=zluser
+    db.password=zlpassword
+
+    # Connection pool settings
+    db.pool.min=5
+    db.pool.max=20
+    db.pool.timeout=30000

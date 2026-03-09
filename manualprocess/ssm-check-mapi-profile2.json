@@ -1,0 +1,31 @@
+{
+  "commands": [
+    "Write-Host '=== Service Account for zlmapisvc ==='",
+    "Get-WmiObject win32_service | Where-Object {$_.Name -eq 'zlmapisvc'} | Select-Object Name, StartName | Format-List",
+    "",
+    "Write-Host '=== Check Profiles for Service Account ==='",
+    "$serviceAccount = (Get-WmiObject win32_service | Where-Object {$_.Name -eq 'zlmapisvc'}).StartName",
+    "Write-Host \"Service runs as: $serviceAccount\"",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== All User Profile Folders ==='",
+    "Get-ChildItem 'C:\\Users' -Directory | Select-Object Name",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check MAPI Profiles for jpitzen user ==='",
+    "if (Test-Path 'C:\\Users\\jpitzen\\NTUSER.DAT') {",
+    "    reg load HKU\\TempUser 'C:\\Users\\jpitzen\\NTUSER.DAT' 2>$null",
+    "    Get-ChildItem -Path 'Registry::HKU\\TempUser\\Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles' -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.PSChildName }",
+    "    reg unload HKU\\TempUser 2>$null",
+    "}",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check Default MAPI Profile Setting ==='",
+    "Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Office\\16.0\\Outlook' -Name 'DefaultProfile' -ErrorAction SilentlyContinue",
+    "",
+    "Write-Host ''",
+    "Write-Host '=== Check for Mail Control Panel applet ==='",
+    "Get-ChildItem 'C:\\Windows\\System32' -Filter 'mlcfg32.cpl' -ErrorAction SilentlyContinue",
+    "Get-ChildItem 'C:\\Program Files\\Microsoft Office\\Root\\Office16' -Filter '*.cpl' -ErrorAction SilentlyContinue"
+  ]
+}

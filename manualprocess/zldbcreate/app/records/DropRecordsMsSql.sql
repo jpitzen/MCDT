@@ -1,0 +1,52 @@
+DROP SEQUENCE pfuser.RecordStore_sequence
+DROP TABLE pfuser.RecordStore
+DROP TABLE pfuser.SupplementalMarkings
+DROP SEQUENCE pfuser.FilePlan_sequence
+DROP TABLE pfuser.FilePlan
+DROP SEQUENCE pfuser.Record_sequence
+DROP TABLE pfuser.Record
+DROP TABLE pfuser.RecordAuditTrail
+DROP SEQUENCE pfuser.RecUserData_sequence
+DROP TABLE pfuser.RecordUserData
+-- OPTIONAL
+DROP SEQUENCE pfuser.RecDataSource_sequence
+DROP TABLE pfuser.RecordDataSource
+DROP SEQUENCE pfuser.RecDataSourceRuns_sequence
+DROP TABLE pfuser.RecordDataSourceRuns
+DROP TABLE pfuser.RecordDataSourceScheduledRuns
+-- OPTIONAL
+DROP SEQUENCE pfuser.RecordSchema_sequence
+DROP TABLE pfuser.RecordSchema
+DROP TABLE pfuser.RecordSchemaFields
+-- OPTIONAL
+DROP SEQUENCE pfuser.RetentionCode_sequence
+DROP TABLE pfuser.RetentionCode
+DROP SEQUENCE pfuser.LifeCycleRun_sequence
+DROP TABLE pfuser.LifeCycleRun
+DROP TABLE pfuser.LifeCycleRunEntry
+DROP TABLE pfuser.FilePlanPrivileges
+DROP TABLE pfuser.FilePlanCustomPrivileges
+DROP TABLE pfuser.EntityMarking
+DROP TABLE pfuser.UserRecordDeclaration
+DROP TABLE pfuser.FieldValueFilter
+-- OPTIONAL
+DROP SEQUENCE pfuser.RecordRelationship_sequence
+DROP TABLE pfuser.RecordRelationship
+DROP TABLE pfuser.RecordLink
+DROP SEQUENCE pfuser.CategoryDispositionRun_seq
+DROP TABLE pfuser.CategoryDispositionRun
+DROP SEQUENCE pfuser.CategoryDispositionTrans_seq
+DROP TABLE pfuser.CategoryDispositionTransaction
+DROP TABLE pfuser.RecordUserPreference
+DROP TABLE pfuser.LifeCyclePhase
+DROP TABLE pfuser.DispositionAuthority
+DROP TABLE pfuser.FilePlanFavorite
+DROP SEQUENCE pfuser.RecordSavedSearch_sequence
+DROP TABLE pfuser.RecordSavedSearch
+DROP TABLE pfuser.EntityClearance
+DROP SEQUENCE pfuser.ClassificationGuide_sequence
+DROP TABLE pfuser.ClassificationGuide
+DROP SEQUENCE pfuser.ClassifiedReason_sequence
+DROP TABLE pfuser.ClassifiedReason
+DROP SEQUENCE pfuser.ClassificationRule_sequence
+DROP TABLE pfuser.ClassificationRule

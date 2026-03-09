@@ -1,0 +1,647 @@
+<Sheet> 
+<SheetName>DocumentConversion</SheetName>
+<SheetDisplayName>Document Conversion</SheetDisplayName>
+<SheetDesc><![CDATA[Document conversion settings]]></SheetDesc>
+
+<!-- Global Conversion Settings -->
+<Group>
+   <GroupName>Global Document Conversion Settings</GroupName>
+   <GroupDisplayName>Global Document Conversion Settings</GroupDisplayName>
+   <GroupDesc><![CDATA[Settings for Document Conversion. These settings apply to all types document conversions]]></GroupDesc>
+
+	<Bean>
+     <BeanName>DOCCONVERSION_FILEDETECT_ON</BeanName>
+     <BeanDisplayName>Enable file type detection for document conversion</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>PreprocessDefine</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable best-effort file type detection for documents. This setting will force detection of file type based on the file magic headers to determine whether the files are what their extensions or mime-types declare them to be. Enable this setting if the environment has files/attachments with incorrect extensions or mimetypes. Enabling this setting has a minor performance impact.]]></BeanHelp>
+   </Bean>
+   
+</Group>
+
+<!-- //Tika Service Manager -->
+<Group>
+	<GroupName>ZLTika Service Settings</GroupName>
+	<GroupDisplayName>ZLTika Service Settings</GroupDisplayName>
+	<GroupDesc><![CDATA[Setting related to the ZLTika Doc Conversion Service.]]></GroupDesc>
+
+
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.Host</BeanName>
+		<BeanDisplayName>Tika Service Host</BeanDisplayName>
+		<BeanValue>zltika</BeanValue>
+		<BeanType>String</BeanType>
+		<BeanInputType>TEXT</BeanInputType>
+		<BeanHelp><![CDATA[Location of Tika doc conversion service/process.]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.Port</BeanName>
+		<BeanDisplayName>ZL Tika  Port</BeanDisplayName>
+		<BeanValue>9972</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">TEXT</BeanInputType>
+		<BeanHelp><![CDATA[Port number where the Tika Doc Conversion server is listening.]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.tMaxConversionPerDoc</BeanName>
+		<BeanDisplayName>Max Allowed Conversion Time</BeanDisplayName>
+		<BeanValue>300000</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">TIME</BeanInputType>
+		<BeanHelp><![CDATA[The Tika convertor is given the specified time to convert. If it takes more than this time, we deem the ZLTika service to have hanged while converting this document.]]></BeanHelp>
+	</Bean>
+
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.t1Cool</BeanName>
+		<BeanDisplayName>ZLTika Service Auto Restart Threshold 1</BeanDisplayName>
+		<BeanValue>10800000</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">TIME</BeanInputType>
+		<BeanHelp><![CDATA[If the ZLTika service hasnt been restarted for this duration and the service is not used by any task, the service is restarted]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.t2Anxi</BeanName>
+		<BeanDisplayName>ZLTika service Auto Restart Threshold 2</BeanDisplayName>
+		<BeanValue>21600000</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">TIME</BeanInputType>
+		<BeanHelp><![CDATA[If the ZLTika Service hasnt been restarted for this duration and if all the processes currently using the service have been doing so for a period greater than the ZLtika Session Age Threshold, the service is restarted]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.t3Desp</BeanName>
+		<BeanDisplayName>ZLTika service Auto Restart Threshold 3</BeanDisplayName>
+		<BeanValue>43200000</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">TIME</BeanInputType>
+		<BeanHelp><![CDATA[If the ZLTika service hasnt been restarted for this period, it is restarted by force irrespective of whether it is idle or not.]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.tSessionAgeThreshold</BeanName>
+		<BeanDisplayName>ZLTika service Session Age Threshold</BeanDisplayName>
+		<BeanValue>1800000</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="6">HIDDEN</BeanInputType>
+		<BeanHelp><![CDATA[When a process uses the ZLTika Service, it is given a session of this duration for the purpose. Beyond this duration, the session is deemed old and the ZLtika automatic restart can interrupt the session]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.formatsSignature</BeanName>
+		<BeanDisplayName>Signature of Formats.ini</BeanDisplayName>
+		<BeanValue>GZ6PYKzXj1mFhjLRwIyukETvMRU=</BeanValue>
+		<BeanType>String</BeanType>
+		<BeanInputType size="6">HIDDEN</BeanInputType>
+		<BeanHelp><![CDATA[Location of ZLTika doc conversion service/process.]]></BeanHelp>
+	</Bean>
+
+	<Bean>
+		<BeanName>__tika.ZLTikaService.tEmbedExtractionRecursiveLevels</BeanName>
+		<BeanDisplayName>Max Ole Extraction Recursive level</BeanDisplayName>
+		<BeanValue>0</BeanValue>
+		<BeanType>Integer</BeanType>
+		<BeanInputType size="3">TEXT</BeanInputType>
+		<BeanHelp><![CDATA[Documents like word,PDF, spreadsheets can contain ole objects as embedded objects and this value sets the Maximum level of depth the recursion can go to extract Ole objects]]></BeanHelp>
+	</Bean>
+
+
+</Group>
+
+
+<!-- //Settings for Text/HTML documents -->
+<Group>
+	<GroupName>Text/HTML Settings</GroupName>
+	<GroupDisplayName>Settings for Text/HTML documents</GroupDisplayName>
+	<GroupDesc>Settings for Text/HTML documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.html.on</BeanName>
+     <BeanDisplayName>Enable indexing of document attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable indexing of document attachments.]]></BeanHelp>
+   </Bean>
+    <Bean>
+     <BeanName>_docConversion.text.stats.on</BeanName>
+     <BeanDisplayName>Enable check to determine files have text content</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Perform best-effort extra check in addition to extension and mime-type to determine if file/attachment really has textual content. This method performs a heuristic on a section of the file/attachment to quickly determine if the file has textual content. If the check determines that the file has Textual content then the file proceeds to be indexed otherwise the file/attachment is rejected and marked as not-supported for indexing. This check is best used in conjunction with file-type detection setting turned on. It should be noted that there is a minor performance impact if this check is turned on.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.html.extensions</BeanName>
+     <BeanDisplayName>Index documents with these extensions</BeanDisplayName>
+     <BeanValue>txt;html;htm</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the conversion engine will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.html.mimeTypes</BeanName>
+     <BeanDisplayName>Index documents with these mime-types</BeanDisplayName>
+     <BeanValue>text/plain;text/html;text/htm</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the conversion engine will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.html.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>10240</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[HTML/Text attachments larger than this size will not be scanned.]]></BeanHelp>
+   </Bean> 	
+</Group>
+
+
+
+
+
+<!-- //Settings for ZIP documents -->
+<Group>
+	<GroupName>ZIP Settings</GroupName>
+	<GroupDisplayName>Settings for ZIP documents</GroupDisplayName>
+	<GroupDesc>Settings for ZIP documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.zip.on</BeanName>
+     <BeanDisplayName>Enable indexing of document attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable indexing of document attachments.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.zip.extensions</BeanName>
+     <BeanDisplayName>Index documents with these extensions</BeanDisplayName>
+     <BeanValue>zip</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the zip conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.zip.mimeTypes</BeanName>
+     <BeanDisplayName>Index documents with these mime-types</BeanDisplayName>
+     <BeanValue>application/zip</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the zip conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.zip.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>51200</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Zip attachments larger than this size will not be scanned.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.zip.maxLevels</BeanName>
+     <BeanDisplayName>Maximum levels to recurse</BeanDisplayName>
+     <BeanValue>20</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Maximum levels that can be recursed within zip files.]]></BeanHelp>
+   </Bean> 	 	
+
+</Group>
+
+
+
+<!-- //Settings for Apache Commons Compress documents -->
+<Group>
+	<GroupName>Apache Commons Compress Settings</GroupName>
+	<GroupDisplayName>Settings for Apache Commons Compress documents</GroupDisplayName>
+	<GroupDesc>Settings for Apache Commons Compress documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.compress.on</BeanName>
+     <BeanDisplayName>Enable indexing of document attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable indexing of document attachments.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.compress.extensions</BeanName>
+     <BeanDisplayName>Index documents with these extensions</BeanDisplayName>
+     <BeanValue>zip;zipx;gz;z;bz;bz2;xz;ar;cpio;dump;tar;tgz;tbz2;7z</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the Apache Commons Compress conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.compress.mimeTypes</BeanName>
+     <BeanDisplayName>Index documents with these mime-types</BeanDisplayName>
+     <BeanValue>application/zip;application/gzip;application/x-bzip;application/x-bzip2;application/x-xz;application/x-cpio;application/x-tar;application/x-gtar;application/x-7z-compressed</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the Apache Commons Compress conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.compress.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>51200</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Attachments larger than this size will not be scanned.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.compress.maxLevels</BeanName>
+     <BeanDisplayName>Maximum levels to recurse</BeanDisplayName>
+     <BeanValue>20</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Maximum levels that can be recursed within archive files.]]></BeanHelp>
+   </Bean> 	 	
+
+</Group>
+
+
+
+<!-- //Settings for RAR documents -->
+<Group>
+	<GroupName>RAR Settings</GroupName>
+	<GroupDisplayName>Settings for RAR documents</GroupDisplayName>
+	<GroupDesc>Settings for RAR documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.rar.on</BeanName>
+     <BeanDisplayName>Enable indexing of document attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable indexing of document attachments.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.rar.extensions</BeanName>
+     <BeanDisplayName>Index documents with these extensions</BeanDisplayName>
+     <BeanValue>rar</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the RAR conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.rar.mimeTypes</BeanName>
+     <BeanDisplayName>Index documents with these mime-types</BeanDisplayName>
+     <BeanValue>application/x-rar-compressed;application/vnd.rar</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the RAR conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.rar.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>51200</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[RAR attachments larger than this size will not be scanned.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.rar.maxLevels</BeanName>
+     <BeanDisplayName>Maximum levels to recurse</BeanDisplayName>
+     <BeanValue>20</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Maximum levels that can be recursed within rar files.]]></BeanHelp>
+   </Bean> 	 	
+
+</Group>
+
+
+
+<!-- //Settings for ISO documents -->
+<Group>
+	<GroupName>ISO Settings</GroupName>
+	<GroupDisplayName>Settings for ISO documents</GroupDisplayName>
+	<GroupDesc>Settings for ISO documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.iso.on</BeanName>
+     <BeanDisplayName>Enable indexing of document attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable indexing of document attachments.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.iso.extensions</BeanName>
+     <BeanDisplayName>Index documents with these extensions</BeanDisplayName>
+     <BeanValue>iso</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the ISO conversion server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.iso.mimeTypes</BeanName>
+     <BeanDisplayName>Index documents with these mime-types</BeanDisplayName>
+     <BeanValue>application/x-iso9660-image</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the ISO server will try to convert.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.iso.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>800000</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Attachments larger than this size will not be scanned.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.iso.maxLevels</BeanName>
+     <BeanDisplayName>Maximum levels to recurse</BeanDisplayName>
+     <BeanValue>20</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Maximum levels that can be recursed within ISO files.]]></BeanHelp>
+   </Bean> 	 	
+
+</Group>
+
+
+
+<!-- //Settings for LHA documents -->
+<Group>
+	<GroupName>LHA Settings</GroupName>
+	<GroupDisplayName>Settings for LHA documents</GroupDisplayName>
+	<GroupDesc>Settings for LHA documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.lha.on</BeanName>
+     <BeanDisplayName>Enable expansion of LHA document attachments</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable Expansion of LHA attachments.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.lha.extensions</BeanName>
+     <BeanDisplayName>LHA associated extensions</BeanDisplayName>
+     <BeanValue>lzh</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the Conversion server will treat as LHA archive.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.lha.mimeTypes</BeanName>
+     <BeanDisplayName>LHA associated mime-types</BeanDisplayName>
+     <BeanValue>application/lha</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the Conversion server will treat as LHA archive.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.lha.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>51200</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[LHA attachments larger than this size will not be expanded.]]></BeanHelp>
+   </Bean>
+  
+</Group>
+
+<!-- //Settings for MSG documents -->
+<Group>
+	<GroupName>MSG Settings</GroupName>
+	<GroupDisplayName>Settings for MSG documents</GroupDisplayName>
+	<GroupDesc>Settings for MSG documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.msg.on</BeanName>
+     <BeanDisplayName>Enable expansion of MSG document attachments</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable Expansion of MSG attachments.]]></BeanHelp>
+   </Bean>
+</Group>
+
+<!-- //Settings for HTML Export -->
+<Group>
+	<GroupName>HTML Settings</GroupName>
+	<GroupDisplayName>Settings for HTML Export</GroupDisplayName>
+	<GroupDesc>Settings for HTML documents</GroupDesc>
+    <Bean>
+     <BeanName>_docConversion.AttachExportEngine.on</BeanName>
+     <BeanDisplayName>Enable HTML Export for Attachments</BeanDisplayName>
+     <BeanValue>true</BeanValue>
+     <BeanType>Boolean</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable HTML Export for Attachments in mails. This option will activate a link in the webmail presentation of the mail that will allow viewing attachments of almost any format as an HTML page.]]></BeanHelp>
+   </Bean>
+  
+</Group>
+
+<!-- //Settings for Image/OCR documents -->
+<Group>
+	<GroupName>OCR Settings</GroupName>
+	<GroupDisplayName>OCR Settings</GroupDisplayName>
+	<GroupDesc>OCR Settings</GroupDesc>
+	
+	<Bean>
+     <BeanName>APPMODULE_OCR_ON</BeanName>
+     <BeanDisplayName>Enable OCR for attachments</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>PreprocessDefine</BeanType>
+     <BeanInputType>CHECKBOX</BeanInputType>
+     <BeanChoices>
+        <CHOICE value="true"></CHOICE>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Enable OCR for image based attachments.]]></BeanHelp>
+   	</Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.extensions</BeanName>
+     <BeanDisplayName>OCR associated extensions</BeanDisplayName>
+     <BeanValue>jpg;jpeg;tiff;tif;bmp;gif;png</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of extensions which the Conversion server will consider for OCR.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.mimeTypes</BeanName>
+     <BeanDisplayName>OCR associated mime-types</BeanDisplayName>
+     <BeanValue>image/jpeg;image/pjpeg;image/tiff;image/tif;image/bmp;image/gif;image/png</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[A semicolon separated list of mime-types which the Conversion server will consider for OCR.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.attachmentSize</BeanName>
+     <BeanDisplayName>Size limit of attachments (in KB) </BeanDisplayName>
+     <BeanValue>51200</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Attachments larger than this size will not be OCR.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>PDF_OUTOFPROCESS_ON</BeanName>
+     <BeanDisplayName>Enable PDF processing using ZLPDFConvertor process</BeanDisplayName>
+     <BeanValue>false</BeanValue>
+     <BeanType>PreprocessDefine</BeanType>
+     <BeanInputType caption="true">CHECKBOX</BeanInputType>
+     <BeanChoices>
+       <Choice value="true"></Choice>
+     </BeanChoices>
+     <BeanHelp><![CDATA[For PDF documents that require OCR, enable this option to use ZLPDFConvertor which is an external process that will process PDF files before sending them for OCR to ZLOCRConvertor. If this option is unchecked, the PDF processing will be performed within the ZL Server process.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.maxPDFImagePages</BeanName>
+     <BeanDisplayName>Maximum PDF Image Pages </BeanDisplayName>
+     <BeanValue>100</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Specifies Maximum PDF pages with images. If the PDF doc exceeds this number, OCR conversion will be skipped.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.minImageResolution</BeanName>
+     <BeanDisplayName>Minimum Supported Image Resolution</BeanDisplayName>
+     <BeanValue>16</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Specifies minimum resolution in pixels (height and width) of images to be considered for OCR. Any image whose height and width are above the specified threshold will be considered for OCR.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.maxImageResolution</BeanName>
+     <BeanDisplayName>Maximum Supported Image Resolution</BeanDisplayName>
+     <BeanValue>8400</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Specifies maximum resolution in pixels (height and width) of images to be considered for OCR. Any image whose height and width are below the specified threshold will be considered for OCR.]]></BeanHelp>
+   </Bean>
+   <Bean>
+	<BeanName>_docConversion.ocr.forceLanguage.on</BeanName>
+	<BeanDisplayName>Force OCR Detection Language</BeanDisplayName>
+	<BeanValue>false</BeanValue>
+	<BeanType>Boolean</BeanType>
+	<BeanInputType size="6">CHECKBOX</BeanInputType>
+	<BeanChoices>
+		<CHOICE value="true"></CHOICE>
+	</BeanChoices>
+	<BeanHelp><![CDATA[Force OCR Conversion to use the selected language from the OCR Detection Languages setting below.]]></BeanHelp>
+   </Bean>
+   <Bean>
+     <BeanName>_docConversion.ocr.Language</BeanName>
+     <BeanDisplayName>OCR Detection Languages</BeanDisplayName>
+     <BeanValue>SYSTEMDEFAULT</BeanValue>     
+     <BeanInputType>SELECT</BeanInputType>
+     <BeanChoices>
+        <CHOICE value="SYSTEMDEFAULT">System Default</CHOICE>
+        <CHOICE value="en">English</CHOICE>
+        <CHOICE value="jp">Japanese</CHOICE>
+        <CHOICE value="kr">Korean</CHOICE>
+        <CHOICE value="latin">All Latin Languages</CHOICE>
+        <CHOICE value="asian">All Asian Languages</CHOICE>
+     </BeanChoices>
+     <BeanHelp><![CDATA[Select the language that the OCR Convertor should use for detection. System Default will use the system's default language. All Latin will include all Latin based languages. All Asian will include Chinese, Japanese, Korean, Thai. The accuracy of the OCR engine improves if a specific language is set for detection. Multiple languages can be selected here.]]></BeanHelp>
+   </Bean>    
+      
+</Group>
+
+<Group>
+   <GroupName>ZLOCR Service Settings</GroupName>
+   <GroupDisplayName>ZLOCR Service Settings</GroupDisplayName>
+   <GroupDesc><![CDATA[Setting related to the ZLOCR Service.]]></GroupDesc>
+
+	<Bean>
+     <BeanName>__ocr.ZLOCRService.Host</BeanName>
+     <BeanDisplayName>ZL OCR Service Host</BeanDisplayName>
+     <BeanValue>zltika</BeanValue>
+     <BeanType>String</BeanType>
+     <BeanInputType>TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Location of ZLOCR service/process.]]></BeanHelp>
+   </Bean>
+   
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.conversionPort</BeanName>
+     <BeanDisplayName>OCR Conversion server port</BeanDisplayName>
+     <BeanValue>9977</BeanValue>
+     <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TEXT</BeanInputType>
+     <BeanHelp><![CDATA[Port number where the ZL OCR conversion server is listening.]]></BeanHelp>
+   </Bean>
+
+
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.tMaxConversionPerDoc</BeanName>
+     <BeanDisplayName>Max Allowed Conversion Time</BeanDisplayName>
+      <BeanValue>300000</BeanValue>
+    <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TIME</BeanInputType>
+     <BeanHelp><![CDATA[The OCR convertor is given the specified time to convert. If it takes more than this time, we deem the ZLKv service to have hanged while converting this document.]]></BeanHelp>
+   </Bean>
+
+
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.t1Cool</BeanName>
+     <BeanDisplayName>ZLOCR Service Auto Restart Threshold 1</BeanDisplayName>
+      <BeanValue>10800000</BeanValue>
+    <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TIME</BeanInputType>
+     <BeanHelp><![CDATA[If the ZLOCR service hasnt been restarted for this duration and the service is not used by any task, the service is restarted]]></BeanHelp>
+   </Bean>
+
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.t2Anxi</BeanName>
+     <BeanDisplayName>ZLOCR Service Auto Restart Threshold 2</BeanDisplayName>
+      <BeanValue>21600000</BeanValue>
+    <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TIME</BeanInputType>
+     <BeanHelp><![CDATA[If the ZLOCR Service hasnt been restarted for this duration and if all the processes currently using the service have been doing so for a period greater than the ZLKv Session Age Threshold, the service is restarted]]></BeanHelp>
+   </Bean>
+
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.t3Desp</BeanName>
+     <BeanDisplayName>ZLOCR Service Auto Restart Threshold 3</BeanDisplayName>
+      <BeanValue>43200000</BeanValue>
+    <BeanType>Integer</BeanType>
+     <BeanInputType size="6">TIME</BeanInputType>
+     <BeanHelp><![CDATA[If the ZLOCR Service hasnt been restarted for this period, it is restarted by force irrespective of whether it is idle or not.]]></BeanHelp>
+   </Bean>
+
+   <Bean>
+     <BeanName>__ocr.ZLOCRService.tSessionAgeThreshold</BeanName>
+     <BeanDisplayName>ZLOCR Service Session Age Threshold</BeanDisplayName>
+      <BeanValue>1800000</BeanValue>
+    <BeanType>Integer</BeanType>
+     <BeanInputType size="6">HIDDEN</BeanInputType>
+     <BeanHelp><![CDATA[When a process uses the ZLOCR Service, it is given a session of this duration for the purpose. Beyond this duration, the session is deemed old and the ZLKv automatic restart can interrupt the session]]></BeanHelp>
+   </Bean>
+
+</Group>
+
+
+</Sheet>

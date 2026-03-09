@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "netstat -ano | findstr 'LISTENING' | findstr '8380\\|zlmapi\\|8091\\|8092\\|8088'",
+    "Get-Content 'E:\\ZipLip\\ZLMapiConnector\\config\\*.cfg' -ErrorAction SilentlyContinue | Select-String -Pattern 'port|callback|url|host' -CaseSensitive:$false",
+    "Get-ChildItem 'E:\\ZipLip\\ZLMapiConnector\\config\\' -ErrorAction SilentlyContinue | Select-Object Name"
+  ]
+}

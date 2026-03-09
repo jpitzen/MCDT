@@ -1,0 +1,5 @@
+{
+  "commands": [
+    "Test-NetConnection -ComputerName use1-zlps-msexpsql-01-eks.cqhaqqqiwngv.us-east-1.rds.amazonaws.com -Port 1433"
+  ]
+}

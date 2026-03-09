@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 3</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 3: EBS CSI Driver</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 3</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 3: EBS CSI Driver</h2>
+                    <div class="step-counter">Step <span id="current-step">12</span> of <span id="total-steps">17</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="12"></span>
+                    <span class="step-dot" data-step="13"></span>
+                    <span class="step-dot" data-step="14"></span>
+                    <span class="step-dot" data-step="15"></span>
+                    <span class="step-dot" data-step="16"></span>
+                    <span class="step-dot" data-step="17"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">EBS CSI Driver Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 3</strong> installs the Amazon EBS CSI Driver to enable Kubernetes to manage EBS volumes for persistent storage, which is essential for ZooKeeper's stateful data.</p>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="12">Create IAM policy for EBS CSI Driver</li>
+                    <li data-steps="13">Create IAM role with OIDC trust relationship</li>
+                    <li data-steps="14">Create Kubernetes service account with IAM role annotation</li>
+                    <li data-steps="15">Install EBS CSI Driver addon via AWS CLI</li>
+                    <li data-steps="16">Verify CSI driver pods are running</li>
+                    <li data-steps="17">Create StorageClass for gp3 volumes</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+
+    <!-- JavaScript -->
+    <script>
+        // Step data for Phase 3
+        const stepData = {
+            12: {
+                title: "Create EBS CSI Driver IAM Policy",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 12: Create EBS CSI Driver IAM Policy</h3>
+                        <div class="step-description">Create the IAM policy that grants the EBS CSI Driver the necessary permissions to manage EBS volumes.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws iam create-policy --policy-name AmazonEBSCSIDriverPolicy --policy-document file://zl-ebs-csi-driver-policy.json')">Copy</button>
+                            <pre><code>aws iam create-policy --policy-name AmazonEBSCSIDriverPolicy --policy-document file://zl-ebs-csi-driver-policy.json</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>The EBS CSI Driver IAM policy is stored in <code>zl-ebs-csi-driver-policy.json</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleJsonContent('zl-ebs-csi-driver-policy')">📄 Show/Hide JSON</button>
+                            <button class="action-btn" onclick="downloadJsonFile('zl-ebs-csi-driver-policy.json')">📥 Download</button>
+                        </div>
+                        <div id="json-content-zl-ebs-csi-driver-policy" class="json-content" style="display: none;">
+                            <div class="json-header">
+                                <span class="filename">zl-ebs-csi-driver-policy.json</span>
+                                <button class="copy-btn" onclick="copyJsonContent('zl-ebs-csi-driver-policy')">📋 Copy</button>
+                            </div>
+                            <pre><code id="json-code-zl-ebs-csi-driver-policy">// Loading JSON content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <h4>Expected Output:</h4>
+                        <div class="output-block">
+                            <code>arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AmazonEBSCSIDriverPolicy</code>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 12: Create EBS CSI Driver IAM Policy</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            13: {
+                title: "Create IAM Service Account for EBS CSI Driver",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 13: Create IAM Service Account for EBS CSI Driver</h3>
+                        <div class="step-description">Create a Kubernetes service account with IAM role attachment for the EBS CSI Driver.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster use1-zlps-eks-01 --attach-policy-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole')">Copy</button>
+                            <pre><code>eksctl create iamserviceaccount --name ebs-csi-controller-sa --namespace kube-system --cluster use1-zlps-eks-01 --attach-policy-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:policy/AmazonEBSCSIDriverPolicy --approve --role-name AmazonEKS_EBS_CSI_DriverRole</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>What this command does:</h4>
+                        <ul>
+                            <li>Creates a Kubernetes service account named <code>ebs-csi-controller-sa</code></li>
+                            <li>Attaches the IAM policy we created in Step 12</li>
+                            <li>Creates an IAM role that the service account can assume</li>
+                            <li>Enables IRSA (IAM Roles for Service Accounts)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 13: Create IAM Service Account for EBS CSI Driver</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            14: {
+                title: "Install EBS CSI Driver",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 14-15: Install EBS CSI Driver</h3>
+                        <div class="step-description">Install the EBS CSI Driver using either kubectl or EKS Add-on method.</div>
+                    </div>
+
+                    <div class="option-section">
+                        <h4>Option A: kubectl method (Recommended for custom configurations)</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl apply -k \"github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.53\"')">Copy</button>
+                            <pre><code>kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.53"</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="option-section">
+                        <h4>Option B: EKS Add-on <span class="badge badge-recommended">Recommended</span></h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('aws eks create-addon --cluster-name use1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:role/AmazonEKS_EBS_CSI_DriverRole --region us-east-1')">Copy</button>
+                            <pre><code>aws eks create-addon --cluster-name use1-zlps-eks-01 --addon-name aws-ebs-csi-driver --service-account-role-arn arn:aws:iam::<YOUR_ACCOUNT_ID>:role/AmazonEKS_EBS_CSI_DriverRole --region us-east-1</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>Why EKS Add-on is recommended:</h4>
+                        <ul>
+                            <li>Automatic updates and patches</li>
+                            <li>Managed by AWS (less maintenance)</li>
+                            <li>Integrated with EKS console</li>
+                            <li>Compatible with EKS versions</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 14: Install EBS CSI Driver</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            15: {
+                title: "Verify EBS CSI Driver Installation",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 16: Verify EBS CSI Driver Installation</h3>
+                        <div class="step-description">Check that the EBS CSI Driver pods are running correctly.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get pods -n kube-system -l app=ebs-csi-controller')">Copy</button>
+                            <pre><code>kubectl get pods -n kube-system -l app=ebs-csi-controller</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <h4>Expected Output:</h4>
+                        <div class="output-block">
+                            <pre><code>NAME                     READY   STATUS    RESTARTS   AGE
+ebs-csi-controller-abc   6/6     Running   0          2m
+ebs-csi-controller-def   6/6     Running   0          2m</code></pre>
+                        </div>
+                        <div class="success-note">
+                            <strong>Expected:</strong> 2 pods with 6/6 containers Running
+                        </div>
+                    </div>
+
+                    <div class="verification-section">
+                        <h4>Additional Verification:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-ebs-csi-driver')">Copy</button>
+                            <pre><code>kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-ebs-csi-driver</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 15: Verify EBS CSI Driver Installation</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            16: {
+                title: "Create EBS StorageClass",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 17: Create EBS StorageClass</h3>
+                        <div class="step-description">Create a StorageClass that uses the EBS CSI Driver for dynamic volume provisioning.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Command:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl apply -f zl-ebs-storageclass.yaml')">Copy</button>
+                            <pre><code>kubectl apply -f zl-ebs-storageclass.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>The EBS StorageClass configuration is stored in <code>zl-ebs-storageclass.yaml</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zl-ebs-storageclass')">📄 Show/Hide YAML</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zl-ebs-storageclass.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zl-ebs-storageclass" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zl-ebs-storageclass.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zl-ebs-storageclass')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zl-ebs-storageclass">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="verification-section">
+                        <h4>Verify StorageClass:</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('kubectl get storageclass ebs-sc')">Copy</button>
+                            <pre><code>kubectl get storageclass ebs-sc</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME     PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-sc   ebs.csi.aws.com   Delete          WaitForFirstConsumer   true                   10s</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>StorageClass Parameters:</h4>
+                        <ul>
+                            <li><code>type: gp3</code> - Latest generation EBS volume type</li>
+                            <li><code>fsType: ext4</code> - Linux file system</li>
+                            <li><code>volumeBindingMode: WaitForFirstConsumer</code> - Creates volumes in the correct AZ</li>
+                            <li><code>allowVolumeExpansion: true</code> - Enables volume resizing</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="pagination-controls bottom-controls">
+                        <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                            ← Previous Step
+                        </button>
+                        <div class="step-title">Step 16: Create EBS StorageClass</div>
+                        <button class="nav-btn next-btn" onclick="navigateStep(1)">
+                            Next Step →
+                        </button>
+                    </div>
+                `
+            },
+            17: {
+                title: 'Phase 3 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 3 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 4, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> EBS CSI Driver IAM policy created</label><br>
+                            <label><input type="checkbox"> EBS CSI Driver IAM service account configured</label><br>
+                            <label><input type="checkbox"> EBS CSI Driver installed as EKS add-on</label><br>
+                            <label><input type="checkbox"> EBS CSI Driver pods running in kube-system namespace</label><br>
+                            <label><input type="checkbox"> EBS StorageClass 'ebs-sc' created</label><br>
+                            <label><input type="checkbox"> Test PVC created and bound successfully</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 4:</strong> Once all items are checked, you can proceed to Phase 4 (EFS CSI Driver).
+                        </div>
+
+                        <!-- Bottom Pagination Controls -->
+                        <div class="pagination-controls bottom-controls">
+                            <button class="nav-btn prev-btn" onclick="navigateStep(-1)">
+                                ← Previous Step
+                            </button>
+                            <div class="step-title">Phase 3 Completion Checklist</div>
+                            <button class="nav-btn next-btn" disabled style="background: var(--success-color);">
+                                Phase Complete ✓
+                            </button>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Pagination functionality
+        let currentStep = 12;
+        const totalSteps = 17;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+
+            // Update URL hash
+            window.location.hash = `step-${stepNum}`;
+
+            // Save to localStorage
+            localStorage.setItem('zl-phase3-current-step', stepNum);
+
+            // Update step content
+            const stepContainer = document.getElementById('step-container');
+            stepContainer.innerHTML = stepData[stepNum].content;
+
+            // Initialize copy buttons for new content
+            initializeCopyButtons();
+
+            // Update step title
+            document.getElementById('step-title').textContent = stepData[stepNum].title;
+
+            // Update progress bar
+            const progressPercent = ((stepNum - 12) / 5) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Update step counter
+            document.getElementById('current-step').textContent = stepNum;
+
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const stepValue = index + 12; // Steps start from 12
+                if (stepValue === stepNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (stepValue < stepNum) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(stepNum)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = stepNum === 12;
+            nextBtn.disabled = stepNum === totalSteps;
+
+            if (stepNum === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+
+            // Scroll to top of content
+            document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 12 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for hash in URL or localStorage
+            const hash = window.location.hash;
+            if (hash.startsWith('#step-')) {
+                const step = parseInt(hash.replace('#step-', ''));
+                if (step >= 12 && step <= totalSteps) {
+                    currentStep = step;
+                }
+            } else {
+                const savedStep = localStorage.getItem('zl-phase3-current-step');
+                if (savedStep && savedStep >= 12 && savedStep <= totalSteps) {
+                    currentStep = parseInt(savedStep);
+                }
+            }
+
+            showStep(currentStep);
+
+            // Add copy buttons to initial content
+            initializeCopyButtons();
+
+            // Add event listeners
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+            
+            // Add step dot click listeners
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => showStep(index + 12)); // Steps start from 12
+            });
+        });
+
+        // Toggle JSON content visibility
+        function toggleJsonContent(id) {
+            const contentDiv = document.getElementById(`json-content-${id}`);
+            const codeElement = document.getElementById(`json-code-${id}`);
+            const filename = id + '.json';
+
+            if (contentDiv.style.display === 'none') {
+                // Load and display JSON
+                fetch(filename)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to load ${filename}`);
+                        }
+                        return response.text();
+                    })
+                    .then(jsonText => {
+                        codeElement.textContent = jsonText;
+                        contentDiv.style.display = 'block';
+                    })
+                    .catch(error => {
+                        codeElement.textContent = `Error loading ${filename}: ${error.message}`;
+                        contentDiv.style.display = 'block';
+                    });
+            } else {
+                // Hide content
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy JSON content to clipboard
+        function copyJsonContent(id) {
+            const codeElement = document.getElementById(`json-code-${id}`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Download JSON file
+        function downloadJsonFile(filename) {
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${filename}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                })
+                .catch(error => {
+                    alert(`Error downloading ${filename}: ${error.message}`);
+                });
+        }
+
+        // Toggle YAML content visibility
+        function toggleYamlContent(id) {
+            const contentDiv = document.getElementById(`yaml-content-${id}`);
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const filename = id + '.yaml';
+
+            if (contentDiv.style.display === 'none') {
+                // Load and display YAML
+                fetch(filename)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to load ${filename}`);
+                        }
+                        return response.text();
+                    })
+                    .then(yamlText => {
+                        codeElement.textContent = yamlText;
+                        contentDiv.style.display = 'block';
+                    })
+                    .catch(error => {
+                        codeElement.textContent = `Error loading ${filename}: ${error.message}`;
+                        contentDiv.style.display = 'block';
+                    });
+            } else {
+                // Hide content
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy YAML content to clipboard
+        function copyYamlContent(id) {
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Download YAML file
+        function downloadYamlFile(filename) {
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${filename}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                })
+                .catch(error => {
+                    alert(`Error downloading ${filename}: ${error.message}`);
+                });
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard(button) {
+            const wrapper = button.closest('.pre-wrapper');
+            const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+            const text = codeBlock.textContent || codeBlock.innerText;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopied(button);
+                }).catch(function() {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+
+        function fallbackCopy(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopied(button);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                button.textContent = 'FAILED';
+                setTimeout(() => {
+                    button.textContent = 'COPY';
+                }, 2000);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showCopied(button) {
+            button.textContent = 'COPIED';
+            button.style.background = '#28a745';
+
+            setTimeout(function() {
+                button.textContent = 'COPY';
+                button.style.background = '';
+            }, 2000);
+        }
+
+        // Add copy buttons to code blocks
+        function initializeCopyButtons() {
+            const pres = document.querySelectorAll('pre');
+            
+            pres.forEach((pre, index) => {
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('pre-wrapper')) {
+                    return;
+                }
+                if (pre.closest('.yaml-panel')) {
+                    return;
+                }
+                // Skip if parent already has a copy button (static HTML)
+                if (pre.parentElement.querySelector('.copy-btn')) {
+                    return;
+                }
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+            });
+        }
+
+        function toggleYaml(btn) {
+            const content = btn.nextElementSibling;
+            const isVisible = content.style.display !== 'none';
+            content.style.display = isVisible ? 'none' : 'block';
+            btn.textContent = isVisible ? '📄 View YAML' : '📄 Hide YAML';
+        }
+
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

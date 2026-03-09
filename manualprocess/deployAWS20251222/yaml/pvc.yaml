@@ -1,0 +1,54 @@
+# Persistent Volume Claims for AWS EKS
+# Uses AWS EFS for shared storage (ReadWriteMany)
+---
+# ZLVault PVC - Shared storage for vault data
+# CRITICAL: Must be ReadWriteMany (RWX) for shared access across pods
+# Mount path: /var/opt/zlvault/ZLVault (matches DiskVolume table paths)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zlvault-pvc
+  labels:
+    app: zlvault
+spec:
+  accessModes:
+    - ReadWriteMany  # Required for shared storage across pods
+  storageClassName: efs-sc  # AWS EFS StorageClass
+  resources:
+    requests:
+      storage: 100Gi  # Adjust based on expected vault storage needs
+---
+# ZLServer Logs PVC - Shared log storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zlserverlogs-pvc
+  labels:
+    app: zlserver
+spec:
+  accessModes:
+    - ReadWriteMany  # Shared across all server pods
+  storageClassName: efs-sc  # AWS EFS StorageClass
+  resources:
+    requests:
+      storage: 50Gi  # Log storage
+---
+# ZLServer Temp PVC - Temporary file storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zltemp-pvc
+  labels:
+    app: zlserver
+spec:
+  accessModes:
+    - ReadWriteMany  # Shared across all server pods
+  storageClassName: efs-sc  # AWS EFS StorageClass
+  resources:
+    requests:
+      storage: 50Gi  # Temp storage
+---
+# ZooKeeper Data PVC Template
+# Note: ZooKeeper StatefulSet uses volumeClaimTemplates (defined in zlzookeeper-statefulset.yaml)
+# Each ZK pod gets its own PVC: data-zlzookeeper-0, data-zlzookeeper-1, data-zlzookeeper-2
+# These use EBS (gp3) via the ebs-sc StorageClass for better I/O performance

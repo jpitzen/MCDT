@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZL Application AWS EKS Deployment Guide - Phase 8</title>
+    <link rel="stylesheet" href="ZL_DG_202512162115.css">
+</head>
+<body>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+
+<!-- Left Navigation Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>ZL AWS EKS Deployment</h1>
+        <div class="version">v1.4 | Dec 23, 2025</div>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item" href="ZL_DG_202512162115.html">
+            🏠 Home / Overview
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Deployment Phases</div>
+        <a class="nav-item" href="ZL_DG_PHASE_0.html">
+            <span class="phase-num">0</span> AWS Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_1.html">
+            <span class="phase-num">1</span> EKS Cluster Creation
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_2.html">
+            <span class="phase-num">2</span> ECR & Image Management
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_3.html">
+            <span class="phase-num">3</span> EBS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_4.html">
+            <span class="phase-num">4</span> EFS CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_5.html">
+            <span class="phase-num">5</span> S3 CSI Driver
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_6.html">
+            <span class="phase-num">6</span> Database Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_7.html">
+            <span class="phase-num">7</span> ZooKeeper Deployment
+        </a>
+        <a class="nav-item active" href="ZL_DG_PHASE_8.html">
+            <span class="phase-num">8</span> Application Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_9.html">
+            <span class="phase-num">9</span> Network & Ingress
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_10.html">
+            <span class="phase-num">10</span> Cluster Autoscaling
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_11.html">
+            <span class="phase-num">11</span> Post-Deployment
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_12.html">
+            <span class="phase-num">12</span> EC2 Configuration
+        </a>
+        <a class="nav-item" href="ZL_DG_PHASE_13.html">
+            <span class="phase-num">13</span> Security Scanning
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Appendices</div>
+        <a class="nav-item" href="ZL_DG_TROUBLESHOOTING.html">
+            🔧 Troubleshooting
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_A.html">
+            📋 Appendix A: AWS CLI Commands
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_B.html">
+            📋 Appendix B: Kubernetes Manifests
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_C.html">
+            📋 Appendix C: IAM Policies
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_D.html">
+            📋 Appendix D: Security Groups
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_E.html">
+            📋 Appendix E: Monitoring & Logging
+        </a>
+        <a class="nav-item" href="ZL_DG_APPENDIX_F.html">
+            📋 Appendix F: Performance Tuning
+        </a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/eks/', '_blank')">
+            📚 AWS EKS Documentation
+        </a>
+        <a class="nav-item" onclick="window.open('https://kubernetes.io/docs/', '_blank')">
+            🚢 Kubernetes Docs
+        </a>
+        <a class="nav-item" onclick="window.open('https://docs.aws.amazon.com/cli/', '_blank')">
+            🛠️ AWS CLI Reference
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="main-content">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>Phase 8: Application Deployment</h1>
+            <div class="page-meta">
+                <span class="phase-badge">Phase 8</span>
+                <span class="last-updated">Updated: Dec 23, 2025</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Step Progress Bar -->
+            <div class="step-progress">
+                <div class="step-progress-header">
+                    <h2>Phase 8: Application Deployment</h2>
+                    <div class="step-counter">Step <span id="current-step">1</span> of <span id="total-steps">8</span></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-indicators">
+                    <span class="step-dot active" data-step="1"></span>
+                    <span class="step-dot" data-step="2"></span>
+                    <span class="step-dot" data-step="3"></span>
+                    <span class="step-dot" data-step="4"></span>
+                    <span class="step-dot" data-step="5"></span>
+                    <span class="step-dot" data-step="6"></span>
+                    <span class="step-dot" data-step="7"></span>
+                    <span class="step-dot" data-step="8"></span>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="step-title">Application Deployment Overview</div>
+                <button class="nav-btn next-btn" id="next-btn">
+                    Next Step →
+                </button>
+            </div>
+
+            <div class="phase-intro">
+                <p><strong>Phase 8</strong> deploys the ZL Application components: Document Conversion (Tika), Backend Server, and Web UI.</p>
+                <div class="info" style="margin-top: 15px;">
+                    <strong>📌 Version Note:</strong> All deployment manifests and container images reference ZL Version 11.1.0 (Build 1140). When deploying different versions, update image tags in all YAML files (zlui-deployment.yaml, zlserver-deployment.yaml, etc.) to match your target build.
+                </div>
+            </div>
+
+            <div class="phase-objectives">
+                <h3>🎯 Objectives</h3>
+                <ul id="objectives-list">
+                    <li data-steps="1">Create ZLServer ZK EFS Persistent Volumes</li>
+                    <li data-steps="2">Deploy Apache Tika service</li>
+                    <li data-steps="3">Deploy ZL Server backend application</li>
+                    <li data-steps="4">Deploy ZL UI web interface</li>
+                    <li data-steps="5">Run ZL ZK Client Init Job (one-time setup)</li>
+                    <li data-steps="6">Deploy ZL Search service</li>
+                    <li data-steps="7">Verify all application components</li>
+                    <li data-steps="8">Complete Phase 8 deployment checklist</li>
+                </ul>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-container" id="step-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+            
+            <!-- Bottom Navigation Controls (Always visible) -->
+            <div class="pagination-controls bottom-controls" id="bottom-nav">
+                <button class="nav-btn prev-btn" id="prev-btn-bottom" onclick="navigateStep(-1)">
+                    ← Previous Step
+                </button>
+                <div class="step-title" id="bottom-step-title">Step 1 of 8</div>
+                <button class="nav-btn next-btn" id="next-btn-bottom" onclick="navigateStep(1)">
+                    Next Step →
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript -->
+<script>
+        // Step data for Phase 8
+        const stepData = {
+            1: {
+                title: "Create ZLServer ZK EFS Volumes",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 43: Create ZLServer ZK EFS Volumes</h3>
+                        <div class="step-description">Create EFS-backed persistent volumes for ZLServer ZooKeeper client binaries and configuration.</div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>🔴 NEW - Bootstrap Job Architecture</h4>
+                        <p>ZLServer ZK binaries (/opt/ZipLip/bin/zk) are now stored on EFS-backed persistent storage. This allows configuration to persist across pod restarts and be shared between ZLServer pods and the Bootstrap Job.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Creates EFS directory initialization job for ZLServer ZK binaries</li>
+                            <li>Creates PersistentVolume for ZLServer ZK client config</li>
+                            <li>Creates PersistentVolumeClaim (zlserver-binzk-efs)</li>
+                            <li>Shared between ZLServer pods and Bootstrap Job</li>
+                            <li>No more config loss on pod restart</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Step 1: Create EFS Directory:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/efs-init-zlserver-zk.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>efs-init-zlserver-zk.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('efs-init-zlserver-zk')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('efs-init-zlserver-zk.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-efs-init-zlserver-zk" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">efs-init-zlserver-zk.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('efs-init-zlserver-zk')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-efs-init-zlserver-zk">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Step 2: Create ZLServer ZK PV:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/zlserver-zkconfig-pv.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlserver-zkconfig-pv.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlserver-zkconfig-pv')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlserver-zkconfig-pv.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlserver-zkconfig-pv" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlserver-zkconfig-pv.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlserver-zkconfig-pv')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlserver-zkconfig-pv">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Step 3: Create ZLServer ZK PVC:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/zlserver-zkconfig-pvc.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlserver-zkconfig-pvc.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlserver-zkconfig-pvc')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlserver-zkconfig-pvc.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlserver-zkconfig-pvc" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlserver-zkconfig-pvc.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlserver-zkconfig-pvc')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlserver-zkconfig-pvc">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify PV/PVC Status:</h4>
+                        <div class="code-block">
+                            <pre><code># Wait for init job to complete
+kubectl get job efs-init-zlserver-zk -w
+
+# Verify PV and PVC
+kubectl get pv zlserver-binzk-pv
+kubectl get pvc zlserver-binzk-efs</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   
+zlserver-binzk-pv   1Gi        RWX            Retain           Bound    
+
+NAME                 STATUS   VOLUME              CAPACITY   ACCESS MODES
+zlserver-binzk-efs   Bound    zlserver-binzk-pv   1Gi        RWX</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Bootstrap Job Benefits:</strong>
+                        <ul>
+                            <li><strong>One-time Setup:</strong> ZK client init runs once, not on every restart</li>
+                            <li><strong>Persistent Config:</strong> tcdb.cfg and zkClient.cfg survive pod restarts</li>
+                            <li><strong>No More Corruption:</strong> Hostname values no longer appended repeatedly</li>
+                            <li><strong>Shared Storage:</strong> Same config available to all ZLServer pods</li>
+                        </ul>
+                    </div>
+                `
+            },
+            2: {
+                title: "Deploy Tika Service",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 44: Deploy Tika Service</h3>
+                        <div class="step-description">Deploys the ZL Tika document conversion service. This must be running BEFORE zlserver starts.</div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ CRITICAL: Deployment Order</h4>
+                        <p>Tika MUST be running and responding before ZLServer starts. Otherwise, ZLServer will fail during Phase3 initialization with "Thread has already exited; Possibly unable to connect!"</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Deploys Tika deployment for document conversion</li>
+                            <li>Creates service to expose Tika internally at port 9972</li>
+                            <li>Uses ZL's custom Tika binary protocol (NOT HTTP/REST)</li>
+                            <li>K8s-optimized image includes health check utilities (nc/curl)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>🔴 Image: <code>zltika-k8s-20251222</code></h4>
+                        <p>Use the K8s-optimized Tika image which includes nc/curl for health probes.</p>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Deploy Tika:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f aws/zltika-deployment.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>The Tika deployment configuration is stored in <code>zltika-deployment.yaml</code></p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zltika-deployment')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zltika-deployment.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zltika-deployment" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zltika-deployment.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zltika-deployment')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zltika-deployment">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Wait for Ready:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl rollout status deployment/zltika --timeout=120s</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Service:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get pods -l app=zltika
+kubectl get svc zltika-service</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                      READY   STATUS    RESTARTS   AGE
+zltika-xxxxxxxxxx-xxxxx   1/1     Running   0          30s
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+zltika-service   ClusterIP   10.100.xx.xxx   &lt;none&gt;        9972/TCP   30s</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Note:</strong> The Tika service uses a custom binary protocol on port 9972. Health checks use TCP socket probes.
+                    </div>
+                `
+            },
+            3: {
+                title: "Deploy ZL Server",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 45: Deploy ZL Server</h3>
+                        <div class="step-description">Deploys the ZL backend server using the K8s-optimized image with Java 21 pre-installed.</div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>🔴 IMAGE UPDATE - December 22, 2025</h4>
+                        <p>Use <code>zlserver-k8s-20251222</code> image which has Java 21 pre-installed. No runtime apt-get installation needed!</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 Prerequisites (All Must Be Running)</h4>
+                        <ul>
+                            <li>✅ ZooKeeper cluster (3 pods in Running state)</li>
+                            <li>✅ Tika service (deployed and responding on port 9972)</li>
+                            <li>✅ RDS database (accessible and configured)</li>
+                            <li>✅ ConfigMaps: zkclient-config (with tcdb.cfg containing TrustServerCertificate=true)</li>
+                            <li>✅ EFS PVCs (Bound status)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 Key Configuration</h4>
+                        <ul>
+                            <li><strong>Image:</strong> <code>zlserver-k8s-20251222</code> (Java 21 pre-installed)</li>
+                            <li><strong>CLUSTER_NAME:</strong> <code>MP</code> (Main Processing)</li>
+                            <li><strong>TIKA_HOST:</strong> <code>zltika-service</code></li>
+                            <li><strong>Vault Mount:</strong> <code>/var/opt/zlvault/</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Deploy ZL Server:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f aws/zlserver-deployment.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlserver-deployment.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlserver-deployment')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlserver-deployment.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlserver-deployment" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlserver-deployment.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlserver-deployment')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlserver-deployment">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Watch Startup Logs:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl logs deployment/zlserver -f</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="success-section">
+                        <h4>✅ Success Indicator</h4>
+                        <p>Wait 2-3 minutes. The logs MUST show: <code>Done initalizing ZLServer</code></p>
+                        <div class="code-block">
+                            <pre><code>kubectl logs deployment/zlserver | grep -i "done init"</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 K8s-Optimized Benefits:</strong>
+                        <ul>
+                            <li>No runtime Java installation (faster startup by ~2 minutes)</li>
+                            <li>TIKA_HOST env var auto-configures Tika connectivity</li>
+                            <li>No ConfigMap copy pattern needed - simpler deployment</li>
+                        </ul>
+                    </div>
+                `
+            },
+            4: {
+                title: "Deploy ZL UI",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 46: Deploy ZL UI</h3>
+                        <div class="step-description">Deploys the ZL web user interface using the same K8s-optimized image as ZL Server.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 Key Configuration</h4>
+                        <ul>
+                            <li><strong>Image:</strong> <code>zlserver-k8s-20251222</code> (same as zlserver)</li>
+                            <li><strong>CLUSTER_NAME:</strong> <code>UI</code></li>
+                            <li><strong>TIKA_HOST:</strong> <code>zltika-service</code></li>
+                            <li><strong>Vault Mount:</strong> <code>/var/opt/zlvault/</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Deploy ZL UI:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f aws/zlui-deployment.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlui-deployment.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlui-deployment')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlui-deployment.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlui-deployment" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlui-deployment.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlui-deployment')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlui-deployment">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Deployment:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get deployment zlui
+kubectl get service zlui</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+zlui   1/1     1            1           2m
+
+NAME   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+zlui   LoadBalancer   10.100.XX.XX    &lt;pending&gt;     8081:xxxxx/TCP   2m</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Initialization:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl logs deployment/zlui | grep -i "done init"</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>Done initalizing ZLServer</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 ZL UI Details:</strong>
+                        <ul>
+                            <li><strong>Port:</strong> 8081 (LoadBalancer service)</li>
+                            <li><strong>Access:</strong> Via AWS ALB after Phase 9</li>
+                            <li><strong>CLUSTER_NAME=UI:</strong> Identifies as UI cluster member</li>
+                        </ul>
+                    </div>
+                `
+            },
+            5: {
+                title: "Run ZL ZK Client Init Job",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 47: Run ZL ZK Client Init Job</h3>
+                        <div class="step-description">Run the one-time Bootstrap Job to initialize ZooKeeper client configuration.</div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>🔴 NEW - Bootstrap Job Architecture</h4>
+                        <p>This is a one-time job that initializes ZK client configuration. It runs only during initial setup, not on every pod restart. ZooKeeper initialization logic has been removed from zlserver-startup.sh.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 What It Does</h4>
+                        <ul>
+                            <li>Runs <code>zkutil.sh -keyinit</code> to initialize ZK client keys</li>
+                            <li>Runs <code>zkutil.sh -loadconfig</code> to load configuration</li>
+                            <li>Uses same zlserver image for consistency</li>
+                            <li>Mounts both zk-config (read-only) and zlserver-zk EFS volumes</li>
+                            <li>Runs only once during initial deployment</li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Run ZL ZK Client Init Job:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f yaml/zl-zk-client-init.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zl-zk-client-init.yaml</code> Bootstrap Job configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zl-zk-client-init')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zl-zk-client-init.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zl-zk-client-init" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zl-zk-client-init.yaml (Bootstrap Job)</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zl-zk-client-init')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zl-zk-client-init">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Wait for Job Completion:</h4>
+                        <div class="code-block">
+                            <pre><code># Watch job status
+kubectl get job zl-zk-client-init -w
+
+# Check job logs
+kubectl logs job/zl-zk-client-init</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>===== ZL SERVER ZK INIT =====
+DEBUG: listing /opt/ZipLip/bin/zk
+total 12
+-rw-r--r-- 1 root root  512 Dec 23 12:00 tcdb.cfg
+-rw-r--r-- 1 root root  256 Dec 23 12:00 zkClient.cfg
+===== ZL SERVER ZK INIT COMPLETE =====</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="warning-section">
+                        <h4>⚠️ Important Notes</h4>
+                        <ul>
+                            <li>This job runs ONLY ONCE during initial deployment</li>
+                            <li>ZK init has been removed from zlserver-startup.sh</li>
+                            <li>Do NOT re-run unless you want to reset the configuration</li>
+                            <li>If you need to re-run, delete the job first: <code>kubectl delete job zl-zk-client-init</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 Issues Fixed by Bootstrap Job:</strong>
+                        <ul>
+                            <li><strong>ZK Init on Every Restart:</strong> No longer runs on pod restarts</li>
+                            <li><strong>Config Loss:</strong> ZK config persists on EFS across restarts</li>
+                            <li><strong>Hostname Corruption:</strong> TMP dirs created dynamically, not in config files</li>
+                            <li><strong>Image Rebuilds:</strong> Config changes don't require new Docker images</li>
+                        </ul>
+                    </div>
+                `
+            },
+            6: {
+                title: "Deploy ZL Search",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 48: Deploy ZL Search</h3>
+                        <div class="step-description">Deploys the ZL Search service for search functionality.</div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📋 Key Configuration</h4>
+                        <ul>
+                            <li><strong>Image:</strong> <code>zlserver-k8s-20251222</code> (same as zlserver/zlui)</li>
+                            <li><strong>CLUSTER_NAME:</strong> <code>SEARCH</code></li>
+                            <li><strong>TIKA_HOST:</strong> <code>zltika-service</code></li>
+                            <li><strong>Vault Mount:</strong> <code>/var/opt/zlvault/</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Deploy ZL Search:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl apply -f aws/zlsearch-deployment.yaml</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>📄 Configuration File</h4>
+                        <p>View the <code>zlsearch-deployment.yaml</code> configuration:</p>
+                        <div class="file-controls">
+                            <button class="action-btn" onclick="toggleYamlContent('zlsearch-deployment')">📄 Show/Hide YAML Config</button>
+                            <button class="action-btn" onclick="downloadYamlFile('zlsearch-deployment.yaml')">📥 Download</button>
+                        </div>
+                        <div id="yaml-content-zlsearch-deployment" class="yaml-content" style="display: none;">
+                            <div class="yaml-header">
+                                <span class="filename">zlsearch-deployment.yaml</span>
+                                <button class="copy-btn" onclick="copyYamlContent('zlsearch-deployment')">📋 Copy</button>
+                            </div>
+                            <pre><code id="yaml-code-zlsearch-deployment">// Loading YAML content...</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Initialization:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl logs deployment/zlsearch | grep -i "done init"</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>Done initalizing ZLServer</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>💡 CLUSTER_NAME Settings:</strong>
+                        <ul>
+                            <li><strong>zlserver:</strong> CLUSTER_NAME=MP (Main Processing)</li>
+                            <li><strong>zlui:</strong> CLUSTER_NAME=UI (User Interface)</li>
+                            <li><strong>zlsearch:</strong> CLUSTER_NAME=SEARCH (Search Service)</li>
+                        </ul>
+                    </div>
+                `
+            },
+            7: {
+                title: "Verify All Components",
+                content: `
+                    <div class="step-header">
+                        <h3>Step 49: Verify All Application Components</h3>
+                        <div class="step-description">Verify that all application components are running correctly.</div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Check All Deployments:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get deployments</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+zltika     1/1     1            1           10m
+zlserver   1/1     1            1           8m
+zlui       2/2     2            2           6m
+zlsearch   1/1     1            1           4m</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Check All Pods:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get pods -l 'app in (zltika,zlserver,zlui,zlsearch)'</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                        READY   STATUS    RESTARTS   AGE
+zltika-xxxxxxx-xxxxx        1/1     Running   0          10m
+zlserver-xxxxxxx-xxxxx      1/1     Running   0          8m
+zlui-xxxxxxx-xxxxx          1/1     Running   0          6m
+zlui-xxxxxxx-yyyyy          1/1     Running   0          6m
+zlsearch-xxxxxxx-xxxxx      1/1     Running   0          4m</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Bootstrap Jobs Completed:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get jobs</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                  COMPLETIONS   DURATION   AGE
+efs-init-zlserver-zk  1/1           10s        15m
+zl-zk-client-init     1/1           15s        5m</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify EFS PVCs:</h4>
+                        <div class="code-block">
+                            <pre><code>kubectl get pvc | grep -E '(zk-config|zlserver-binzk)'</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>NAME                 STATUS   VOLUME              CAPACITY   ACCESS MODES
+zk-config-efs        Bound    zk-config-pv        1Gi        RWX
+zlserver-binzk-efs   Bound    zlserver-binzk-pv   1Gi        RWX</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-section">
+                        <h4>Verify Server Initialization:</h4>
+                        <div class="code-block">
+                            <pre><code># Check all servers have initialized
+for dep in zlserver zlui zlsearch; do
+  echo "=== $dep ==="
+  kubectl logs deployment/$dep | grep -i "done init"
+done</code></pre>
+                        </div>
+                        <div class="output-block">
+                            <pre><code>=== zlserver ===
+Done initalizing ZLServer
+=== zlui ===
+Done initalizing ZLServer
+=== zlsearch ===
+Done initalizing ZLServer</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <strong>✅ Successful Deployment Indicators:</strong>
+                        <ul>
+                            <li>All deployments show READY status</li>
+                            <li>All pods in Running state with 0 restarts</li>
+                            <li>Bootstrap jobs completed successfully</li>
+                            <li>EFS PVCs bound to persistent volumes</li>
+                            <li>All servers show "Done initalizing ZLServer" in logs</li>
+                        </ul>
+                    </div>
+                `
+            },
+            8: {
+                title: 'Phase 8 Completion Checklist',
+                content: `
+                    <div class="step" style="background: #e8f5e8; border: 2px solid #4caf50;">
+                        <h3>✅ Phase 8 Completion Checklist</h3>
+                        <p><strong>Before proceeding to Phase 9, verify the following:</strong></p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox"> ZLServer ZK EFS PV/PVC created and bound</label><br>
+                            <label><input type="checkbox"> EFS init job (efs-init-zlserver-zk) completed</label><br>
+                            <label><input type="checkbox"> zltika deployment created and running</label><br>
+                            <label><input type="checkbox"> zlserver deployment created and running</label><br>
+                            <label><input type="checkbox"> zlui deployment created and running</label><br>
+                            <label><input type="checkbox"> ZL ZK Client Init Job completed successfully</label><br>
+                            <label><input type="checkbox"> zlsearch deployment created and running</label><br>
+                            <label><input type="checkbox"> All pods showing "Running" status with 0 restarts</label><br>
+                            <label><input type="checkbox"> Server logs show "Done initalizing ZLServer" message</label><br>
+                            <label><input type="checkbox"> No crash loops or repeated restarts</label><br>
+                            <label><input type="checkbox"> EFS-backed config survives pod restart test</label><br>
+                        </div>
+
+                        <div class="info">
+                            <strong>💡 Ready for Phase 9:</strong> Once all items are checked, you can proceed to Phase 9 (Network & Ingress).
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Inline file contents for downloads
+        const fileContents = {
+            'efs-init-zlserver-zk.yaml': `# EFS Directory Init Job for ZLServer ZK
+# Last Updated: December 23, 2025
+# Creates required directories on EFS for ZLServer ZK binaries
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: efs-init-zlserver-zk
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: efs-init
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Creating EFS directories for ZLServer ZK..."
+              mkdir -p /efs/ZipLip/bin/zk
+              chmod 755 /efs/ZipLip/bin/zk
+              echo "Directories created successfully"
+              ls -la /efs/ZipLip/bin/
+          volumeMounts:
+            - name: efs-root
+              mountPath: /efs
+      volumes:
+        - name: efs-root
+          persistentVolumeClaim:
+            claimName: efs-root-pvc`,
+            'zlserver-zkconfig-pv.yaml': `# ZLServer ZK Config PersistentVolume - EFS-backed
+# Last Updated: December 23, 2025
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zlserver-binzk-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-xxxxxxxxx:/ZipLip/bin/zk
+    # Replace fs-xxxxxxxxx with your EFS filesystem ID`,
+            'zlserver-zkconfig-pvc.yaml': `# ZLServer ZK Config PersistentVolumeClaim
+# Last Updated: December 23, 2025
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zlserver-binzk-efs
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: zlserver-binzk-pv`,
+            'zl-zk-client-init.yaml': `# ZL ZK Client Init Job (Bootstrap Job)
+# Last Updated: December 23, 2025
+# This job runs ONCE to initialize ZK client configuration
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zl-zk-client-init
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: zl-zk-client-init
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlserver:11.1.0-b1140
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            # ZK client binaries & configs (EFS)
+            - name: zlserver-zk
+              mountPath: /opt/ZipLip/bin/zk
+              subPath: ZipLip/bin/zk
+            # ZooKeeper CONFIG (READ-ONLY)
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config
+              readOnly: true
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "===== ZL SERVER ZK INIT ====="
+              
+              echo "DEBUG: listing /opt/ZipLip/bin/zk"
+              ls -l /opt/ZipLip/bin/zk
+              
+              ZKCLIENT=/opt/ZipLip/bin/zk/zkClient.cfg
+              TCDB=/opt/ZipLip/bin/zk/tcdb.cfg
+              ZKUTIL=/opt/ZipLip/bin/zkutil.sh
+              
+              [ -f "$TCDB" ] || exit 1
+              
+              $ZKUTIL -keyinit "$ZKCLIENT"
+              $ZKUTIL -loadconfig "$ZKCLIENT" "$TCDB"
+              
+              echo "===== ZL SERVER ZK INIT COMPLETE ====="
+      volumes:
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs
+        - name: zlserver-zk
+          persistentVolumeClaim:
+            claimName: zlserver-binzk-efs`,
+            'zltika-deployment.yaml': `# ZL Tika Deployment - us-east-1
+# Last Updated: December 22, 2025
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zltika
+  labels:
+    app: zltika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zltika
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zltika
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zltika
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zltika11.1.0-b1140
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - cd /opt/ZipLip/ZLTikaConvertor/bin && ./zltikadiag.sh ZLTika /tmp/ZLTika & sleep infinity
+          ports:
+            - name: tika
+              containerPort: 9972
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            tcpSocket:
+              port: 9972
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9972
+            initialDelaySeconds: 10
+            periodSeconds: 5`,
+            'zlserver-deployment.yaml': `# ZL Server Deployment - us-east-1
+# Last Updated: December 22, 2025
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlserver
+  labels:
+    app: zlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlserver
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlserver
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlserver-k8s-20251222
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: CLUSTER_NAME
+              value: "MP"
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: TIKA_HOST
+              value: "zltika-service"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          volumeMounts:
+            - name: zlservertemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+            - name: zlserverlogs
+              mountPath: /opt/ZipLip/logs
+            - name: zlvault
+              mountPath: /var/opt/zlvault
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              subPath: tcdb.cfg
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zlservertemp
+          emptyDir: {}
+        - name: zlserverlogs
+          persistentVolumeClaim:
+            claimName: zlserverlogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config`,
+            'zlsearch-deployment.yaml': `# ZL Search Deployment - us-east-1
+# Last Updated: December 22, 2025
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlsearch
+  labels:
+    app: zlsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zlsearch
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlsearch
+    spec:
+      serviceAccountName: zlapp-sa
+      imagePullSecrets:
+        - name: docker-secret
+      containers:
+        - name: zlsearch
+          image: 995553364920.dkr.ecr.us-east-1.amazonaws.com/ue1-zlps-ecr-01:zlsearch-k8s-20251222
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: CLUSTER_NAME
+              value: "SEARCH"
+            - name: JAVA_HOME
+              value: "/usr/lib/jvm/java-21-openjdk-amd64"
+            - name: TIKA_HOST
+              value: "zltika-service"
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/opt/ZipLip/zlserver/WEB-INF/config/zookeeper_jaas.conf"
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - configMapRef:
+                name: zlapp-config
+            - secretRef:
+                name: db-secret
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          volumeMounts:
+            - name: zlsearchtemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+            - name: zlsearchlogs
+              mountPath: /opt/ZipLip/logs
+            - name: zlvault
+              mountPath: /var/opt/zlvault
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/bin/zk/tcdb.cfg
+              subPath: tcdb.cfg
+            - name: zkclient-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config/zkQuorum.cfg
+              subPath: zkQuorum.cfg
+      volumes:
+        - name: zlsearchtemp
+          emptyDir: {}
+        - name: zlsearchlogs
+          emptyDir: {}
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: zkclient-config
+          configMap:
+            name: zkclient-config`,
+            'zlui-deployment.yaml': `# ZL UI Deployment - Bootstrap Job Architecture
+# Last Updated: December 23, 2025
+# Updated with EFS volume mounts for ZK config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zlui
+  labels:
+    name: zlui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: zlui
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zlui
+    spec:
+      serviceAccountName: zl-s3-csi-controller
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: zlserver
+          image: 194359963850.dkr.ecr.ap-south-2.amazonaws.com/zlserver:11.1.0-b1140
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          env:
+            - name: CLUSTER_NAME
+              value: ZLUI
+            - name: INITIAL_EXECUTORS
+              value: "5"
+            - name: SERVICE_EXECUTORS
+              value: "5"
+            - name: MANAGED_EXECUTORS
+              value: "5"
+          envFrom:
+            - configMapRef:
+                name: zlapp-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+          volumeMounts:
+            - name: zltikatemp
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/tmp
+              subPath: zltikatemp
+            - name: zluilogs
+              mountPath: /opt/ZipLip/logs
+              subPath: zluilogs
+            - name: zlvault
+              mountPath: /var/ZipLip/Vault
+              subPath: zlvault
+            - name: config
+              mountPath: /opt/ZipLip/zlserver/WEB-INF/config
+              subPath: config
+            # ZK client binaries & configs (EFS)
+            - name: zlserver-zk
+              mountPath: /opt/ZipLip/bin/zk
+              subPath: ZipLip/bin/zk
+            # ZooKeeper CONFIG (READ-ONLY)
+            - name: zk-config
+              mountPath: /opt/ZipLip/ZLZooKeeper/config
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: zltikatemp
+          persistentVolumeClaim:
+            claimName: zltikatemp-efs
+        - name: zluilogs
+          persistentVolumeClaim:
+            claimName: zluilogs-efs
+        - name: zlvault
+          persistentVolumeClaim:
+            claimName: zlvault-efs
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-efs
+        - name: zk-config
+          persistentVolumeClaim:
+            claimName: zk-config-efs
+        - name: zlserver-zk
+          persistentVolumeClaim:
+            claimName: zlserver-binzk-efs`
+        };
+
+        // Toggle YAML content visibility
+        function toggleYamlContent(id) {
+            const contentDiv = document.getElementById(`yaml-content-${id}`);
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const filename = id + '.yaml';
+
+            if (contentDiv.style.display === 'none') {
+                if (fileContents[filename]) {
+                    codeElement.textContent = fileContents[filename];
+                    contentDiv.style.display = 'block';
+                } else {
+                    codeElement.textContent = `Error: ${filename} content not found`;
+                    contentDiv.style.display = 'block';
+                }
+            } else {
+                contentDiv.style.display = 'none';
+            }
+        }
+
+        // Copy YAML content to clipboard
+        function copyYamlContent(id) {
+            const codeElement = document.getElementById(`yaml-code-${id}`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Download YAML file
+        function downloadYamlFile(filename) {
+            if (fileContents[filename]) {
+                const blob = new Blob([fileContents[filename]], { type: 'text/yaml' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert(`Error: ${filename} content not found`);
+            }
+        }
+
+        // Pagination functionality
+        let currentStep = 1;
+        const totalSteps = 8;
+
+        function showStep(stepNum) {
+            currentStep = stepNum;
+            
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                const step = index + 1;
+                if (step === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else if (step < currentStep) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('active');
+                    dot.classList.remove('completed');
+                }
+            });
+
+            // Highlight current objectives
+            document.querySelectorAll('#objectives-list li').forEach(li => {
+                const steps = li.dataset.steps ? li.dataset.steps.split(',').map(s => parseInt(s.trim())) : [];
+                if (steps.includes(currentStep)) {
+                    li.style.fontWeight = 'bold';
+                    li.style.color = '#0066cc';
+                    li.style.backgroundColor = '#e6f2ff';
+                    li.style.padding = '4px 8px';
+                    li.style.borderRadius = '4px';
+                    li.style.transition = 'all 0.3s ease';
+                } else {
+                    li.style.fontWeight = 'normal';
+                    li.style.color = '';
+                    li.style.backgroundColor = '';
+                    li.style.padding = '';
+                    li.style.borderRadius = '';
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.disabled = currentStep === totalSteps;
+
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = 'Phase Complete ✓';
+                nextBtn.style.background = 'var(--success-color)';
+            } else {
+                nextBtn.textContent = 'Next Step →';
+                nextBtn.style.background = 'var(--accent-color)';
+            }
+
+            // Update bottom navigation buttons
+            document.getElementById('prev-btn-bottom').disabled = currentStep === 1;
+            if (currentStep === totalSteps) {
+                document.getElementById('next-btn-bottom').innerHTML = '<a href="ZL_DG_PHASE_9.html" style="color: inherit; text-decoration: none;">Next Phase →</a>';
+            } else {
+                document.getElementById('next-btn-bottom').innerHTML = 'Next Step →';
+                document.getElementById('next-btn-bottom').disabled = false;
+            }
+            document.getElementById('bottom-step-title').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+            // Update step info
+            document.getElementById('current-step').textContent = currentStep;
+            document.getElementById('step-title').textContent = stepData[currentStep].title;
+
+            // Update progress bar
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Load step content
+            document.getElementById('step-container').innerHTML = stepData[currentStep].content;
+
+            // Re-initialize copy buttons for the new content
+            initializeCopyButtons();
+
+            // Save progress
+            localStorage.setItem('zl-phase8-current-step', currentStep);
+            window.location.hash = `step-${currentStep}`;
+        }
+
+        function navigateStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep >= 1 && newStep <= totalSteps) {
+                showStep(newStep);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners for navigation buttons
+            document.getElementById('next-btn').addEventListener('click', () => navigateStep(1));
+            document.getElementById('prev-btn').addEventListener('click', () => navigateStep(-1));
+
+            // Event listeners for step dots
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.addEventListener('click', function() {
+                    showStep(parseInt(this.dataset.step));
+                });
+            });
+            
+            // Check for saved progress or URL hash
+            const savedStep = localStorage.getItem('zl-phase8-current-step');
+            const hashMatch = window.location.hash.match(/step-(\d+)/);
+            
+            if (hashMatch) {
+                const stepFromHash = parseInt(hashMatch[1]);
+                if (stepFromHash >= 1 && stepFromHash <= totalSteps) {
+                    showStep(stepFromHash);
+                    return;
+                }
+            }
+            
+            if (savedStep) {
+                const stepNum = parseInt(savedStep);
+                if (stepNum >= 1 && stepNum <= totalSteps) {
+                    showStep(stepNum);
+                    return;
+                }
+            }
+            
+            // Initial render
+            showStep(1);
+            
+            // Initialize copy buttons
+            initializeCopyButtons();
+        });
+
+        // Copy to clipboard functionality
+        function copyToClipboard(buttonOrText) {
+            let text, button;
+            
+            // Handle both static button calls (with text string) and dynamic button calls (with button element)
+            if (typeof buttonOrText === 'string') {
+                // Static button: parameter is the text to copy, button is event.target
+                text = buttonOrText;
+                button = event.target;
+            } else {
+                // Dynamic button: parameter is the button element
+                button = buttonOrText;
+                const wrapper = button.closest('.pre-wrapper');
+                const codeBlock = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
+                text = codeBlock.textContent || codeBlock.innerText;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopied(button);
+                }).catch(function() {
+                    fallbackCopy(text, button);
+                });
+            } else {
+                fallbackCopy(text, button);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopied(btn);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                btn.textContent = 'FAILED';
+                setTimeout(() => {
+                    btn.textContent = 'COPY';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopied(btn) {
+            btn.textContent = 'COPIED';
+            btn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        function initializeCopyButtons() {
+            const pres = document.querySelectorAll('pre');
+            console.log('initializeCopyButtons called - Found pre elements:', pres.length);
+            
+            pres.forEach((pre, index) => {
+                console.log(`Checking pre element ${index + 1}:`, pre);
+                
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('pre-wrapper')) {
+                    console.log(`  Skipped ${index + 1}: Already wrapped`);
+                    return;
+                }
+                if (pre.closest('.yaml-panel')) {
+                    console.log(`  Skipped ${index + 1}: Inside yaml-panel`);
+                    return;
+                }
+                // Skip if inside output-block (output displays, not commands)
+                if (pre.closest('.output-block')) {
+                    console.log(`  Skipped ${index + 1}: Inside output-block`);
+                    return;
+                }
+                // Skip if parent already has a copy button as a direct child (static HTML)
+                const parentDirectChildren = Array.from(pre.parentElement.children);
+                if (parentDirectChildren.some(child => child.classList.contains('copy-btn'))) {
+                    console.log(`  Skipped ${index + 1}: Parent has static copy button`);
+                    return;
+                }
+                
+                console.log(`  Creating copy button for pre element ${index + 1}`);
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pre-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'COPY';
+                copyBtn.type = 'button';
+                copyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyToClipboard(this);
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(copyBtn);
+                wrapper.appendChild(pre);
+                
+                console.log(`  Copy button created successfully for element ${index + 1}`);
+            });
+        }
+
+        function toggleYaml(btn) {
+            const panel = btn.nextElementSibling;
+            if (panel && panel.classList.contains('yaml-panel')) {
+                panel.classList.toggle('show');
+                btn.classList.toggle('active');
+                btn.textContent = panel.classList.contains('show') ? 'Hide YAML' : 'View YAML';
+            }
+        }
+
+        function copyYamlContent(btn) {
+            const panel = btn.closest('.yaml-panel');
+            if (!panel) return;
+            
+            const pre = panel.querySelector('pre');
+            if (!pre) return;
+            
+            const text = pre.textContent;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showCopied(btn))
+                    .catch(() => fallbackCopy(text, btn));
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.querySelector('.mobile-toggle');
+
+    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+        sidebar.classList.remove('open');
+    }
+});
+    </script>
+</body>
+</html>
+
+
+

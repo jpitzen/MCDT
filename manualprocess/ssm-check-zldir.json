@@ -1,0 +1,6 @@
+{
+  "commands": [
+    "Get-ChildItem 'E:\\ZipLip' -Directory | Select-Object Name",
+    "Get-ChildItem 'E:\\ZipLip\\config' -ErrorAction SilentlyContinue | Select-Object Name"
+  ]
+}

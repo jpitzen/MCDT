@@ -1,0 +1,7 @@
+{
+  "commands": [
+    "Get-Content 'E:\\ZipLip\\logs\\zlmapisvc*.log' -Tail 50 -ErrorAction SilentlyContinue",
+    "Get-Content 'E:\\ZipLip\\logs\\pstMA*.log' -Tail 50 -ErrorAction SilentlyContinue",
+    "Get-ChildItem 'E:\\ZipLip\\logs\\' -Filter '*mapi*' | Select-Object Name, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 10"
+  ]
+}

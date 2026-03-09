@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pmapp-runnable-config
+data:
+  pmapp.cfg: |
+    #if !RUNNABLE_PMAPP_CONFIG_FILE_IS_INCLUDED
+    #define RUNNABLE_PMAPP_CONFIG_FILE_IS_INCLUDED = true
+    version.runnable.pmapp=3.0
+
+    #define SERVLET_ON=true
+    #define ZIPLIP_DEPLOYMENT_ENV = true
+    #define DEVELOPMENT_ENV=!ZIPLIP_DEPLOYMENT_ENV
+
+    #if DEVELOPMENT_ENV
+    DEBUG_ON=true
+    #endif
+
+
+    // Turn the flag to false if using IBMJCE
+    #define SUNJCE=true
+
+    // Log4J WIP feature: Change to true ONLY for Log4J2 related testing.
+    log.enableLog4j=false
+    log.output=#wsi.util.Log4JFactory~~@log.enableLog4j@
+
+    #debug @com.ziplip.logs.dir@/ConfigDebug.out
+
+    #include @com.ziplip.pmapp.config.pmappURL@
+    #include @com.ziplip.config.dir@/app/shared/pmappConstants.cfg
+
+
+    //ZooKeeper Server - PATCHED FOR KUBERNETES DEPLOYMENT
+    _zkCluster = @com.ziplip.config.dir@/../../../ZLZooKeeper/config/zkQuorum.cfg
+    //_zkCluster = E:/junk/zk/zkQuorum.cfg
+
+
+    __zk.main=#com.zlti.zlzookeeper.ZLZooKeeper~~@_zkCluster@~~3000~~true
+
+
+
+
+    //******* NETWORK SERVER SPECIFICATION ***********
+    //Leaving these values empty will attempt to bind to all addresses.
+    SMTP_BIND_TO_ADDRESS =
+
+
+
+    // FQDN Server Name
+    machine.local.host = @web.server.URL@
+    mailserver.host = @mail.server.host@
+
+    // domain name to access web server
+    webserver.domain = @web.server.URL@
+
+
+    //******* SITE SPECIFICATION ****************
+
+
+    //You can override this by editing tc.cfg file and updating ZooKeeper to carry the machine
+    // specfic configuration. This will enable you never edit this file
+    // (other than point to the correct quorum file.)
+
+    pmApp.site.name  = HQ
+    coord.cluster.default.name  = DEFAULT
+    coord.cluster.initial.executors = 5
+    coord.cluster.service.executors = 3
+    coord.cluster.managed.executors = 3
+
+
+    //******* SEARCH SPECIFICATION ****************
+    search.pqa.max.persearchthreadcount = 20
+
+
+    //******** FILE SYSTEM SPECIFICATION ************
+    //This should be true if OS file system is unix
+    //fs.unix.on = false
+
+
+    //******** DB SERVER SPECIFICATION *************
+    //Default Datasource Type
+    #define DB_ORACLE_DEFAULT = false
+    #define DB_MSSQL_DEFAULT = true
+    #define DB_PGSQL_DEFAULT = false
+    #define DB_SYBASE_DEFAULT = false
+    #define DB_DB2_DEFAULT = false
+    #define DB_MYSQL_DEFAULT = false
+    #define DB_HSQLDB_DEFAULT = false
+
+
+    SmDsZooKeeperPKName=zltc/db
+
+
+
+
+
+    SYS_BOOTSTRAP_TIMEZONE=GMT
+
+    tmp.dir=@com.ziplip.root.dir@/WEB-INF/tmp
+    rtDump.dir=@com.ziplip.root.dir@/WEB-INF/tmp/rtDump
+
+    //******* LOGGING SPECIFICATION ****************
+    log.dir = @com.ziplip.logs.dir@
+    _sys.log.flush = 10
+    _sys.log.rollOver=86400
+    _sys.log.level = 12
+
+
+
+    #if DEVELOPMENT_ENV
+
+    pmApp.url.dump.on = true
+    pmApp.url.dump=@log.dir@/url
+    wdApp.url.dump.on = true
+    wdApp.url.dump=@log.dir@/wdurl
+
+    #endif
+
+
+    //******* LOCALIZATION SPECIFICATION ***********
+    #define LANG_JP_ON = true
+    #define LANG_KR_ON = true
+
+    //This overrides the interpretation of URIs
+    #define JAPANESE_WEBDAV_CLIENTS= false
+
+
+    //stName,WorkingDirectory~~fDelete~~fClearOnStartup~~maxUsedListSize~~urlStartFileName
+    //_htmlCrawler.textgen = #app.testing.email.HtmlCrawlerTextData~~htmlCrawlerTextGenFac~~@tmp.dir@/crawler~~false~~false~~1000~~SomeFileThathasURL
+
+
+    // *** *** ZIPLIP APPS & MODULES  *** ***
+    // Note: These get over-ridden with values from the Config Group
+
+    #define APPLICATION_EMAIL_ON = true
+    #define APPLICATION_STORAGE_ON = true
+    #define APPLICATION_TRACKER_ON = true
+
+
+    #define APPMODULE_SEARCH_ON = true
+    #define APPMODULE_ASPSERVICES_ON = false
+    #define APPMODULE_WEBSERVICES_ON = false
+    #define APPMODULE_ARCHIVAL_LOTUS_ON = false
+    #define APPMODULE_ARCHIVAL_EXCHANGE_ON = false
+
+
+    #define GATEWAY_DEPLOYMENT = false
+
+
+    #define MODULE_ASSENTOR_MIRGRATION_ON = false
+
+
+
+    //Now Load the Core
+    //config group Name
+    config.group = DEFAULT
+
+
+    #include @com.ziplip.config.dir@/app/shared/pmappCore.cfg
+
+    //multiple include feature - pmapp.cfg
+    #endif
