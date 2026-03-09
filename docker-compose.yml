@@ -92,6 +92,8 @@ services:
       args:
         REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
     container_name: zl-mcdt-frontend
+    ports:
+      - "${FRONTEND_PORT:-53000}:80"
     environment:
       REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
       REACT_APP_LOG_LEVEL: info
