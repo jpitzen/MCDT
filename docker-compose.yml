@@ -89,9 +89,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
     container_name: zl-mcdt-frontend
     environment:
-      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
       REACT_APP_LOG_LEVEL: info
     depends_on:
       - backend
